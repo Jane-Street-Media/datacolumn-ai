@@ -3,16 +3,21 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Chargebee\Cashier\Billable;
+use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Chargebee\Cashier\Billable;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
     use Billable;
+
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -20,9 +25,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'current_team_id',
         'name',
         'email',
         'password',
+        'provider_id',
+        'provider_name',
     ];
 
     /**
@@ -48,17 +56,34 @@ class User extends Authenticatable
         ];
     }
 
-    public  function subsriptionWithProductDetails() {
-       $subscriptionDetails = $this->subscription('default');
-       if(!$subscriptionDetails){
-           return null;
-       }
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class)->withTimestamps();
+    }
+
+    public function sentTeamInvitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class, 'invited_by_id');
+    }
+
+    public function receivedTeamInvitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class, 'email', 'email');
+    }
+
+    public function subsriptionWithProductDetails()
+    {
+        $subscriptionDetails = $this->subscription('default');
+        if (!$subscriptionDetails) {
+            return null;
+        }
         foreach ($subscriptionDetails->items as $item) {
             $chargebeeProductId = $item->chargebee_product;
             $plan = \App\Models\Plan::where('chargebee_product', $chargebeeProductId)->first();
             $item->plan_name = $plan->display_name ?? null;
         }
-       $subscriptionDetails->currency = $plan->currency ?? null;
-       return $subscriptionDetails;
+        $subscriptionDetails->currency = $plan->currency ?? null;
+
+        return $subscriptionDetails;
     }
 }

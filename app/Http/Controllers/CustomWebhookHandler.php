@@ -9,7 +9,6 @@ use Chargebee\Cashier\Listeners\HandleWebhookReceived;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Exception;
 
-
 class CustomWebhookHandler extends HandleWebhookReceived
 {
     protected function updateOrCreateSubscriptionFromPayload($user, array $data)
@@ -30,7 +29,7 @@ class CustomWebhookHandler extends HandleWebhookReceived
                 'quantity' => $isSinglePrice && isset($firstItem['quantity']) ? $firstItem['quantity'] : null,
                 'trial_ends_at' => $trialEndsAt,
                 'ends_at' => $endsAt,
-                'next_billing_at' => $nextBillingCycle
+                'next_billing_at' => $nextBillingCycle,
             ]
         );
 
@@ -61,26 +60,25 @@ class CustomWebhookHandler extends HandleWebhookReceived
         if ($itemPrice['item_type'] !== 'plan') {
             return;
         }
-        if (!in_array($itemPrice['period_unit'], ['month', 'year'], true)) {
+        if (! in_array($itemPrice['period_unit'], ['month', 'year'], true)) {
             return;
         }
 
         Plan::updateOrCreate(
             ['chargebee_id' => $itemPrice['id']], // Fixed missing closing bracket
             [
-                "display_name" => $itemPrice['external_name'] ?? $itemPrice['name'],
-                "price" => $itemPrice['price'],
-                "chargebee_product" => $itemPrice['item_id'],
-                "frequency" => $itemPrice['period_unit'],
-                "currency" => $itemPrice['currency_code'],
-                "quantity" => 1
+                'display_name' => $itemPrice['external_name'] ?? $itemPrice['name'],
+                'price' => $itemPrice['price'],
+                'chargebee_product' => $itemPrice['item_id'],
+                'frequency' => $itemPrice['period_unit'],
+                'currency' => $itemPrice['currency_code'],
+                'quantity' => 1,
             ]
         );
     }
 
     /**
      * handles item_price_created event
-     * @return void
      */
     protected function handleItemPriceCreated(array $payload): void
     {
@@ -92,14 +90,13 @@ class CustomWebhookHandler extends HandleWebhookReceived
             ]);
         } catch (Exception $ex) {
             Log::info('Exception while handling item_price_created webhook from chargebee', [
-                'message' => $ex->getMessage()
+                'message' => $ex->getMessage(),
             ]);
         }
     }
 
     /**
      * handles item_price_updated event
-     * @return void
      */
     protected function handleItemPriceUpdated(array $payload): void
     {
@@ -111,10 +108,8 @@ class CustomWebhookHandler extends HandleWebhookReceived
             ]);
         } catch (Exception $ex) {
             Log::info('Exception while handling item_price_updated webhook from Chargebee', [
-                'message' => $ex->getMessage()
+                'message' => $ex->getMessage(),
             ]);
         }
     }
-
-
 }

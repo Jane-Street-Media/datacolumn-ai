@@ -18,6 +18,6 @@ class Plan extends Model
         'chargebee_product',
         'frequency',
         'currency',
-        'quantity'
+        'quantity',
     ];
 }

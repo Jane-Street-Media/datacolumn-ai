@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use App\Console\Commands\FetchPlans;
-use Illuminate\Support\ServiceProvider;
-use Chargebee\Cashier\Cashier;
 use App\Models\Subscription;
+use Chargebee\Cashier\Cashier;
+use Illuminate\Support\ServiceProvider;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -14,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->commands([
-            FetchPlans::class
+            FetchPlans::class,
         ]);
     }
 

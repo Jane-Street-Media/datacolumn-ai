@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Plan;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class BillingController extends Controller
@@ -23,10 +23,10 @@ class BillingController extends Controller
                 'yearly_price' => $yearlyPrice > 0 ? $yearlyPrice : null,
                 'monthly_chargebee_id' => $monthlyPrice > 0 ? optional($monthly)->chargebee_id : null,
                 'yearly_chargebee_id' => $yearlyPrice > 0 ? optional($yearly)->chargebee_id : null,
-                'features' => ["Feature A", "Feature B", "Feature C"],
+                'features' => ['Feature A', 'Feature B', 'Feature C'],
                 'default' => false,
                 'currency' => $monthly?->currency ?? $yearly?->currency,
-            ], fn($value) => !is_null($value));
+            ], fn ($value) => ! is_null($value));
 
         })->values();
 
@@ -36,29 +36,33 @@ class BillingController extends Controller
     public function pricing()
     {
         return Inertia::render('pricing/pricing', [
-            "plans" => $this->getAllPlans()
+            'plans' => $this->getAllPlans(),
         ]);
     }
 
-    public function billing(Request $request) {
+    public function billing(Request $request)
+    {
         if ($request->user()?->subscribed('default')) {
             return redirect()->route('subscription-settings');
         }
+
         return Inertia::render('pricing/billingPage', [
-            "plans" => $this->getAllPlans()
+            'plans' => $this->getAllPlans(),
         ]);
     }
 
-    function invoices(Request $request) {
+    public function invoices(Request $request)
+    {
         return Inertia::render('settings/invoices', [
-            "invoices" => $request->user()->invoices()
+            'invoices' => $request->user()->invoices(),
         ]);
     }
 
-    function subscriptions(Request $request) {
+    public function subscriptions(Request $request)
+    {
         return Inertia::render('settings/subscription', [
-            "subscription" => $request?->user()?->subsriptionWithProductDetails() ?? null,
-            "plans" => $this->getAllPlans()
+            'subscription' => $request?->user()?->subsriptionWithProductDetails() ?? null,
+            'plans' => $this->getAllPlans(),
         ]);
     }
 }

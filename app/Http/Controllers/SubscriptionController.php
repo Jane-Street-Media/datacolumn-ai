@@ -17,7 +17,7 @@ class SubscriptionController extends Controller
 
             return redirect('/something-went-wrong')->with('error', 'Something went wrong while canceling the subscription.');
         } catch (\Exception $e) {
-            return redirect('/something-went-wrong')->with('error', 'An error occurred: ' . $e->getMessage());
+            return redirect('/something-went-wrong')->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
 
