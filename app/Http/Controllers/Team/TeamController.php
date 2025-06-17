@@ -8,6 +8,7 @@ use App\Actions\Teams\UpdateTeam;
 use App\Data\Team\CreateTeamData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teams\TeamRequest;
+use App\Http\Requests\Teams\TeamUpdateRequest;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +22,7 @@ class TeamController extends Controller
         return back()->with(['success' => 'team created successfully']);
     }
 
-    public function update(TeamRequest $request, Team $team): RedirectResponse
+    public function update(TeamUpdateRequest $request, Team $team): RedirectResponse
     {
         UpdateTeam::handle($request->validated(), $team);
         return back()->with(['success' => 'team updated successfully']);
