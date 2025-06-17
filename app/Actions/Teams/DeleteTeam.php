@@ -7,7 +7,7 @@ use App\Models\User;
 
 class DeleteTeam
 {
-    public static function handle(Team $team,): void
+    public static function handle(Team $team): void
     {
         $team->delete();
     }
