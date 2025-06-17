@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Teams\UpdateUserRole;
+use App\Actions\Teams\TeamInvitation\SendTeamInvite;
+use App\Actions\Teams\RemoveUserFromTeam;
 use App\Http\Requests\TeamMemberDeleteRequest;
 use App\Http\Requests\TeamMemberRequest;
 use App\Http\Requests\TeamMemberUpdateRequest;
@@ -13,21 +16,19 @@ class TeamMemberController extends Controller
 {
     public function store(TeamMemberRequest $request, Team $team): RedirectResponse
     {
-        $data = $request->validated();
-        $team->invitations()->create($data);
+        SendTeamInvite::handle($request->validated(), $team);
         return back()->with('success', 'Invite sent successfully.');
     }
 
     public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse
     {
-        $user->syncRoles($request->validated()['role']);
+        UpdateUserRole::handle($request->validated(), $user);
         return back()->with('success', 'Role assigned successfully.');
     }
 
     public function destroy(TeamMemberDeleteRequest $request, Team $team): RedirectResponse
     {
-        $data = $request->validated();
-        $team->users()->detach($data['user_id']);
+        RemoveUserFromTeam::handle($request->validated(), $team);
         return back()->with('success', 'User removed from team.');
     }
 }

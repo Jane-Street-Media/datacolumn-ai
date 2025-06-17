@@ -50,8 +50,8 @@ Route::middleware(['auth', 'verified', 'spatie-team'])->group(function () {
 
     Route::post('/team/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
     Route::post('/team/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
-    Route::post('/team/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
 
+    Route::post('/team/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
     Route::post('/team-invitation/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])
         ->name('team-invitations.accept');
     Route::delete('/team-invitation/{teamInvitation}', [TeamInvitationController::class, 'destroy'])

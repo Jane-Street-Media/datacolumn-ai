@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Team;
-use App\Models\TeamInvitation;
 use Illuminate\Container\Attributes\RouteParameter;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

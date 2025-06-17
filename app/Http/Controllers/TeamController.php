@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Teams\CreateTeam;
+use App\Actions\Teams\DeleteTeam;
+use App\Actions\Teams\UpdateTeam;
 use App\Http\Requests\TeamRequest;
 use App\Models\Team;
 use App\Models\User;
@@ -12,20 +15,19 @@ class TeamController extends Controller
 {
     public function store(TeamRequest $request): RedirectResponse
     {
-        $user = User::first();
-        $user->teams()->create(array_merge($request->validated(), ['personal_team' => true]));
+        CreateTeam::handle(Auth::user(), $request->validated());
         return back()->with(['success' => 'team created successfully']);
     }
 
     public function update(TeamRequest $request, Team $team): RedirectResponse
     {
-        $team->update($request->validated());
+        UpdateTeam::handle($request->validated(), $team);
         return back()->with(['success' => 'team updated successfully']);
     }
 
     public function destroy(Team $team): RedirectResponse
     {
-        $team->delete();
+        DeleteTeam::handle($team);
         return back()->with(['success' => 'team deleted successfully']);
     }
 }
