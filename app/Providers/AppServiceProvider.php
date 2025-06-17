@@ -32,8 +32,8 @@ class AppServiceProvider extends ServiceProvider
         $kernel = app()->make(Kernel::class);
 
         $kernel->addToMiddlewarePriorityBefore(
-            SetSpatieTeamScope::class,
             SubstituteBindings::class,
+            SetSpatieTeamScope::class,
         );
     }
 }
