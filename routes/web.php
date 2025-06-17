@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\TeamInvitationController;
+use App\Http\Controllers\TeamMemberController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('test', function () {
         return Inertia::render('dashboard');
     })->name('test');
+
+
 });
 
 Route::get('billing', [BillingController::class, 'billing'])->name('billing');
@@ -38,7 +42,23 @@ Route::middleware([])->group(function () {
     })->name('something-went-wrong');
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-require __DIR__.'/checkout.php';
-require __DIR__.'/subscription.php';
+
+Route::middleware(['spatie-team'])->group(function () {
+    Route::post('/team/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
+    Route::post('/team/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
+    Route::post('/team/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
+
+    Route::post('/team-invitation/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])
+        ->name('team-invitations.accept');
+
+// Cancel an invitation (DELETE)
+    Route::delete('/team-invitation/{teamInvitation}', [TeamInvitationController::class, 'destroy'])
+        ->name('team-invitations.destroy');
+
+});
+
+
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/checkout.php';
+require __DIR__ . '/subscription.php';

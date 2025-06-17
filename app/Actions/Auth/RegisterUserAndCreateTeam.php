@@ -8,7 +8,7 @@ use Illuminate\Auth\Events\Registered;
 
 class RegisterUserAndCreateTeam
 {
-    public static function handle(RegisterUserData $data, ?string $provider = null)
+    public static function handle(RegisterUserData $data, ?string $provider = null): User
     {
         $user = User::create($data->toArray());
         if ($provider) {
