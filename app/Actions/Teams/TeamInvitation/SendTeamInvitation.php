@@ -4,7 +4,7 @@ namespace App\Actions\Teams\TeamInvitation;
 
 use App\Models\Team;
 
-class SendTeamInvite
+class SendTeamInvitation
 {
     public static function handle(array $data, Team $team): void
     {

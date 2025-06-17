@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Teams\UpdateUserRole;
-use App\Actions\Teams\TeamInvitation\SendTeamInvite;
+use App\Actions\Teams\TeamInvitation\SendTeamInvitation;
 use App\Actions\Teams\RemoveUserFromTeam;
 use App\Http\Requests\TeamMemberDeleteRequest;
 use App\Http\Requests\TeamMemberRequest;
@@ -16,7 +16,7 @@ class TeamMemberController extends Controller
 {
     public function store(TeamMemberRequest $request, Team $team): RedirectResponse
     {
-        SendTeamInvite::handle($request->validated(), $team);
+        SendTeamInvitation::handle($request->validated(), $team);
         return back()->with('success', 'Invite sent successfully.');
     }
 

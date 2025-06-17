@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Teams\TeamInvitation\AcceptTeamInvitation;
-use App\Actions\Teams\TeamInvitation\DeleteInvitation;
+use App\Actions\Teams\TeamInvitation\DeleteTeamInvitation;
 use App\Http\Requests\TeamInvitationRequest;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -22,7 +22,7 @@ class TeamInvitationController extends Controller
 
     public function destroy(TeamInvitation $teamInvitation): RedirectResponse
     {
-        DeleteInvitation::handle($teamInvitation);
+        DeleteTeamInvitation::handle($teamInvitation);
         return back()->with('success', 'Invite cancelled successfully.');
     }
 

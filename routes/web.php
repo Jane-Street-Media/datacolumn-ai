@@ -43,7 +43,7 @@ Route::middleware([])->group(function () {
     })->name('something-went-wrong');
 });
 
-Route::middleware(['auth', 'verified', 'spatie-team'])->group(function () {
+Route::middleware([ 'spatie-team'])->group(function () {
     Route::post('/team', [TeamController::class, 'store'])->name('teams.store');
     Route::put('/team/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('/team/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Auth;
 
+use App\Actions\Common\CreateTeam;
+use App\Data\CreateTeamData;
 use App\Data\RegisterUserData;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -14,7 +16,10 @@ class RegisterUserAndCreateTeam
         if ($provider) {
             $user->markEmailAsVerified();
         }
-        CreateTeam::handle($user);
+        CreateTeam::handle(CreateTeamData::from([
+            'name' => $user->name,
+            'personal_team' => true,
+        ]) , $user);
         event(new Registered($user));
         return $user;
     }

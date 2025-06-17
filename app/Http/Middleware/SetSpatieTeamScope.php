@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\Team;
 use Closure;
 use Illuminate\Http\Request;
-use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetSpatieTeamScope
@@ -23,5 +22,4 @@ class SetSpatieTeamScope
 
         return $next($request);
     }
-
 }
