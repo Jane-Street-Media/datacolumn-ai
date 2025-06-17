@@ -7,7 +7,6 @@ use App\Actions\Teams\DeleteTeam;
 use App\Actions\Teams\UpdateTeam;
 use App\Http\Requests\TeamRequest;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
