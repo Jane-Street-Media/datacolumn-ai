@@ -17,13 +17,11 @@ class SetSpatieTeamScope
      */
     public function handle(Request $request, Closure $next)
     {
-        $teamId = auth()->check() && auth()->user()->current_team_id
-            ? auth()->user()->current_team_id
-            : Team::query()->value('id');
-        if ($teamId) {
+        if ($teamId = auth()->user()?->current_team_id) {
             setPermissionsTeamId($teamId);
         }
 
         return $next($request);
     }
+
 }
