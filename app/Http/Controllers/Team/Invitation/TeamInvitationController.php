@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Team\Invitation;
 
 use App\Actions\Teams\TeamInvitation\AcceptTeamInvitation;
 use App\Actions\Teams\TeamInvitation\DeleteTeamInvitation;
-use App\Http\Requests\TeamInvitationRequest;
+use App\Http\Controllers\Controller;
 use App\Models\TeamInvitation;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class TeamInvitationController extends Controller
 {
-    public function store(TeamInvitationRequest $request, TeamInvitation $teamInvitation): RedirectResponse
+    public function store(TeamInvitation $teamInvitation): RedirectResponse
     {
-        $data = $request->validated();
-        $user = User::findOrfail($data['user_id']);
-        AcceptTeamInvitation::handle($user, $teamInvitation);
-        $teamInvitation->delete();
+        AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
         return back()->with('success', 'Invite accepted successfully.');
     }
 

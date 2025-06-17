@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Team;
 
-use App\Actions\Teams\UpdateUserRole;
-use App\Actions\Teams\TeamInvitation\SendTeamInvitation;
 use App\Actions\Teams\RemoveUserFromTeam;
-use App\Http\Requests\TeamMemberDeleteRequest;
-use App\Http\Requests\TeamMemberRequest;
-use App\Http\Requests\TeamMemberUpdateRequest;
+use App\Actions\Teams\TeamInvitation\SendTeamInvitation;
+use App\Actions\Teams\UpdateUserRole;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Teams\TeamMemberDeleteRequest;
+use App\Http\Requests\Teams\TeamMemberRequest;
+use App\Http\Requests\Teams\TeamMemberRoleUpdateRequest;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +21,7 @@ class TeamMemberController extends Controller
         return back()->with('success', 'Invite sent successfully.');
     }
 
-    public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse
+    public function update(TeamMemberRoleUpdateRequest $request, User $user): RedirectResponse
     {
         UpdateUserRole::handle($request->validated(), $user);
         return back()->with('success', 'Role assigned successfully.');

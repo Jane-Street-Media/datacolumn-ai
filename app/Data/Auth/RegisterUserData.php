@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Data;
+namespace App\Data\Auth;
 
 use Spatie\LaravelData\Data;
 

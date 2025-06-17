@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Team;
 
 use App\Actions\Common\CreateTeam;
 use App\Actions\Teams\DeleteTeam;
 use App\Actions\Teams\UpdateTeam;
-use App\Data\CreateTeamData;
-use App\Http\Requests\TeamRequest;
+use App\Data\Team\CreateTeamData;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Teams\TeamRequest;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +17,7 @@ class TeamController extends Controller
 {
     public function store(TeamRequest $request): RedirectResponse
     {
-        CreateTeam::handle(CreateTeamData::from($request->validated()) , Auth::user() ?? User::where('id' ,2)->first());
+        CreateTeam::handle(CreateTeamData::from($request->validated()), Auth::user() ?? User::where('id', 2)->first());
         return back()->with(['success' => 'team created successfully']);
     }
 

@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\BillingController;
-use App\Http\Controllers\TeamController;
-use App\Http\Controllers\TeamInvitationController;
-use App\Http\Controllers\TeamMemberController;
+use App\Http\Controllers\Team\Invitation\TeamInvitationController;
+use App\Http\Controllers\Team\TeamController;
+use App\Http\Controllers\Team\TeamMemberController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

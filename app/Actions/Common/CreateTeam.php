@@ -2,7 +2,7 @@
 
 namespace App\Actions\Common;
 
-use App\Data\CreateTeamData;
+use App\Data\Team\CreateTeamData;
 use App\Models\User;
 
 class CreateTeam

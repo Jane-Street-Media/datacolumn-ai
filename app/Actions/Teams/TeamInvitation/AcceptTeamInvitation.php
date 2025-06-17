@@ -11,5 +11,6 @@ class AcceptTeamInvitation
     {
         $teamInvitation->team->users()->sync($user->id);
         $user->assignRole($teamInvitation->role);
+        $teamInvitation->delete();
     }
 }

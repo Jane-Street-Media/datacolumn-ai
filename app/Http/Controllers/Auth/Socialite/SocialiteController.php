@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth\Socialite;
 
 use App\Actions\Auth\RegisterUserAndCreateTeam;
-use App\Data\RegisterUserData;
+use App\Data\Auth\RegisterUserData;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;

@@ -3,8 +3,8 @@
 namespace App\Actions\Auth;
 
 use App\Actions\Common\CreateTeam;
-use App\Data\CreateTeamData;
-use App\Data\RegisterUserData;
+use App\Data\Auth\RegisterUserData;
+use App\Data\Team\CreateTeamData;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 

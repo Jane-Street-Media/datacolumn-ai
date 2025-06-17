@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Teams;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TeamRequest extends FormRequest
+class TeamMemberRoleUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class TeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string'],
+            'role' => ['required', 'integer', 'exists:roles,id'],
         ];
     }
 }
