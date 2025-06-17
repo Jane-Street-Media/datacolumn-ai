@@ -21,13 +21,13 @@ class TeamMemberController extends Controller
     public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse
     {
         $user->syncRoles($request->validated()['role']);
-        return back()->with('success', 'Role updated successfully.');
+        return back()->with('success', 'Role assigned successfully.');
     }
 
     public function destroy(TeamMemberDeleteRequest $request, Team $team): RedirectResponse
     {
         $data = $request->validated();
         $team->users()->detach($data['user_id']);
-        return back()->with('success', 'User deleted successfully.');
+        return back()->with('success', 'User removed from team.');
     }
 }

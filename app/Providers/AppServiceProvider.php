@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Console\Commands\FetchPlans;
+use App\Http\Middleware\SetSpatieTeamScope;
 use App\Models\Subscription;
 use Chargebee\Cashier\Cashier;
+use Illuminate\Foundation\Http\Kernel;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +28,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Cashier::useSubscriptionModel(Subscription::class);
+        /** @var Kernel $kernel */
+        $kernel = app()->make(Kernel::class);
+
+        $kernel->addToMiddlewarePriorityBefore(
+            SubstituteBindings::class,
+            SetSpatieTeamScope::class,
+        );
     }
 }

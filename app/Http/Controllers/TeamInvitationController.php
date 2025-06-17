@@ -14,7 +14,6 @@ class TeamInvitationController extends Controller
     {
         $data = $request->validated();
         $user = User::findOrfail($data['user_id']);
-
         $teamInvitation->team->users()->attach($user->id,[
             'role' => $teamInvitation->role,
         ]);

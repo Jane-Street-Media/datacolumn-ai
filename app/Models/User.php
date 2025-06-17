@@ -56,15 +56,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function users(): HasMany
+    public function teams(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Team::class);
     }
 
-    public function teams()
-    {
-        return $this->belongsToMany(Team::class)->withTimestamps();
-    }
+
 
     public function sentTeamInvitations(): HasMany
     {
