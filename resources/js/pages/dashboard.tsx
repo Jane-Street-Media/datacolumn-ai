@@ -1,9 +1,10 @@
 import {PlaceholderPattern} from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
-import {Head} from '@inertiajs/react';
+import { Deferred, Head } from '@inertiajs/react';
 import { FileText, BarChart3, Users, TrendingUp } from 'lucide-react';
 import StatsCard from '@/components/stats-card';
+import RecentProjects from '@/components/recent-projects';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -57,46 +58,46 @@ const teams = [
     }
 ];
 
-const projects = [
-    {
-        id: '1',
-        name: 'Q3 Sales Analysis',
-        description: 'Quarterly sales performance across regions',
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-20'),
-        createdBy: '1',
-        collaborators: ['1', '2'],
-        charts: [],
-        datasets: [],
-        tags: ['sales', 'quarterly', 'analysis'],
-        status: 'published'
-    },
-    {
-        id: '2',
-        name: 'Market Research Dashboard',
-        description: 'Consumer behavior insights and trends',
-        createdAt: new Date('2024-01-10'),
-        updatedAt: new Date('2024-01-18'),
-        createdBy: '1',
-        collaborators: ['1'],
-        charts: [],
-        datasets: [],
-        tags: ['market', 'research', 'trends'],
-        status: 'draft'
-    }
-];
+// const projects = [
+//     {
+//         id: '1',
+//         name: 'Q3 Sales Analysis',
+//         description: 'Quarterly sales performance across regions',
+//         createdAt: new Date('2024-01-15'),
+//         updatedAt: new Date('2024-01-20'),
+//         createdBy: '1',
+//         collaborators: ['1', '2'],
+//         charts: [],
+//         datasets: [],
+//         tags: ['sales', 'quarterly', 'analysis'],
+//         status: 'published'
+//     },
+//     {
+//         id: '2',
+//         name: 'Market Research Dashboard',
+//         description: 'Consumer behavior insights and trends',
+//         createdAt: new Date('2024-01-10'),
+//         updatedAt: new Date('2024-01-18'),
+//         createdBy: '1',
+//         collaborators: ['1'],
+//         charts: [],
+//         datasets: [],
+//         tags: ['market', 'research', 'trends'],
+//         status: 'draft'
+//     }
+// ];
 
 const stats = [
     {
         name: 'Total Projects',
-        value: projects.length,
+        value: 4,
         change: '+12%',
         changeType: 'positive' as const,
         icon: FileText,
     },
     {
         name: 'Active Charts',
-        value: projects.reduce((acc, p) => acc + p.charts.length, 0),
+        value: 4,
         change: '+8%',
         changeType: 'positive' as const,
         icon: BarChart3,
@@ -110,29 +111,30 @@ const stats = [
     },
     {
         name: 'This Month',
-        value: projects.filter(p =>
-            new Date(p.createdAt).getMonth() === new Date().getMonth()
-        ).length,
+        value: 1,
         change: '+25%',
         changeType: 'positive' as const,
         icon: TrendingUp,
     },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({ projects }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard"/>
+            <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
                         <StatsCard key={index} stat={stat} index={index} />
                     ))}
                 </div>
-                <div
-                    className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern
-                        className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20"/>
+
+                <div className="mb-8 grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
+                    <div className="col-span-2">
+                        <Deferred data="projects" fallback={<div>Loading...</div>}>
+                            <RecentProjects projects={projects} />
+                        </Deferred>
+                    </div>
                 </div>
             </div>
         </AppLayout>
