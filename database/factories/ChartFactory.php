@@ -19,7 +19,7 @@ class ChartFactory extends Factory
         $type = $this->faker->randomElement(['LineChart', 'BarChart', 'AreaChart']);
         $colors = ['#8884d8', '#82ca9d', '#ffc658'];
         return [
-            'uuid' => $this->faker->uuid,
+            'uuid' => $this->faker->uuid(),
             'title' => $this->faker->sentence(3),
             'type' => $type,
             'config' => [

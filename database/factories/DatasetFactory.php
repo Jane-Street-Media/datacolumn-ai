@@ -18,11 +18,11 @@ class DatasetFactory extends Factory
     public function definition(): array
     {
         // Simple dummy columns and data
-        $fields = [$this->faker->word, $this->faker->word];
+        $fields = [$this->faker->word(), $this->faker->word()];
         return [
-            'name' => $this->faker->word,
+            'name' => $this->faker->word(),
             'columns' => collect($fields)->map(fn($f) => ['field' => $f])->toArray(),
-            'data' => [array_combine($fields, array_map(fn() => $this->faker->word, $fields))],
+            'data' => [array_combine($fields, array_map(fn() => $this->faker->word(), $fields))],
             'source' => DatasetSource::MANUAL_ENTRY,
         ];
     }

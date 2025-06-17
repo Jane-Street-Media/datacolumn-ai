@@ -18,7 +18,7 @@ class FolderFactory extends Factory
     {
         return [
             'name' => $this->faker->words(2, true),
-            'description' => $this->faker->sentence,
+            'description' => $this->faker->sentence(),
             'parent_id' => null, // override if nesting
         ];
     }
