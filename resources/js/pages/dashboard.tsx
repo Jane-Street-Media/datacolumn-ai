@@ -5,6 +5,7 @@ import { Deferred, Head } from '@inertiajs/react';
 import { FileText, BarChart3, Users, TrendingUp } from 'lucide-react';
 import StatsCard from '@/components/stats-card';
 import RecentProjects from '@/components/recent-projects';
+import ActivityFeed from '@/components/activity-feed';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -135,6 +136,7 @@ export default function Dashboard({ projects }) {
                             <RecentProjects projects={projects} />
                         </Deferred>
                     </div>
+                    <ActivityFeed />
                 </div>
             </div>
         </AppLayout>
