@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Chart extends Model
 {
     use HasUuids;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -24,10 +26,15 @@ class Chart extends Model
     ];
 
     protected $casts = [
-        'config' => 'jsonb',
-        'data' => 'jsonb',
-        'embed_settings' => 'jsonb',
+        'config' => 'json',
+        'data' => 'json',
+        'embed_settings' => 'json',
     ];
+
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
 
     public function project(): BelongsTo
     {
