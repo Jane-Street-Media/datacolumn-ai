@@ -47,12 +47,6 @@ export default function Team({ role, statistics }) {
         // },
     ];
 
-    // const submit: FormEventHandler = (e) => {
-    //     e.preventDefault();
-    //     post(route('register'), {
-    //         onFinish: () => reset('password', 'password_confirmation'),
-    //     });
-    // };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
