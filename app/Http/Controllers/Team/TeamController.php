@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Team;
 
 use App\Actions\Common\CreateTeam;
 use App\Actions\Teams\DeleteTeam;
+use App\Actions\Teams\Stats\GetTeamStats;
 use App\Actions\Teams\UpdateTeam;
 use App\Data\Team\CreateTeamData;
 use App\Http\Controllers\Controller;
@@ -20,7 +21,8 @@ class TeamController extends Controller
     public function index(): Response
     {
         return Inertia::render('team', [
-            'statistics' => [],
+            'statistics' => GetTeamStats::handle(),
+            'role' => 'owner'
         ]);
     }
 

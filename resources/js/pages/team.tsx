@@ -1,22 +1,10 @@
-import AppLayout from '@/layouts/app-layout';
-import {type BreadcrumbItem} from '@/types';
-import { Deferred, Head } from '@inertiajs/react';
-import { FileText, BarChart3, Users, UserPlus } from 'lucide-react';
+import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
-import * as React from 'react';
-import {
-    PageHeader,
-    PageHeaderAction,
-    PageHeaderDescription,
-    PageHeaderHead,
-    PageHeaderTitle
-} from '@/components/page-header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { LoadingSkeleton } from '@/components/loading-skeleton';
-import RecentProjects from '@/components/dashboard/recent-projects';
-import ActivityFeed from '@/components/dashboard/activity-feed';
-import QuickActions from '@/components/dashboard/quick-actions';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
+import { CrownIcon, MailIcon, ShieldIcon, Users } from 'lucide-react';
+import InviteMemberDialog from '@/components/InviteMemberDialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,25 +13,31 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ statistics }) {
+export default function Team({ role, statistics }) {
     const stats = [
         {
-            name: 'Total Projects',
-            value: statistics.projectStats?.value,
-            change: statistics.projectStats?.percentage_change,
-            icon: FileText,
-        },
-        {
-            name: 'Active Charts',
-            value: statistics.chartStats?.value,
-            change: statistics.chartStats?.percentage_change,
-            icon: BarChart3,
-        },
-        {
-            name: 'Team Members',
-            value: statistics.teamMemberStats?.value,
-            change: statistics.teamMemberStats?.percentage_change,
+            name: 'Total Members',
+            value: statistics.totalMembersStats?.value,
+            change: statistics.totalMembersStats?.percentage_change,
             icon: Users,
+        },
+        {
+            name: 'Active Members',
+            value: statistics.activeMembersStats?.value,
+            change: statistics.activeMembersStats?.percentage_change,
+            icon: ShieldIcon,
+        },
+        {
+            name: 'Admins',
+            value: statistics.adminStats?.value,
+            change: statistics.adminStats?.percentage_change,
+            icon: CrownIcon,
+        },
+        {
+            name: 'Pending',
+            value: statistics.pendingMemberStats?.value,
+            change: statistics.pendingMemberStats?.percentage_change,
+            icon: MailIcon,
         },
         // {
         //     name: 'This Month',
@@ -53,19 +47,17 @@ export default function Team({ statistics }) {
         // },
     ];
 
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Teams" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <PageHeader>
                     <PageHeaderHead>
                         <PageHeaderTitle>Team Management</PageHeaderTitle>
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
-                            <Button>
-                                <UserPlus />
-                                <span>Invite Member</span>
-                            </Button>
+                            <InviteMemberDialog role={role} />
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>
@@ -74,9 +66,6 @@ export default function Team({ statistics }) {
                     {stats.map((stat, index) => (
                         <StatsCard displayChange={false} key={index} stat={stat} index={index} />
                     ))}
-                </div>
-
-                <div className="mb-8 grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
                 </div>
             </div>
         </AppLayout>
