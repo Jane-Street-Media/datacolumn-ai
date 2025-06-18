@@ -14,8 +14,10 @@ class TeamScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $tableName = $model->getTable();
-        $builder->where($tableName.'.team_id', Auth::user()->current_team_id)->orWhere($tableName.'.team_id',null);
-
+        $user  = Auth::user();
+        if ($user && !$user->hasRole('super admin')) {
+            $tableName = $model->getTable();
+            $builder->where($tableName . '.team_id', Auth::user()->current_team_id)->orWhere($tableName . '.team_id', null);
+        }
     }
 }
