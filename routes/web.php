@@ -4,6 +4,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,9 +13,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('test', function () {
         return Inertia::render('dashboard');
     })->name('test');
