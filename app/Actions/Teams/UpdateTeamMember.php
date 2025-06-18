@@ -4,7 +4,7 @@ namespace App\Actions\Teams;
 
 use App\Models\User;
 
-class UpdateUserRole
+class UpdateTeamMember
 {
     public static function handle(array $data ,User $user): void
     {

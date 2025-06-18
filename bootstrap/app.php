@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\SetSpatieTeamScope;
+use App\Http\Middleware\SetTeamScope;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,10 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
-
+            SetTeamScope::class,
         ]);
         $middleware->alias([
-            'spatie-team' => SetSpatieTeamScope::class
+            'teams' => SetTeamScope::class
         ]);
     })
 

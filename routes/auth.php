@@ -35,7 +35,7 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-    Route::middleware(['spatie-team'])->group(function () {
+    Route::middleware(['teams'])->group(function () {
         Route::get('/auth/redirect/{provider}', function ($provider) {
             return Socialite::driver($provider)
                 ->redirect();

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Team;
 
 use App\Actions\Teams\RemoveUserFromTeam;
 use App\Actions\Teams\TeamInvitation\SendTeamInvitation;
-use App\Actions\Teams\UpdateUserRole;
+use App\Actions\Teams\UpdateTeamMember;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teams\TeamMemberDeleteRequest;
 use App\Http\Requests\Teams\TeamMemberRequest;
@@ -23,7 +23,7 @@ class TeamMemberController extends Controller
 
     public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse
     {
-        UpdateUserRole::handle($request->validated(), $user);
+        UpdateTeamMember::handle($request->validated(), $user);
         return back()->with('success', 'Role assigned successfully.');
     }
 
