@@ -15,5 +15,12 @@ class CreateTeam
         setPermissionsTeamId($team->id);
         $team->users()->attach($user->id);
         $user->assignRole('owner');
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($team)
+            ->event('Team Created')
+            ->withProperties(['attributes' => $team->toArray()])
+            ->log(':causer.name created a new team.');
     }
 }
