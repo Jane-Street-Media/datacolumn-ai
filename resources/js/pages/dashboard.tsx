@@ -1,4 +1,3 @@
-import {PlaceholderPattern} from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
