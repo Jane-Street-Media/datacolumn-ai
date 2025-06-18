@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Dashboard\GetActivityLogs;
 use App\Actions\Dashboard\GetStats;
 use App\Actions\Queries\GetRecentProjectQuery;
 use Inertia\Inertia;
@@ -14,6 +15,7 @@ class DashboardController extends Controller
         return Inertia::render('dashboard', [
             'projects' => Inertia::defer(fn () => GetRecentProjectQuery::execute()->latest()->limit(3)->get()),
             'statistics' => GetStats::handle(),
+            'activityLogs' => GetActivityLogs::handle(),
         ]);
     }
 }

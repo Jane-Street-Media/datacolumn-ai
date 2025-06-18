@@ -33,14 +33,14 @@ class TeamController extends Controller
 
     public function update(TeamUpdateRequest $request, Team $team): RedirectResponse
     {
-        UpdateTeam::handle($request->validated(), $team);
+        UpdateTeam::handle($request->validated(), $team, Auth::user());
 
         return back()->with(['success' => 'team updated successfully']);
     }
 
     public function destroy(Team $team): RedirectResponse
     {
-        DeleteTeam::handle($team);
+        DeleteTeam::handle($team, Auth::user());
 
         return back()->with(['success' => 'team deleted successfully']);
     }

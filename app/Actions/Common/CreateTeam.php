@@ -3,6 +3,7 @@
 namespace App\Actions\Common;
 
 use App\Data\Team\CreateTeamData;
+use App\Enums\ActivityEvents;
 use App\Models\Team;
 use App\Models\User;
 
@@ -15,5 +16,11 @@ class CreateTeam
         setPermissionsTeamId($team->id);
         $team->users()->attach($user->id);
         $user->assignRole('owner');
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($team)
+            ->event(ActivityEvents::TEAM_CREATED->value)
+            ->log(':causer.name created a new team.');
     }
 }

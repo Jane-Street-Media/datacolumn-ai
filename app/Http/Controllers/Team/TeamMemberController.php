@@ -12,26 +12,27 @@ use App\Http\Requests\Teams\TeamMemberUpdateRequest;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class TeamMemberController extends Controller
 {
     public function store(TeamMemberRequest $request, Team $team): RedirectResponse
     {
-        SendTeamInvitation::handle($request->validated(), $team);
+        SendTeamInvitation::handle($request->validated(), $team, Auth::user());
 
         return back()->with('success', 'Invite sent successfully.');
     }
 
-    public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse
+    public function update(TeamMemberUpdateRequest $request, User $teamMember): RedirectResponse
     {
-        UpdateTeamMember::handle($request->validated(), $user);
+        UpdateTeamMember::handle($request->validated(), $teamMember, Auth::user());
 
         return back()->with('success', 'Role assigned successfully.');
     }
 
     public function destroy(TeamMemberDeleteRequest $request, Team $team): RedirectResponse
     {
-        RemoveUserFromTeam::handle($request->validated(), $team);
+        RemoveUserFromTeam::handle($request->validated(), $team, Auth::user());
 
         return back()->with('success', 'User removed from team.');
     }
