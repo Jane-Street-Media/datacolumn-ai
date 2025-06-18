@@ -5,6 +5,7 @@ import { FileText, BarChart3, Users, TrendingUp } from 'lucide-react';
 import StatsCard from '@/components/stats-card';
 import RecentProjects from '@/components/recent-projects';
 import ActivityFeed from '@/components/activity-feed';
+import { useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,7 +13,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
-
 const teams = [
     {
         id: '1',
@@ -87,38 +87,40 @@ const teams = [
 //     }
 // ];
 
-const stats = [
-    {
-        name: 'Total Projects',
-        value: 4,
-        change: '+12%',
-        changeType: 'positive' as const,
-        icon: FileText,
-    },
-    {
-        name: 'Active Charts',
-        value: 4,
-        change: '+8%',
-        changeType: 'positive' as const,
-        icon: BarChart3,
-    },
-    {
-        name: 'Team Members',
-        value: teams.reduce((acc, t) => acc + t.members.length, 0),
-        change: '+2',
-        changeType: 'positive' as const,
-        icon: Users,
-    },
-    {
-        name: 'This Month',
-        value: 1,
-        change: '+25%',
-        changeType: 'positive' as const,
-        icon: TrendingUp,
-    },
-];
+export default function Dashboard({ projects, statistics}) {
+    const percentageChange = useRef(statistics.projects.percentage_change > 0 ? '+' + statistics.projects.percentage_change : statistics.projects.percentage_change + '%')
+    const changeType = useRef(statistics.projects.percentage_change > 0 ? 'positive' : 'negative')
+    const stats = [
+        {
+            name: 'Total Projects',
+            value: statistics.projects.value,
+            change: percentageChange.current,
+            changeType: changeType.current,
+            icon: FileText,
+        },
+        {
+            name: 'Active Charts',
+            value: 4,
+            change: '+8%',
+            changeType: 'positive' as const,
+            icon: BarChart3,
+        },
+        {
+            name: 'Team Members',
+            value: teams.reduce((acc, t) => acc + t.members.length, 0),
+            change: '+2',
+            changeType: 'positive' as const,
+            icon: Users,
+        },
+        {
+            name: 'This Month',
+            value: 1,
+            change: '+25%',
+            changeType: 'positive' as const,
+            icon: TrendingUp,
+        },
+    ];
 
-export default function Dashboard({ projects }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />

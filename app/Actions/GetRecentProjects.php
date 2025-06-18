@@ -3,11 +3,11 @@
 namespace App\Actions;
 
 use App\Models\Project;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class GetRecentProjects
 {
-    public static function execute(): Collection
+    public static function execute(): Builder
     {
         return Project::query()->select([
             'user_id',
@@ -16,6 +16,6 @@ class GetRecentProjects
             'description',
             'status',
             'created_at',
-        ])->latest()->limit(3)->get();
+        ]);
     }
 }
