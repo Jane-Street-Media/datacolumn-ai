@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\RegisterUserAndCreateTeam;
-use App\Data\RegisterUserData;
+use App\Data\Auth\RegisterUserData;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
