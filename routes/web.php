@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
@@ -39,6 +40,13 @@ Route::middleware([])->group(function () {
             'flash' => session()->only(['error', 'success']),
         ]);
     })->name('something-went-wrong');
+});
+
+
+
+Route::prefix('projects')->group(function () {
+    Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
+
 });
 
 Route::prefix('team')->group(function () {
