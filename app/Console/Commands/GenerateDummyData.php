@@ -31,8 +31,9 @@ class GenerateDummyData extends Command
     public function handle(): ?int
     {
         $user = User::find($this->argument('user_id'));
-        if (!$user) {
+        if (! $user) {
             $this->error('User not found.');
+
             return 0;
         }
 
@@ -102,6 +103,7 @@ class GenerateDummyData extends Command
         });
 
         $this->info('Dummy data generation complete!');
+
         return CommandAlias::SUCCESS;
     }
 }

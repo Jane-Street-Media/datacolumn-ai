@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             SetTeam::class,
         ]);
         $middleware->alias([
-            'teams' => SetTeam::class
+            'teams' => SetTeam::class,
         ]);
     })
 

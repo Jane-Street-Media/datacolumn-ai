@@ -18,6 +18,7 @@ class ChartFactory extends Factory
     {
         $type = $this->faker->randomElement(['LineChart', 'BarChart', 'AreaChart']);
         $colors = ['#8884d8', '#82ca9d', '#ffc658'];
+
         return [
             'uuid' => $this->faker->uuid(),
             'title' => $this->faker->sentence(3),
@@ -46,7 +47,7 @@ class ChartFactory extends Factory
             ],
             'data' => [[
                 'x' => $this->faker->numberBetween(1, 10),
-                'y' => $this->faker->numberBetween(1, 100)
+                'y' => $this->faker->numberBetween(1, 100),
             ]],
             'embed_settings' => ['responsive' => true],
         ];

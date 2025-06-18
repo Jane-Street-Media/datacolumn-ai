@@ -8,8 +8,6 @@ class CreateTeamData extends Data
 {
     public function __construct(
         public string $name,
-        public ?bool  $personal_team = false,
-    )
-    {
-    }
+        public ?bool $personal_team = false,
+    ) {}
 }

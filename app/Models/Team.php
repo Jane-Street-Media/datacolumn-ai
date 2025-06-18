@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Team extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'name',
@@ -19,7 +20,7 @@ class Team extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class,)->withTimestamps();
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     public function owner(): BelongsTo

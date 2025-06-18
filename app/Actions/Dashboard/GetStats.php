@@ -25,7 +25,7 @@ class GetStats
         return [
             'projectStats' => $projectStats,
             'teamMemberStats' => $teamMemberStats,
-            'chartStats' => $chartStats
+            'chartStats' => $chartStats,
         ];
     }
 }

@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeamBootModel extends Model
 {
-
     public static function booted(): void
     {
-        static::addGlobalScope(new TeamScope());
+        static::addGlobalScope(new TeamScope);
     }
 
     public function team(): BelongsTo

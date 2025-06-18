@@ -19,10 +19,11 @@ class DatasetFactory extends Factory
     {
         // Simple dummy columns and data
         $fields = [$this->faker->word(), $this->faker->word()];
+
         return [
             'name' => $this->faker->word(),
-            'columns' => collect($fields)->map(fn($f) => ['field' => $f])->toArray(),
-            'data' => [array_combine($fields, array_map(fn() => $this->faker->word(), $fields))],
+            'columns' => collect($fields)->map(fn ($f) => ['field' => $f])->toArray(),
+            'data' => [array_combine($fields, array_map(fn () => $this->faker->word(), $fields))],
             'source' => DatasetSource::MANUAL_ENTRY,
         ];
     }

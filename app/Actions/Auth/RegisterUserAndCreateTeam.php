@@ -19,8 +19,9 @@ class RegisterUserAndCreateTeam
         CreateTeam::handle(CreateTeamData::from([
             'name' => $user->name,
             'personal_team' => true,
-        ]) , $user);
+        ]), $user);
         event(new Registered($user));
+
         return $user;
     }
 }

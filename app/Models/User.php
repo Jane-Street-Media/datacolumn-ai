@@ -18,7 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Billable;
 
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -75,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function subsriptionWithProductDetails()
     {
         $subscriptionDetails = $this->subscription('default');
-        if (!$subscriptionDetails) {
+        if (! $subscriptionDetails) {
             return null;
         }
         foreach ($subscriptionDetails->items as $item) {

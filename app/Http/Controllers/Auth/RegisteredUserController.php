@@ -25,7 +25,6 @@ class RegisteredUserController extends Controller
 
     /**
      * Handle an incoming registration request.
-     *
      */
     public function store(Request $request): RedirectResponse
     {

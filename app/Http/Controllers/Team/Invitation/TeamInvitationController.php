@@ -14,13 +14,14 @@ class TeamInvitationController extends Controller
     public function store(TeamInvitation $teamInvitation): RedirectResponse
     {
         AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
+
         return back()->with('success', 'Invite accepted successfully.');
     }
 
     public function destroy(TeamInvitation $teamInvitation): RedirectResponse
     {
         DeleteTeamInvitation::handle($teamInvitation);
+
         return back()->with('success', 'Invite cancelled successfully.');
     }
-
 }

@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,7 +17,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('test', function () {
         return Inertia::render('dashboard');
     })->name('test');
-
 
 });
 
@@ -60,8 +59,7 @@ Route::prefix('team-invitation')->group(function () {
     Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
 });
 
-
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
-require __DIR__ . '/checkout.php';
-require __DIR__ . '/subscription.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
+require __DIR__.'/checkout.php';
+require __DIR__.'/subscription.php';

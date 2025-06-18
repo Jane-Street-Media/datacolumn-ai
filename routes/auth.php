@@ -35,13 +35,13 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-        Route::get('/auth/redirect/{provider}', function ($provider) {
-            return Socialite::driver($provider)
-                ->redirect();
-        })->name('socialite.redirect');
+    Route::get('/auth/redirect/{provider}', function ($provider) {
+        return Socialite::driver($provider)
+            ->redirect();
+    })->name('socialite.redirect');
 
-        Route::get('/auth/callback/{provider}', [SocialiteController::class, 'store'])
-            ->name('socialite.callback');
+    Route::get('/auth/callback/{provider}', [SocialiteController::class, 'store'])
+        ->name('socialite.callback');
 
 });
 

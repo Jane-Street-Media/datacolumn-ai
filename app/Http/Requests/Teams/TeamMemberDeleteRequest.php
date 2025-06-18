@@ -25,10 +25,10 @@ class TeamMemberDeleteRequest extends FormRequest
     public function rules(#[RouteParameter('team')] Team $team): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id' , function($attribute, $value, $fail) use ($team) {
-                    if (!$team->users()->where('user_id', $value)->exists()) {
-                        $fail('The selected user is not a member of this team.');
-                    }
+            'user_id' => ['required', 'integer', 'exists:users,id', function ($attribute, $value, $fail) use ($team) {
+                if (! $team->users()->where('user_id', $value)->exists()) {
+                    $fail('The selected user is not a member of this team.');
+                }
             }],
         ];
     }

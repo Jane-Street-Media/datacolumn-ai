@@ -12,7 +12,7 @@ class DashboardController extends Controller
     public function __invoke(): Response
     {
         return Inertia::render('dashboard', [
-            'projects' => Inertia::defer(fn() => GetRecentProjectQuery::execute()->latest()->limit(3)->get()),
+            'projects' => Inertia::defer(fn () => GetRecentProjectQuery::execute()->latest()->limit(3)->get()),
             'statistics' => GetStats::handle(),
         ]);
     }
