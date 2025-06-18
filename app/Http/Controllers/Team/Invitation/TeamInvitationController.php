@@ -13,7 +13,7 @@ class TeamInvitationController extends Controller
 {
     public function store(TeamInvitation $teamInvitation): RedirectResponse
     {
-        AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
+        AcceptTeamInvitation::handle(Auth::user(), $teamInvitation, Auth::user());
 
         return back()->with('success', 'Invite accepted successfully.');
     }
