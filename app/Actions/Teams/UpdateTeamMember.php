@@ -6,8 +6,15 @@ use App\Models\User;
 
 class UpdateTeamMember
 {
-    public static function handle(array $data, User $user): void
+    public static function handle(array $data, User $teamMember, User $user): void
     {
-        $user->syncRoles($data['role']);
+        $teamMember->syncRoles($data['role']);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($teamMember)
+            ->event('Team Member Updated')
+            ->withProperties(['attributes' => $teamMember->toArray()])
+            ->log(':causer.name updated a team member.');
     }
 }
