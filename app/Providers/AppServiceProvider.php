@@ -28,12 +28,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Cashier::useSubscriptionModel(Subscription::class);
-        /** @var Kernel $kernel */
-        $kernel = app()->make(Kernel::class);
-
-        $kernel->addToMiddlewarePriorityBefore(
-            SubstituteBindings::class,
-            SetTeamScope::class,
-        );
     }
 }

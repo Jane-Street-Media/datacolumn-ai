@@ -35,7 +35,6 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-    Route::middleware(['teams'])->group(function () {
         Route::get('/auth/redirect/{provider}', function ($provider) {
             return Socialite::driver($provider)
                 ->redirect();
@@ -43,7 +42,6 @@ Route::middleware('guest')->group(function () {
 
         Route::get('/auth/callback/{provider}', [SocialiteController::class, 'store'])
             ->name('socialite.callback');
-    });
 
 });
 
