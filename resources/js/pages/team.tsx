@@ -85,7 +85,6 @@ export default function Team({ statistics }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Teams" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-
                 <PageHeader>
                     <PageHeaderHead>
                         <PageHeaderTitle>Team Management</PageHeaderTitle>
