@@ -4,8 +4,9 @@ import {type BreadcrumbItem} from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
 import { FileText, BarChart3, Users, TrendingUp } from 'lucide-react';
 import StatsCard from '@/components/stats-card';
-import RecentProjects from '@/components/recent-projects';
-import ActivityFeed from '@/components/activity-feed';
+import RecentProjects from '@/components/dashboard/recent-projects';
+import ActivityFeed from '@/components/dashboard/activity-feed';
+import QuickActions from '@/components/dashboard/quick-actions';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -136,7 +137,10 @@ export default function Dashboard({ projects }) {
                             <RecentProjects projects={projects} />
                         </Deferred>
                     </div>
-                    <ActivityFeed />
+                    <div className="space-y-4">
+                        <ActivityFeed />
+                        <QuickActions />
+                    </div>
                 </div>
             </div>
         </AppLayout>

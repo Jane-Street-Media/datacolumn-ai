@@ -40,31 +40,6 @@ export default function ActivityFeed() {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter>
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 w-full">
-                    <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-                    <div className="space-y-3">
-                        <button
-                            className="w-full bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors duration-200 flex items-center space-x-3"
-                        >
-                            <Plus className="w-4 h-4" />
-                            <span>Create New Project</span>
-                        </button>
-                        <button
-                            className="w-full bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors duration-200 flex items-center space-x-3"
-                        >
-                            <Users className="w-4 h-4" />
-                            <span>Invite Team Member</span>
-                        </button>
-                        <button
-                            className="w-full bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors duration-200 flex items-center space-x-3"
-                        >
-                            <Layout className="w-4 h-4" />
-                            <span>Browse Templates</span>
-                        </button>
-                    </div>
-                </div>
-            </CardFooter>
         </Card>
     );
 }
