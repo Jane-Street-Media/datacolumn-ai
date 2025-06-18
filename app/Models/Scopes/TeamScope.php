@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TeamScope implements Scope
 {
@@ -15,9 +16,12 @@ class TeamScope implements Scope
     public function apply(Builder $builder, Model $model): void
     {
         $user = Auth::user();
-        if ($user && ! $user->hasRole('super-admin')) {
+        if ($user && !$user->hasRole('super-admin')) {
+            Log::info('inside' );
+            Log::info( $user->current_team_id);
+
             $tableName = $model->getTable();
-            $builder->where($tableName.'.team_id', $user->current_team_id)->orWhereNull($tableName.'.team_id');
+            $builder->where($tableName . '.team_id', $user->current_team_id);
         }
     }
 }

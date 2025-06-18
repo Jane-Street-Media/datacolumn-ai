@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Actions\Queries;
+namespace App\Actions\Queries\Dashboard;
 
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Builder;
 
 class GetRecentProjectQuery
 {
-    public static function execute(): Builder
+    public static function handle(): Builder
     {
         return Project::query()->select([
             'user_id',

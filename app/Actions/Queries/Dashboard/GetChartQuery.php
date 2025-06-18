@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Queries;
+namespace App\Actions\Queries\Dashboard;
 
 use App\Models\Chart;
 use Illuminate\Database\Eloquent\Builder;

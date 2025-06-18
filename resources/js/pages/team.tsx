@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
 import { Head } from '@inertiajs/react';
-import { FileText, BarChart3, Users } from 'lucide-react';
+import { FileText, BarChart3, Users, Shield, ShieldIcon, CrownIcon, MailboxIcon, MailIcon } from 'lucide-react';
 import StatsCard from '@/components/stats-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -14,22 +14,27 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Team({ statistics }) {
     const stats = [
         {
-            name: 'Total Projects',
-            value: statistics.projectStats?.value,
-            change: statistics.projectStats?.percentage_change,
-            icon: FileText,
-        },
-        {
-            name: 'Active Charts',
-            value: statistics.chartStats?.value,
-            change: statistics.chartStats?.percentage_change,
-            icon: BarChart3,
-        },
-        {
-            name: 'Team Members',
-            value: statistics.teamMemberStats?.value,
-            change: statistics.teamMemberStats?.percentage_change,
+            name: 'Total Members',
+            value: statistics.totalMembersStats?.value,
+            change: statistics.totalMembersStats?.percentage_change,
             icon: Users,
+        },  {
+            name: 'Active Members',
+            value: statistics.activeMembersStats?.value,
+            change: statistics.activeMembersStats?.percentage_change,
+            icon: ShieldIcon,
+        },
+        {
+            name: 'Admins',
+            value: statistics.adminStats?.value,
+            change: statistics.adminStats?.percentage_change,
+            icon: CrownIcon,
+        },
+        {
+            name: 'Pending',
+            value: statistics.pendingMemberStats?.value,
+            change: statistics.pendingMemberStats?.percentage_change,
+            icon: MailIcon,
         },
         // {
         //     name: 'This Month',
