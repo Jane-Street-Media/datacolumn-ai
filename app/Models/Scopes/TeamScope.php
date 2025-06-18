@@ -17,9 +17,6 @@ class TeamScope implements Scope
     {
         $user = Auth::user();
         if ($user && !$user->hasRole('super-admin')) {
-            Log::info('inside' );
-            Log::info( $user->current_team_id);
-
             $tableName = $model->getTable();
             $builder->where($tableName . '.team_id', $user->current_team_id);
         }
