@@ -25,7 +25,7 @@ class TeamMemberRequest extends FormRequest
     public function rules(#[RouteParameter('team')] Team $team): array
     {
         return [
-            'email' => ['required', 'email', 'exists:users,email',
+            'email' => ['required', 'email',
                 function ($attribute, $value, $fail) use ($team) {
                     if ($team->invitations()->where('email', $value)->exists()) {
                         $fail('Invitation already sent to this user.');
