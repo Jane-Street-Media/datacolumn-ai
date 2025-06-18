@@ -16,112 +16,34 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const teams = [
-    {
-        id: '1',
-        name: 'Editorial Team',
-        description: 'Main editorial and content creation team',
-        createdAt: new Date('2024-01-01'),
-        createdBy: '1',
-        members: [
-            {
-                id: '1',
-                name: 'Sarah Johnson',
-                email: 'sarah@datacolumn.ai',
-                avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-                role: 'admin',
-                department: 'Editorial',
-                joinedAt: new Date('2024-01-01'),
-                lastActive: new Date(),
-                status: 'active'
-            },
-            {
-                id: '2',
-                name: 'Michael Chen',
-                email: 'michael@datacolumn.ai',
-                avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-                role: 'editor',
-                department: 'Data Analysis',
-                joinedAt: new Date('2024-01-05'),
-                lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
-                status: 'active'
-            },
-            {
-                id: '3',
-                name: 'Emily Rodriguez',
-                email: 'emily@datacolumn.ai',
-                avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-                role: 'editor',
-                department: 'Design',
-                joinedAt: new Date('2024-01-10'),
-                lastActive: new Date(Date.now() - 30 * 60 * 1000),
-                status: 'active'
-            }
-        ]
-    }
-];
+export default function Dashboard({ projects, statistics}) {
+    const stats = [
+        {
+            name: 'Total Projects',
+            value: statistics.projectStats?.value,
+            change: statistics.projectStats?.percentage_change,
+            icon: FileText,
+        },
+        {
+            name: 'Active Charts',
+            value: statistics.chartStats?.value,
+            change: statistics.chartStats?.percentage_change,
+            icon: BarChart3,
+        },
+        {
+            name: 'Team Members',
+            value: statistics.teamMemberStats?.value,
+            change: statistics.teamMemberStats?.percentage_change,
+            icon: Users,
+        },
+        // {
+        //     name: 'This Month',
+        //     value: 1,
+        //     change: '+25%',
+        //     icon: TrendingUp,
+        // },
+    ];
 
-// const projects = [
-//     {
-//         id: '1',
-//         name: 'Q3 Sales Analysis',
-//         description: 'Quarterly sales performance across regions',
-//         createdAt: new Date('2024-01-15'),
-//         updatedAt: new Date('2024-01-20'),
-//         createdBy: '1',
-//         collaborators: ['1', '2'],
-//         charts: [],
-//         datasets: [],
-//         tags: ['sales', 'quarterly', 'analysis'],
-//         status: 'published'
-//     },
-//     {
-//         id: '2',
-//         name: 'Market Research Dashboard',
-//         description: 'Consumer behavior insights and trends',
-//         createdAt: new Date('2024-01-10'),
-//         updatedAt: new Date('2024-01-18'),
-//         createdBy: '1',
-//         collaborators: ['1'],
-//         charts: [],
-//         datasets: [],
-//         tags: ['market', 'research', 'trends'],
-//         status: 'draft'
-//     }
-// ];
-
-const stats = [
-    {
-        name: 'Total Projects',
-        value: 4,
-        change: '+12%',
-        changeType: 'positive' as const,
-        icon: FileText,
-    },
-    {
-        name: 'Active Charts',
-        value: 4,
-        change: '+8%',
-        changeType: 'positive' as const,
-        icon: BarChart3,
-    },
-    {
-        name: 'Team Members',
-        value: teams.reduce((acc, t) => acc + t.members.length, 0),
-        change: '+2',
-        changeType: 'positive' as const,
-        icon: Users,
-    },
-    {
-        name: 'This Month',
-        value: 1,
-        change: '+25%',
-        changeType: 'positive' as const,
-        icon: TrendingUp,
-    },
-];
-
-export default function Dashboard({ projects }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
