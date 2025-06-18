@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TeamScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TeamInvitation extends TeamBootModel
+class TeamBootModel extends Model
 {
-    protected $fillable = [
-        'team_id',
-        'email',
-        'role',
-        'status',
-    ];
+
+    public static function booted(): void
+    {
+        static::addGlobalScope(new TeamScope());
+    }
 
     public function team(): BelongsTo
     {
