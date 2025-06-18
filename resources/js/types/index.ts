@@ -42,6 +42,6 @@ export interface User {
 export interface Stat {
     name: string;
     value: number;
-    change: number;
+    change?: number;
     icon?: LucideIcon | null;
 }
