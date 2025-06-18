@@ -13,9 +13,18 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TeamController extends Controller
 {
+    public function index(): Response
+    {
+        return Inertia::render('team', [
+            'statistics' => [],
+        ]);
+    }
+
     public function store(TeamRequest $request): RedirectResponse
     {
         CreateTeam::handle(CreateTeamData::from($request->validated()), Auth::user());

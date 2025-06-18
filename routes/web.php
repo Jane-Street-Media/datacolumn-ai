@@ -43,6 +43,7 @@ Route::middleware([])->group(function () {
 });
 
 Route::prefix('team')->group(function () {
+    Route::get('/', [TeamController::class, 'index'])->name('teams.store');
     Route::post('/', [TeamController::class, 'store'])->name('teams.store');
     Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
