@@ -40,7 +40,7 @@ class TeamController extends Controller
 
     public function destroy(Team $team): RedirectResponse
     {
-        DeleteTeam::handle($team);
+        DeleteTeam::handle($team, Auth::user());
 
         return back()->with(['success' => 'team deleted successfully']);
     }
