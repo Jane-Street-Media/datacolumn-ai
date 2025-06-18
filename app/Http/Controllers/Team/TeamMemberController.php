@@ -32,7 +32,7 @@ class TeamMemberController extends Controller
 
     public function destroy(TeamMemberDeleteRequest $request, Team $team): RedirectResponse
     {
-        RemoveUserFromTeam::handle($request->validated(), $team);
+        RemoveUserFromTeam::handle($request->validated(), $team, Auth::user());
 
         return back()->with('success', 'User removed from team.');
     }
