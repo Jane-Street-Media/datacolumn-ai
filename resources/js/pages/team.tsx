@@ -11,7 +11,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard({ statistics }) {
+export default function Team({ statistics }) {
     const stats = [
         {
             name: 'Total Projects',
@@ -45,7 +45,7 @@ export default function Dashboard({ statistics }) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
-                        <StatsCard key={index} stat={stat} index={index} />
+                        <StatsCard displayChange={false} key={index} stat={stat} index={index} />
                     ))}
                 </div>
             </div>
