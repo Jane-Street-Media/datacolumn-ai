@@ -24,10 +24,10 @@ export default function StatsCard({ stat, index }: StatsCardProps) {
                         <div className="mt-2 flex items-center">
                             <span
                                 className={`text-sm font-medium ${
-                                    stat.changeType === 'positive' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                                    stat.change >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                                 }`}
                             >
-                                {stat.change}
+                                {stat.change}%
                             </span>
                             <span className="ml-1 text-sm text-secondary-foreground">from last month</span>
                         </div>

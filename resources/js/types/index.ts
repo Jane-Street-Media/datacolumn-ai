@@ -42,7 +42,6 @@ export interface User {
 export interface Stat {
     name: string;
     value: number;
-    changeType: string;
     change: number;
     icon?: LucideIcon | null;
 }
