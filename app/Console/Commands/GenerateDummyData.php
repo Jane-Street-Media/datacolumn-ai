@@ -46,13 +46,16 @@ class GenerateDummyData extends Command
             $user->current_team_id = $teams->first()->id;
             $user->save();
             foreach ($teams as $team) {
+                setPermissionsTeamId($team->id);
                 // Attach auth user + 3 dummy users
-                $team->users()->attach($user->id, ['role' => 'owner']);
+                $team->users()->attach($user->id);
+                $user->assignRole('owner');
                 $dummyUsers = User::factory()->count(3)->create([
                     'current_team_id' => $team->id,
                 ]);
                 foreach ($dummyUsers as $du) {
-                    $team->users()->attach($du->id, ['role' => 'member']);
+                    $team->users()->attach($du->id);
+                    $user->assignRole('member');
                 }
             }
 

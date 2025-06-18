@@ -6,7 +6,7 @@ export default function QuickActions() {
     return (
         <Card className="bg-gradient-to-r from-blue-600 to-purple-600">
             <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle className="text-white">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-3">

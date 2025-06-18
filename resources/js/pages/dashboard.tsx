@@ -1,4 +1,3 @@
-import {PlaceholderPattern} from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
@@ -7,6 +6,8 @@ import StatsCard from '@/components/stats-card';
 import RecentProjects from '@/components/dashboard/recent-projects';
 import ActivityFeed from '@/components/dashboard/activity-feed';
 import QuickActions from '@/components/dashboard/quick-actions';
+import { LoadingSkeleton } from '@/components/loading-skeleton';
+import { Card, CardContent, } from '@/components/ui/card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -133,7 +134,13 @@ export default function Dashboard({ projects }) {
 
                 <div className="mb-8 grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
                     <div className="col-span-2">
-                        <Deferred data="projects" fallback={<div>Loading...</div>}>
+                        <Deferred data="projects" fallback={
+                            <Card>
+                                <CardContent>
+                                    <LoadingSkeleton />
+                                </CardContent>
+                            </Card>
+                        }>
                             <RecentProjects projects={projects} />
                         </Deferred>
                     </div>
