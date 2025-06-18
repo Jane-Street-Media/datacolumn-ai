@@ -13,6 +13,7 @@ class DashboardController extends Controller
     {
         $recentProjects = GetRecentProjects::execute();
         $stats = GetStats::handle();
+        dd($stats);
 
         return Inertia::render('dashboard', [
             'projects' => Inertia::defer(fn() => $recentProjects->latest()->limit(3)->get()),
