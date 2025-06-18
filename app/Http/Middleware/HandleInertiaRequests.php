@@ -42,10 +42,20 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'flash' => function () use ($request) {
+                if ($request->hasSession()) {
+                    return [
+                        'success' => $request->session()->get('success'),
+                        'error' => $request->session()->get('error'),
+                        'data' => $request->session()->get('data'),
+                    ];
+                }
+            },
             'auth' => [
                 'user' => $request->user(),
                 'subscription' => $request?->user()?->subsriptionWithProductDetails() ?? null,
             ],
+
         ];
     }
 }

@@ -1,35 +1,9 @@
+import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
 import { CrownIcon, MailIcon, ShieldIcon, Users } from 'lucide-react';
-import {type BreadcrumbItem} from '@/types';
-import { Deferred, Head } from '@inertiajs/react';
-import { FileText, BarChart3, UserPlus } from 'lucide-react';
-import * as React from 'react';
-import {
-    PageHeader,
-    PageHeaderAction,
-    PageHeaderDescription,
-    PageHeaderHead,
-    PageHeaderTitle
-} from '@/components/page-header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { LoadingSkeleton } from '@/components/loading-skeleton';
-import RecentProjects from '@/components/dashboard/recent-projects';
-import ActivityFeed from '@/components/dashboard/activity-feed';
-import QuickActions from '@/components/dashboard/quick-actions';
 import InviteMemberDialog from '@/components/InviteMemberDialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -39,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ statistics }) {
+export default function Team({ role, statistics }) {
     const stats = [
         {
             name: 'Total Members',
@@ -80,7 +54,6 @@ export default function Team({ statistics }) {
     //     });
     // };
 
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Teams" />
@@ -90,7 +63,7 @@ export default function Team({ statistics }) {
                         <PageHeaderTitle>Team Management</PageHeaderTitle>
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
-                           <InviteMemberDialog/>
+                            <InviteMemberDialog role={role} />
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>
