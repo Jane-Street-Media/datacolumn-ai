@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Actions\Dashboard;
+namespace App\Actions\Queries;
 
 use App\Models\TeamUser;
 use Illuminate\Database\Eloquent\Builder;
 
-class GetTeamMembers
+class GetTeamMemberQuery
 {
     public static function handle(): Builder
     {

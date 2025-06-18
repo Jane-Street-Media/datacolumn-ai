@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Queries;
 
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Builder;
 
-class GetRecentProjects
+class GetRecentProjectQuery
 {
     public static function execute(): Builder
     {

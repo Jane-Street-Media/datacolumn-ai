@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Actions\Dashboard;
+namespace App\Actions\Queries;
 
 use App\Models\Chart;
 use Illuminate\Database\Eloquent\Builder;
 
-class GetCharts
+class GetChartQuery
 {
     public static function handle(): Builder
     {
