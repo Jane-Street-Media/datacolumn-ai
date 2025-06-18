@@ -5,11 +5,10 @@ namespace App\Actions\Dashboard;
 use App\Actions\GetRecentProjects;
 use App\Enums\Period;
 use App\Helpers\ValueMetric;
-use App\Models\Team;
 
 class GetStats
 {
-    public static function handle()
+    public static function handle(): array
     {
         $projectStats = ValueMetric::query(GetRecentProjects::execute())->for(Period::LAST_30_DAYS, true)->count();
         $projectStats['percentage_change'] = ValueMetric::calculatePercentageChange($projectStats['value'], $projectStats['compare_value']);

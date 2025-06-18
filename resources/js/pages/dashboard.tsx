@@ -88,12 +88,12 @@ const teams = [
 // ];
 
 export default function Dashboard({ projects, statistics}) {
-    const percentageChange = useRef(statistics.projects.percentage_change > 0 ? '+' + statistics.projects.percentage_change : statistics.projects.percentage_change + '%')
-    const changeType = useRef(statistics.projects.percentage_change > 0 ? 'positive' : 'negative')
+    const percentageChange = useRef(statistics.projectStats.percentage_change > 0 ? '+' + statistics.projectStats.percentage_change : statistics.projectStats.percentage_change + '%')
+    const changeType = useRef(statistics.projectStats.percentage_change > 0 ? 'positive' : 'negative')
     const stats = [
         {
             name: 'Total Projects',
-            value: statistics.projects.value,
+            value: statistics.projectStats.value,
             change: percentageChange.current,
             changeType: changeType.current,
             icon: FileText,
