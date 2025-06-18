@@ -11,8 +11,9 @@ class CreateTeam
     public static function handle(CreateTeamData $data, User $user): void
     {
         $team = Team::create(array_merge($data->toArray(), ['user_id' => $user->id]));
-        $team->users()->attach($user->id);
         $user->update(['current_team_id' => $team->id]);
+        setPermissionsTeamId($team->id);
+        $team->users()->attach($user->id);
         $user->assignRole('owner');
     }
 }

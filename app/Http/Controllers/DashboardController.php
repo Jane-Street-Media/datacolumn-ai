@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Actions\GetRecentProjects;
+use App\Models\Folder;
 use App\Models\Project;
+use App\Models\Team;
 use Inertia\Inertia;
 use Inertia\Response;
 
