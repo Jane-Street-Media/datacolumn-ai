@@ -17,20 +17,20 @@ export default function Dashboard({ projects, statistics}) {
     const stats = [
         {
             name: 'Total Projects',
-            value: statistics.projectStats.value,
-            change: statistics.projectStats.percentage_change,
+            value: statistics.projectStats?.value,
+            change: statistics.projectStats?.percentage_change,
             icon: FileText,
         },
         {
             name: 'Active Charts',
-            value: statistics.chartStats.value,
-            change: statistics.chartStats.percentage_change,
+            value: statistics.chartStats?.value,
+            change: statistics.chartStats?.percentage_change,
             icon: BarChart3,
         },
         {
             name: 'Team Members',
-            value: statistics.teamMemberStats.value,
-            change: statistics.teamMemberStats.percentage_change,
+            value: statistics.teamMemberStats?.value,
+            change: statistics.teamMemberStats?.percentage_change,
             icon: Users,
         },
         // {
