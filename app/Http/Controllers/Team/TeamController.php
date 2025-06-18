@@ -18,7 +18,7 @@ class TeamController extends Controller
 {
     public function store(TeamRequest $request): RedirectResponse
     {
-        CreateTeam::handle(CreateTeamData::from($request->validated()), Auth::user() ?? User::where('id', 2)->first());
+        CreateTeam::handle(CreateTeamData::from($request->validated()), Auth::user());
         return back()->with(['success' => 'team created successfully']);
     }
 

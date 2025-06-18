@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Console\Commands\FetchPlans;
-use App\Http\Middleware\SetTeamScope;
+use App\Http\Middleware\SetTeam;
 use App\Models\Subscription;
 use Chargebee\Cashier\Cashier;
 use Illuminate\Foundation\Http\Kernel;
