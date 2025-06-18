@@ -2,6 +2,7 @@
 
 namespace App\Actions\Teams\TeamInvitation;
 
+use App\Enums\ActivityEvents;
 use App\Models\TeamInvitation;
 use App\Models\User;
 
@@ -16,8 +17,7 @@ class AcceptTeamInvitation
         activity()
             ->causedBy($user)
             ->performedOn($teamInvitation)
-            ->event('Team Invitation Accepted')
-            ->withProperties(['attributes' => $teamInvitation->toArray()])
+            ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(':causer.name accepted the team invitation');
     }
 }

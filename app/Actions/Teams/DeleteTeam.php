@@ -2,6 +2,7 @@
 
 namespace App\Actions\Teams;
 
+use App\Enums\ActivityEvents;
 use App\Models\Team;
 use App\Models\User;
 
@@ -14,8 +15,7 @@ class DeleteTeam
         activity()
             ->causedBy($user)
             ->performedOn($team)
-            ->event('Team Deleted')
-            ->withProperties(['attributes' => $team->toArray()])
+            ->event(ActivityEvents::TEAM_DELETED->value)
             ->log(':causer.name deleted the team.');
     }
 }

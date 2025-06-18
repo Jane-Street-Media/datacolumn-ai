@@ -3,6 +3,7 @@
 namespace App\Actions\Common;
 
 use App\Data\Team\CreateTeamData;
+use App\Enums\ActivityEvents;
 use App\Models\Team;
 use App\Models\User;
 
@@ -19,8 +20,7 @@ class CreateTeam
         activity()
             ->causedBy($user)
             ->performedOn($team)
-            ->event('Team Created')
-            ->withProperties(['attributes' => $team->toArray()])
+            ->event(ActivityEvents::TEAM_CREATED->value)
             ->log(':causer.name created a new team.');
     }
 }

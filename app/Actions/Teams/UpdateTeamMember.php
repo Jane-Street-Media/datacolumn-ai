@@ -2,6 +2,7 @@
 
 namespace App\Actions\Teams;
 
+use App\Enums\ActivityEvents;
 use App\Models\User;
 
 class UpdateTeamMember
@@ -13,8 +14,7 @@ class UpdateTeamMember
         activity()
             ->causedBy($user)
             ->performedOn($teamMember)
-            ->event('Team Member Updated')
-            ->withProperties(['attributes' => $teamMember->toArray()])
+            ->event(ActivityEvents::TEAM_MEMBER_UPDATED->value)
             ->log(':causer.name updated a team member.');
     }
 }

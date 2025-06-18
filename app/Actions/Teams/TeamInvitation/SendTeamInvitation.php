@@ -2,6 +2,7 @@
 
 namespace App\Actions\Teams\TeamInvitation;
 
+use App\Enums\ActivityEvents;
 use App\Models\Team;
 use App\Models\User;
 
@@ -14,8 +15,7 @@ class SendTeamInvitation
         activity()
             ->causedBy($user)
             ->performedOn($teamInvitation)
-            ->event('Invitation Sent')
-            ->withProperties(['attributes' => $teamInvitation->toArray()])
+            ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(':causer.name sent the invitation to :subject.email');
     }
 }

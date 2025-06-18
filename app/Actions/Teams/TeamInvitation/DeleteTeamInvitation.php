@@ -2,6 +2,7 @@
 
 namespace App\Actions\Teams\TeamInvitation;
 
+use App\Enums\ActivityEvents;
 use App\Models\TeamInvitation;
 use App\Models\User;
 
@@ -14,8 +15,7 @@ class DeleteTeamInvitation
         activity()
             ->causedBy($user)
             ->performedOn($teamInvitation)
-            ->event('Team Invitation Deleted')
-            ->withProperties(['attributes' => $teamInvitation->toArray()])
+            ->event(ActivityEvents::TEAM_INVITATION_DELETED->value)
             ->log(':causer.name deleted the team invitation');
     }
 }
