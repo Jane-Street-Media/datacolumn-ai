@@ -18,6 +18,7 @@ class CreateTeam
         $user->assignRole('owner');
 
         activity()
+            ->causedBy($user)
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_CREATED->value)
             ->log(':causer.name created a new team.');
