@@ -1,6 +1,7 @@
 import CommandWithCopyButton from '@/pages/Utils/copyClipboardCommand';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { useEffect, useRef, useState } from 'react';
+import { router } from '@inertiajs/react';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
     const [billing, setBilling] = useState('Monthly');
@@ -43,6 +44,12 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         setLoading(true);
         setLoadingPlanId(planId);
     };
+
+    const swapSubscription = (e, planId) => {
+        console.log('swap');
+        // router.patch(route(''))
+    }
+
     const filteredPlans = plans.filter((plan) => {
         if (billing === 'Monthly' && plan.monthly_price !== undefined) {
             return true;
@@ -205,9 +212,8 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 )}
                                             </a>
                                         ) : subscription.chargebee_price !== planId ? (
-                                            <a
-                                                href={`/checkout/${planId}`}
-                                                onClick={(e) => handleCheckoutClick(e, planId)}
+                                            <button
+                                                onClick={(e) => swapSubscription(e, planId)}
                                                 className={`block w-full rounded-lg px-4 py-3 text-center font-medium text-white transition-all ${
                                                     plan.default ? 'hover:bg-opacity-90 bg-[#FF3300]' : 'bg-[#012A38] hover:bg-[#FF3300]'
                                                 } ${loading ? 'cursor-not-allowed' : ''}`}
@@ -239,7 +245,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 ) : (
                                                     'Swap Subscription'
                                                 )}
-                                            </a>
+                                            </button>
                                         ) : (
                                             <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
                                                 Current Plan
