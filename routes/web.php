@@ -46,6 +46,8 @@ Route::middleware([])->group(function () {
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
     Route::post('/', [ProjectsController::class, 'store'])->name('project.store');
+    Route::patch('/{project}', [ProjectsController::class, 'update'])->name('project.update');
+    Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
 });
 Route::prefix('folder')->group(function () {

@@ -15,38 +15,49 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { LoaderCircle, UserPlus } from 'lucide-react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 type ProjectForm = {
     name: string;
     description: string;
     folder_id: number;
-    team_id: number;
 };
 
-export default function ProjectDialog({ folders }) {
-    const { auth } = usePage().props;
-    const user = auth.user;
+export default function ProjectDialog({ folders, project = null }) {
     const [open, setOpen] = useState(false); // dialog state
-    const { data, setData, post, processing, errors, reset } = useForm<ProjectForm>({
-        name: '',
-        description: '',
-        folder_id: '',
-        team_id: user.current_team_id,
+    const { data, setData, post, patch, processing, errors, reset } = useForm<ProjectForm>({
+        name: project?.name ?? '',
+        description: project?.description ?? '',
+        folder_id: project?.folder_id ?? '',
     });
+
+    const isEdit = useMemo(() => !!project?.id, [project]);
+    const formRoute = useMemo(() => (isEdit ? route('project.update', project.id) : route('project.store')), [isEdit, project]);
+
+    const descriptionText = useMemo(
+        () =>
+            isEdit
+                ? 'Update your project details — change the name or description as needed.'
+                : 'Start organizing your work — give your project a name and optional description.',
+        [isEdit],
+    );
+
+    const action = isEdit ? patch : post;
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('project.store'), {
+        action(formRoute, {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
                 console.log(response);
                 reset('name', 'description');
                 setOpen(false);
                 toast(response.props.flash.success, {
-                    description: '🚀 Your project has been created successfully. Time to bring your ideas to life!',
+                    description: isEdit
+                        ? '🛠️ Your changes are live and ready to shine.'
+                        : '🚀 Time to bring your ideas to life!',
                 });
             },
         });
@@ -57,13 +68,13 @@ export default function ProjectDialog({ folders }) {
             <DialogTrigger asChild>
                 <Button variant={'ghost'} className="border">
                     <UserPlus className="mr-2 h-4 w-4" />
-                    <span>New Project</span>
+                    <span>{isEdit ? 'Update Project' : 'New Project'}</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Create New Project</DialogTitle>
-                    <DialogDescription>Start organizing your work — give your project a name and optional description.</DialogDescription>
+                    <DialogTitle>{isEdit ? 'Update Project' : 'Create New Project'}</DialogTitle>
+                    <DialogDescription>{descriptionText}</DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={submit} className="grid gap-4">
@@ -94,7 +105,7 @@ export default function ProjectDialog({ folders }) {
                         <InputError message={errors.description} />
 
                         <Label htmlFor="folder">Folder</Label>
-                        <Select onValueChange={(value) => setData('folder_id', Number(value))}>
+                        <Select value={String(data.folder_id)} onValueChange={(value) => setData('folder_id', Number(value))}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Select a folder" />
                             </SelectTrigger>
@@ -108,6 +119,7 @@ export default function ProjectDialog({ folders }) {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+                        <InputError message={errors.folder_id} />
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>

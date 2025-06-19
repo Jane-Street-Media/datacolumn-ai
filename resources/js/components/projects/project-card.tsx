@@ -1,14 +1,42 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { BarChart3, Calendar, Edit, MoreHorizontal, Trash2, Users } from 'lucide-react';
+import { BarChart3, Calendar, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
+import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
+import ProjectDialog from '@/components/projects/project-dialog';
 
 const MotionCard = motion(Card);
+export default function ProjectCard({ index = 1, project ,folders}) {
+    const { delete: destroy, reset, processing } = useForm();
 
-export default function ProjectCard({ index = 1, project }) {
-    console.log(project, 'these are projects');
+    const deleteProject: FormEventHandler = (e) => {
+        e.preventDefault();
+        destroy(route('project.delete', project.id), {
+            onError: (err) => console.error(err),
+            onSuccess: (response) => {
+                reset('name', 'description'); // Resets form fields if needed
+                toast(response.props.flash.success, {
+                    description: '🚀 Your project has been deleted successfully.',
+                });
+            },
+        });
+    };
+
     return (
         <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
@@ -24,14 +52,32 @@ export default function ProjectCard({ index = 1, project }) {
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className="flex flex-col space-y-2">
-                                <Button variant="ghost" className="justify-start">
-                                    <Edit />
-                                    <span>Edit</span>
-                                </Button>
-                                <Button variant="ghost" className="text-destructive-foreground hover:text-destructive-foreground justify-start">
-                                    <Trash2 />
-                                    <span>Delete</span>
-                                </Button>
+                                <ProjectDialog folders={folders} project={project}/>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            className="text-destructive-foreground hover:text-destructive-foreground justify-start"
+                                        >
+                                            Delete
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action is irreversible. The selected project will be permanently deleted.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={deleteProject} disabled={processing}>
+                                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                                Continue
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         </PopoverContent>
                     </Popover>
@@ -40,7 +86,7 @@ export default function ProjectCard({ index = 1, project }) {
             <CardContent>
                 <div className="space-y-2">
                     <h3 className="text-foreground text-lg font-medium">{project.name}</h3>
-                    <p className="text-secondary-foreground text-sm">{project.description}</p>
+                    <p className="text-secondary-foreground text-sm line-clamp-3">{project.description}</p>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                     <div className="text-secondary-foreground flex items-center text-sm">

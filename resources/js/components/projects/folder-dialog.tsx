@@ -21,17 +21,13 @@ import { Textarea } from '@/components/ui/textarea';
 type FolderForm = {
     name: string;
     description: string;
-    team_id: number;
 };
 
 export default function FolderDialog() {
-    const { auth } = usePage().props;
-    const user = auth.user;
     const [open, setOpen] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm<FolderForm>({
         name: '',
         description: '',
-        team_id: user.current_team_id
     });
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -39,7 +35,7 @@ export default function FolderDialog() {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
                 console.log(response);
-                reset('email');
+                reset('name','description');
                 setOpen(false);
                 toast(response.props.flash.success, {
                     description: '📁 New folder created! Start organizing your projects with ease.'

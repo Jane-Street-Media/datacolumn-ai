@@ -12,8 +12,7 @@ class FolderController extends Controller
 {
     public function store(FolderRequest $request): RedirectResponse
     {
-        $user = Auth::user();
-        CreateFolder::handle($user, $request->validated());
+        CreateFolder::handle(Auth::user(), $request->validated());
 
         return back()->with('success', 'Folder Created Successfully');
     }

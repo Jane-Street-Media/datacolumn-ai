@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class BaseTeamRequest extends FormRequest
@@ -14,7 +14,17 @@ class BaseTeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; // <-- This must be true to allow the request
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'team_id' => Auth::user()->current_team_id,
+        ]);
     }
 
     /**
@@ -22,14 +32,16 @@ class BaseTeamRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array|string>
      */
-    public function prepareForValidation(): array
+    public function rules(): array
     {
-        return $this->validate([
-            'team_id' => ['required',
-                Rule::exists('teams', 'id')->where(function (Builder $query) {
-                    return $query->where('id', $this->team_id);
-                })],
-        ]);
+        return [
+            'team_id' => [
+                'required',
+                Rule::exists('teams', 'id')->where(function ($query) {
+                    $query->where('id', Auth::user()->current_team_id);
+                }),
+            ],
+        ];
     }
 
     public function validated($key = null, $default = null)
