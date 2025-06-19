@@ -1,7 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardAction, CardFooter } from '@/components/ui/card';
 import { formatDistanceToNow } from 'date-fns'
-import * as Icons from 'lucide-react';
+import { UserPlus, UserMinus, UserPen, Send, Trash, Check} from 'lucide-react';
 
+const Icons = {
+    UserPlus,
+    UserMinus,
+    UserPen,
+    Send,
+    Trash,
+    Check,
+};
 export default function ActivityFeed({ activityLogs }) {
 
     const getLogTimeAgo = (logTime) => {
