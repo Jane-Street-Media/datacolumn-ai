@@ -8,12 +8,11 @@ use App\Models\User;
 
 class SendTeamInvitation
 {
-    public static function handle(array $data, Team $team, User $user): void
+    public static function handle(array $data, Team $team): void
     {
         $teamInvitation = $team->invitations()->create($data);
 
         activity()
-            ->causedBy($user)
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(':causer.name sent the invitation to :subject.email');

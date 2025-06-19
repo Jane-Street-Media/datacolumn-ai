@@ -8,12 +8,11 @@ use App\Models\User;
 
 class DeleteTeam
 {
-    public static function handle(Team $team, User $user): void
+    public static function handle(Team $team): void
     {
         $team->delete();
 
         activity()
-            ->causedBy($user)
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_DELETED->value)
             ->log(':causer.name deleted the team.');

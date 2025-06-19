@@ -15,7 +15,6 @@ class AcceptTeamInvitation
         $teamInvitation->delete();
 
         activity()
-            ->causedBy($user)
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(':causer.name accepted the team invitation');
