@@ -11,7 +11,7 @@ class SubscriptionController extends Controller
         try {
             $subscription = $request->user()?->subscription('default');
 
-            if ($subscription && $subscription->cancelNow()) {
+            if ($subscription && $subscription->cancel()) {
                 return redirect('/dashboard')->with('success', 'Subscription canceled successfully.');
             }
 
