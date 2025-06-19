@@ -1,20 +1,15 @@
-import AppLayout from '@/layouts/app-layout';
-import {type BreadcrumbItem} from '@/types';
-import { Head } from '@inertiajs/react';
-import { FolderOpen, Grid3X3, List, Search, UserPlus } from 'lucide-react';
-import * as React from 'react';
-import {
-    PageHeader,
-    PageHeaderAction,
-    PageHeaderDescription,
-    PageHeaderHead,
-    PageHeaderTitle
-} from '@/components/page-header';
+import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
+import FolderDialog from '@/components/projects/folder-dialog';
+import ProjectCard from '@/components/projects/project-card';
+import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import ProjectCard from '@/components/projects/project-card';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
+import { Grid3X3, List, Search } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Projects() {
+export default function Projects({ folders,projects }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -34,14 +29,8 @@ export default function Projects() {
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                <Button>
-                                    <FolderOpen />
-                                    <span>New Folder</span>
-                                </Button>
-                                <Button variant={'ghost'} className="border">
-                                    <UserPlus />
-                                    <span>New Project</span>
-                                </Button>
+                                <FolderDialog />
+                                <ProjectDialog folders={folders} />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>
@@ -51,12 +40,9 @@ export default function Projects() {
                     <CardContent>
                         <div className="grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
                             <div className="col-span-2 flex items-center gap-4">
-                                <div className="relative flex items-center max-w-2xl ">
-                                    <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-                                    <Input
-                                        placeholder="Your search..."
-                                        className=" pl-8"
-                                    />
+                                <div className="relative flex max-w-2xl items-center">
+                                    <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
+                                    <Input placeholder="Your search..." className="pl-8" />
                                 </div>
 
                                 <Select>
@@ -75,7 +61,7 @@ export default function Projects() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="flex justify-end items-center gap-4">
+                            <div className="flex items-center justify-end gap-4">
                                 <Button variant="ghost">
                                     <Grid3X3 />
                                 </Button>
@@ -86,8 +72,10 @@ export default function Projects() {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="mb-8 grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
-                    <ProjectCard/>
+                <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {projects.map((project, index) => (
+                        <ProjectCard key={project.id} index={index} project={project} />
+                    ))}
                 </div>
             </div>
         </AppLayout>

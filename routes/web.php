@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\Folders\FolderController;
+use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
@@ -42,10 +43,13 @@ Route::middleware([])->group(function () {
     })->name('something-went-wrong');
 });
 
-
-
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
+    Route::post('/', [ProjectsController::class, 'store'])->name('project.store');
+
+});
+Route::prefix('folder')->group(function () {
+    Route::post('/', [FolderController::class, 'store'])->name('folder.store');
 
 });
 

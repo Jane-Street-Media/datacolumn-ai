@@ -11,6 +11,7 @@ class GetActivityLogs
     public static function handle(): Collection
     {
         $inLastTwoDays = [Carbon::now()->subDays(2), Carbon::now()];
+
         return ActivityLog::query()
             ->whereBetween('created_at', $inLastTwoDays)
             ->latest()

@@ -19,7 +19,7 @@ enum ActivityEvents: string
 
     public function getIcon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEAM_CREATED => 'UserPlus',
             self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED => 'UserPen',
             self::TEAM_DELETED, self::TEAM_MEMBER_DELETED => 'UserMinus',
@@ -31,7 +31,7 @@ enum ActivityEvents: string
 
     public function getIconClasses(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEAM_CREATED => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_DELETED, self::TEAM_MEMBER_DELETED => 'w-4 h-4 text-green-600 dark:text-green-400',

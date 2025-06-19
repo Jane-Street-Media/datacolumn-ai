@@ -22,7 +22,7 @@ class TeamController extends Controller
     {
         return Inertia::render('team', [
             'statistics' => GetTeamStats::handle(),
-            'role' => 'owner'
+            'role' => 'owner',
         ]);
     }
 

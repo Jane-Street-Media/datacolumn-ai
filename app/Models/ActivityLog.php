@@ -9,6 +9,7 @@ use Spatie\Activitylog\Models\Activity;
 class ActivityLog extends Activity
 {
     protected $appends = ['icon_name', 'icon_class'];
+
     public function iconName(): Attribute
     {
         return Attribute::make(

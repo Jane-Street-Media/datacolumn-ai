@@ -1,22 +1,19 @@
-import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Calendar, Edit, MoreHorizontal, Trash2, Users } from 'lucide-react';
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { motion } from 'framer-motion';
+import { BarChart3, Calendar, Edit, MoreHorizontal, Trash2, Users } from 'lucide-react';
 
+const MotionCard = motion(Card);
 
-const MotionCard = motion(Card)
-
-export default function ProjectCard({index = 1}) {
+export default function ProjectCard({ index = 1, project }) {
+    console.log(project, 'these are projects');
     return (
-        <MotionCard
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-        >
+        <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
-                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
                         <BarChart3 className="h-5 w-5" />
                     </div>
                 </CardTitle>
@@ -31,7 +28,7 @@ export default function ProjectCard({index = 1}) {
                                     <Edit />
                                     <span>Edit</span>
                                 </Button>
-                                <Button variant="ghost" className="justify-start text-destructive-foreground hover:text-destructive-foreground">
+                                <Button variant="ghost" className="text-destructive-foreground hover:text-destructive-foreground justify-start">
                                     <Trash2 />
                                     <span>Delete</span>
                                 </Button>
@@ -42,19 +39,17 @@ export default function ProjectCard({index = 1}) {
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
-                    <h3 className="text-lg font-medium text-foreground">Project Name</h3>
-                    <p className="text-sm text-secondary-foreground">
-                        This is a brief description of the project. It provides an overview of what the project is about.
-                    </p>
+                    <h3 className="text-foreground text-lg font-medium">{project.name}</h3>
+                    <p className="text-secondary-foreground text-sm">{project.description}</p>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
-                    <div className="text-sm flex items-center text-secondary-foreground">
-                        <Calendar className="w-4 h-4"/>
-                        <span className="ml-1">12 April, 2025</span>
+                    <div className="text-secondary-foreground flex items-center text-sm">
+                        <Calendar className="h-4 w-4" />
+                        <span className="ml-1">{project.created_at ? format(new Date(project.created_at), 'dd MMM, yyyy') : ''}</span>
                     </div>
-                    <div className="text-sm flex items-center text-secondary-foreground">
-                        <BarChart3 className="w-4 h-4"/>
-                        <span className="ml-1">2 Charts</span>
+                    <div className="text-secondary-foreground flex items-center text-sm">
+                        <BarChart3 className="h-4 w-4" />
+                        <span className="ml-1">{project.charts_count} Charts</span>
                     </div>
                 </div>
             </CardContent>
@@ -69,8 +64,8 @@ export default function ProjectCard({index = 1}) {
                     {'published'}
                 </div>
 
-                <div className="text-sm flex items-center text-secondary-foreground">
-                    <Users className="w-4 h-4"/>
+                <div className="text-secondary-foreground flex items-center text-sm">
+                    <Users className="h-4 w-4" />
                     <span className="ml-1">2</span>
                 </div>
             </CardFooter>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\ProjectStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends TeamBootModel
 {
@@ -28,5 +29,10 @@ class Project extends TeamBootModel
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    public function charts(): HasMany
+    {
+        return $this->hasMany(Chart::class);
     }
 }
