@@ -8,12 +8,11 @@ use App\Models\User;
 
 class DeleteTeamInvitation
 {
-    public static function handle(TeamInvitation $teamInvitation, User $user): void
+    public static function handle(TeamInvitation $teamInvitation): void
     {
         $teamInvitation->delete();
 
         activity()
-            ->causedBy($user)
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_DELETED->value)
             ->log(':causer.name deleted the team invitation');

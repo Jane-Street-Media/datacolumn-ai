@@ -18,21 +18,21 @@ class TeamMemberController extends Controller
 {
     public function store(TeamMemberRequest $request, Team $team): RedirectResponse
     {
-        SendTeamInvitation::handle($request->validated(), $team, Auth::user());
+        SendTeamInvitation::handle($request->validated(), $team);
 
         return back()->with('success', 'Invite sent successfully.');
     }
 
     public function update(TeamMemberUpdateRequest $request, User $teamMember): RedirectResponse
     {
-        UpdateTeamMember::handle($request->validated(), $teamMember, Auth::user());
+        UpdateTeamMember::handle($request->validated(), $teamMember);
 
         return back()->with('success', 'Role assigned successfully.');
     }
 
     public function destroy(TeamMemberDeleteRequest $request, Team $team): RedirectResponse
     {
-        RemoveUserFromTeam::handle($request->validated(), $team, Auth::user());
+        RemoveUserFromTeam::handle($request->validated(), $team);
 
         return back()->with('success', 'User removed from team.');
     }

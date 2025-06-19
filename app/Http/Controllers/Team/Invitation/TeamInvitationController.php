@@ -20,7 +20,7 @@ class TeamInvitationController extends Controller
 
     public function destroy(TeamInvitation $teamInvitation): RedirectResponse
     {
-        DeleteTeamInvitation::handle($teamInvitation, Auth::user());
+        DeleteTeamInvitation::handle($teamInvitation);
 
         return back()->with('success', 'Invite cancelled successfully.');
     }
