@@ -27,7 +27,7 @@ export default function ActivityFeed({ activityLogs }) {
 
                         return (
                             <div className="flex items-start space-x-3" key={index}>
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
+                                <div className={`flex rounded-full h-8 w-8 items-center justify-center ${log.icon_background_class}`}>
                                     {Icon ? <Icon className={log.icon_class} /> : null}
                                 </div>
                                 <div className="flex-1">

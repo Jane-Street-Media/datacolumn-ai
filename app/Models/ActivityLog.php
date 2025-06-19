@@ -8,7 +8,7 @@ use Spatie\Activitylog\Models\Activity;
 
 class ActivityLog extends Activity
 {
-    protected $appends = ['icon_name', 'icon_class'];
+    protected $appends = ['icon_name', 'icon_class', 'icon_background_class'];
     public function iconName(): Attribute
     {
         return Attribute::make(
@@ -20,6 +20,13 @@ class ActivityLog extends Activity
     {
         return Attribute::make(
             get: fn () => ActivityEvents::tryFrom($this->event)?->getIconClasses()
+        );
+    }
+
+    public function iconBackgroundClass(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ActivityEvents::tryFrom($this->event)?->getIconBackgroundClasses()
         );
     }
 }
