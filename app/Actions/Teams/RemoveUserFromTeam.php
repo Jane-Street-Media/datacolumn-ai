@@ -12,9 +12,10 @@ class RemoveUserFromTeam
     {
         $team->users()->detach($data['user_id']);
         $teamMember = User::find($data['user_id']);
-        activity()
+        defer(fn () => activity()
             ->performedOn($teamMember)
             ->event(ActivityEvents::TEAM_MEMBER_DELETED->value)
-            ->log(":causer.name removed {$teamMember->name} from team {$team->name} .");
+            ->log(":causer.name removed {$teamMember->name} from team {$team->name} .")
+        );
     }
 }
