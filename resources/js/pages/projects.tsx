@@ -1,24 +1,58 @@
-import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
+import {
+    PageHeader,
+    PageHeaderAction,
+    PageHeaderDescription,
+    PageHeaderHead,
+    PageHeaderTitle
+} from '@/components/page-header';
 import FolderDialog from '@/components/projects/folder-dialog';
 import ProjectCard from '@/components/projects/project-card';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Grid3X3, List, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Projects',
-        href: '/projects',
-    },
+        href: '/projects'
+    }
 ];
 
-export default function Projects({ folders,projects }) {
+export default function Projects({ folders, projects }) {
+    const [filters, setFilters] = useState({
+        search: '',
+        folder: ''
+    });
+
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            router.reload({
+                only: ['projects'],
+                data: {
+                    search: filters.search,
+                    folder: filters.folder,
+                },
+            });
+        }, 300);
+
+        return () => clearTimeout(debounce);
+    }, [filters]);
+
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -26,11 +60,12 @@ export default function Projects({ folders,projects }) {
                 <PageHeader>
                     <PageHeaderHead>
                         <PageHeaderTitle>Projects</PageHeaderTitle>
-                        <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
+                        <PageHeaderDescription>Manage your data visualization projects and collaborate with your
+                            team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
                                 <FolderDialog />
-                                <ProjectDialog folders={folders}/>
+                                <ProjectDialog folders={folders} />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>
@@ -42,21 +77,30 @@ export default function Projects({ folders,projects }) {
                             <div className="col-span-2 flex items-center gap-4">
                                 <div className="relative flex max-w-2xl items-center">
                                     <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
-                                    <Input placeholder="Your search..." className="pl-8" />
+                                    <Input
+                                        placeholder="Your search..."
+                                        className="pl-8"
+                                        value={filters.search}
+                                        onChange={(e) =>
+                                            setFilters(prev => ({ ...prev, search: e.target.value.trim() }))
+                                        }
+                                    />
+
                                 </div>
 
-                                <Select>
+                                <Select onValueChange={(value) =>
+                                    setFilters(prev => ({ ...prev, folder: Number(value) }))
+                                }>
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select a folder" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
-                                            <SelectItem value="apple">Apple</SelectItem>
-                                            <SelectItem value="banana">Banana</SelectItem>
-                                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                                            <SelectItem value="grapes">Grapes</SelectItem>
-                                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                                            {folders.map((folder) => (
+                                                <SelectItem key={folder.id} value={String(folder.id)}>
+                                                    {folder.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>

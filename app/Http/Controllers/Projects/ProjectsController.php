@@ -8,27 +8,26 @@ use App\Actions\Project\GetProjects;
 use App\Actions\Project\UpdateProject;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProjectRequest;
+use App\Http\Requests\ProjectFilterRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Folder;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProjectsController extends Controller
 {
-    public function index(): Response
+    public function index(ProjectFilterRequest $request): Response
     {
-        [$projects, $folders] = Concurrency::run([
-            fn () => GetProjects::handle(),
-            fn () => Folder::all(),
-        ]);
-
+        $projects = GetProjects::handle($request->validated())->paginate(5);
         return Inertia::render('projects', [
-            'projects' => $projects,
-            'folders' => $folders,
+            'projects' => $projects->items(),
+            'folders' => Folder::all(),
         ]);
     }
 

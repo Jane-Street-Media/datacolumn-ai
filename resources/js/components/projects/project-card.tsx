@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { BarChart3, Calendar, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
+import { BarChart3, Calendar, Delete, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 import ProjectDialog from '@/components/projects/project-dialog';
@@ -59,6 +59,7 @@ export default function ProjectCard({ index = 1, project ,folders}) {
                                             variant="ghost"
                                             className="text-destructive-foreground hover:text-destructive-foreground justify-start"
                                         >
+                                            <Delete/>
                                             Delete
                                         </Button>
                                     </AlertDialogTrigger>

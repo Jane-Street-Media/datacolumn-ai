@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm } from '@inertiajs/react';
-import { LoaderCircle, UserPlus } from 'lucide-react';
+import { Edit, LoaderCircle, UserPlus } from 'lucide-react';
 import { FormEventHandler, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -66,10 +66,17 @@ export default function ProjectDialog({ folders, project = null }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={'ghost'} className="border">
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    <span>{isEdit ? 'Update Project' : 'New Project'}</span>
-                </Button>
+                {isEdit ? (
+                    <Button variant="ghost" className="justify-start">
+                        <Edit />
+                        <span>Edit</span>
+                    </Button>
+                ) : (
+                    <Button variant="ghost" className="border">
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        <span>New Project</span>
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
