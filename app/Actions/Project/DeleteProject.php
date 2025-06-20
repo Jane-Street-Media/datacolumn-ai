@@ -13,6 +13,6 @@ class DeleteProject
         activity()
             ->causedBy($project->user)
             ->event(ActivityEvents::TEAM_PROJECT_DELETED->value)
-            ->log(':causer.name deleted the project.');
+            ->log(':causer.name deleted a project.');
     }
 }

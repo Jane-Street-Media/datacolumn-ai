@@ -13,6 +13,6 @@ class UpdateProject
         activity()
             ->causedBy($project->user)
             ->event(ActivityEvents::TEAM_PROJECT_CREATED->value)
-            ->log(':causer.name updated the project.');
+            ->log(':causer.name updated a project.');
     }
 }
