@@ -46,6 +46,7 @@ Route::middleware([])->group(function () {
 
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
+    Route::get('/{project}', [ProjectsController::class, 'show'])->name('projects.show');
 
 });
 

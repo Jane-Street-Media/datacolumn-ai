@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { BarChart3, Calendar, Edit, MoreHorizontal, Trash2, Users } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Link } from '@inertiajs/react';
 
 
 const MotionCard = motion(Card)
@@ -27,10 +28,10 @@ export default function ProjectCard({index = 1}) {
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className="flex flex-col space-y-2">
-                                <Button variant="ghost" className="justify-start">
+                                <Link href={route('projects.show', { project: 1 })} className="btn btn-ghost justify-start">
                                     <Edit />
                                     <span>Edit</span>
-                                </Button>
+                                </Link>
                                 <Button variant="ghost" className="justify-start text-destructive-foreground hover:text-destructive-foreground">
                                     <Trash2 />
                                     <span>Delete</span>

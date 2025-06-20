@@ -26,7 +26,7 @@ class GenerateDummyData extends Command
      *
      * @var string
      */
-    protected $description = 'Populate dummy Teams, Folders, Projects, Datasets, and Charts for a given user';
+    protected $description = 'Populate dummy Teams, Folders, Index, Datasets, and Charts for a given user';
 
     public function handle(): ?int
     {
@@ -72,7 +72,7 @@ class GenerateDummyData extends Command
                 );
             }
 
-            // 3. Projects, Datasets & Charts
+            // 3. Index, Datasets & Charts
             $this->info('Creating projects, datasets, and charts...');
             foreach ($folders as $folder) {
                 $projects = Project::factory()
