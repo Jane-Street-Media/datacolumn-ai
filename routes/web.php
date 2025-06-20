@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\ChartAIController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectChartsController;
 use App\Http\Controllers\ProjectsController;
@@ -69,6 +70,10 @@ Route::prefix('team')->group(function () {
 Route::prefix('team-invitation')->group(function () {
     Route::post('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept');
     Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
+});
+
+Route::prefix('chart-ai')->group(function () {
+    Route::get('/', ChartAIController::class)->name('chart-ai');
 });
 
 require __DIR__.'/settings.php';
