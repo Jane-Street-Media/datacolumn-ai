@@ -9,7 +9,7 @@ use App\Models\User;
 
 class CreateTeam
 {
-    public static function handle(CreateTeamData $data, User $user): void
+    public static function handle(CreateTeamData $data, User $user): Team
     {
         $team = Team::create(array_merge($data->toArray(), ['user_id' => $user->id]));
         $user->update(['current_team_id' => $team->id]);
@@ -22,5 +22,7 @@ class CreateTeam
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_CREATED->value)
             ->log(':causer.name created a new team.');
+
+        return $team;
     }
 }

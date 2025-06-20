@@ -31,7 +31,7 @@ export default function RecentProjects({ projects }) {
                                 {/* LEFT SIDE: icon + text */}
                                 <div className="flex flex-1 items-center space-x-4 min-w-0">
                                     {/* icon: never shrink */}
-                                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
+                                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-gradient-from to-gradient-to">
                                         <BarChart3 className="h-5 w-5" />
                                     </div>
 

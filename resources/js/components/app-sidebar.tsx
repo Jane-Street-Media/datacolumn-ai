@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { FolderOpen, LayoutGrid, Users } from 'lucide-react';
+import { FolderOpen, LayoutGrid, Users, Bot } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -22,6 +22,11 @@ const mainNavItems: NavItem[] = [
         title: 'Projects',
         url: '/projects',
         icon: FolderOpen,
+    },
+    {
+        title: 'Chart AI',
+        url: '/chart-ai',
+        icon: Bot,
     },
 ];
 

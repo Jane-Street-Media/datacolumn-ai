@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\ChartAIController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProjectChartsController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
@@ -49,6 +51,9 @@ Route::middleware([])->group(function () {
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
 
+    Route::prefix('{project}/charts')->group(function () {
+        Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
+    });
 });
 
 Route::prefix('team')->group(function () {
@@ -70,6 +75,10 @@ Route::prefix('team-invitation')->group(function () {
 });
 
 Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
+
+Route::prefix('chart-ai')->group(function () {
+    Route::get('/', ChartAIController::class)->name('chart-ai');
+});
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
