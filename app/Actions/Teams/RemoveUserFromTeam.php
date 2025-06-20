@@ -8,15 +8,13 @@ use App\Models\User;
 
 class RemoveUserFromTeam
 {
-    public static function handle(array $data, Team $team, User $user): void
+    public static function handle(array $data, Team $team): void
     {
         $team->users()->detach($data['user_id']);
-
         $teamMember = User::find($data['user_id']);
         activity()
-            ->causedBy($user)
             ->performedOn($teamMember)
             ->event(ActivityEvents::TEAM_MEMBER_DELETED->value)
-            ->log(':causer.name removed a team member.');
+            ->log(":causer.name removed {$teamMember->name} from team {$team->name} .");
     }
 }

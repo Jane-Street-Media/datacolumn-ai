@@ -14,10 +14,11 @@ class AcceptTeamInvitation
         $user->assignRole($teamInvitation->role);
         $teamInvitation->delete();
 
-        activity()
-            ->causedBy($user)
+        defer(fn () => activity()
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
-            ->log(':causer.name accepted the team invitation');
+            ->log(":causer.name accepted the invitation to join the team {$teamInvitation->team->name}.")
+        );
+
     }
 }
