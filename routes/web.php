@@ -8,6 +8,8 @@ use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
+use Chargebee\Cashier\Http\Controllers\WebhookController;
+use Chargebee\Cashier\Http\Middleware\AuthenticateWebhook;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -71,6 +73,8 @@ Route::prefix('team-invitation')->group(function () {
     Route::post('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept');
     Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
 });
+
+Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
 
 Route::prefix('chart-ai')->group(function () {
     Route::get('/', ChartAIController::class)->name('chart-ai');

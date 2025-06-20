@@ -2,22 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
-    public function cancelSubscription(Request $request)
+    public function pauseSubscription(Request $request): RedirectResponse
     {
         try {
             $subscription = $request->user()?->subscription('default');
 
-            if ($subscription && $subscription->cancelNow()) {
-                return redirect('/dashboard')->with('success', 'Subscription canceled successfully.');
+            if ($subscription && $subscription->pause()) {
+                return back()->with('success', 'Subscription paused successfully.');
             }
 
-            return redirect('/something-went-wrong')->with('error', 'Something went wrong while canceling the subscription.');
+            return back()->with('error', 'Something went wrong while pausing the subscription.');
         } catch (\Exception $e) {
-            return redirect('/something-went-wrong')->with('error', 'An error occurred: '.$e->getMessage());
+            return back()->with('error', 'An error occurred: '.$e->getMessage());
+        }
+    }
+
+    public function resumeSubscription(Request $request): RedirectResponse
+    {
+        try {
+            $subscription = $request->user()?->subscription('default');
+            if ($subscription && $subscription->resume()) {
+                return back()->with('success', 'Subscription resumed successfully.');
+            }
+
+            return back()->with('error', 'Something went wrong while resuming the subscription.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
 

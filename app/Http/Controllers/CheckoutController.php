@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Chargebee\Cashier\Session;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
-    public function productCheckout(Request $request, string $plan)
+    public function productCheckout(Request $request, string $plan): RedirectResponse
     {
         $checkout = $request
             ->user()
@@ -18,6 +19,13 @@ class CheckoutController extends Controller
             ]);
 
         return redirect()->away($checkout->url);
+    }
+
+    public function swapProduct(Request $request, string $plan): RedirectResponse
+    {
+        $request->user()->subscription()->swap($plan);
+
+        return redirect()->back()->with('success', 'Swapped successfully');
     }
 
     public function updatePaymentMethod(Request $request)
