@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Projects;
 
+use App\Actions\Folder\GetFolders;
 use App\Actions\Project\CreateProject;
 use App\Actions\Project\DeleteProject;
 use App\Actions\Project\GetProjects;
@@ -21,11 +22,9 @@ class ProjectsController extends Controller
 {
     public function index(ProjectFilterRequest $request): Response
     {
-        $projects = GetProjects::handle($request->validated());
-
         return Inertia::render('projects', [
-            'projects' => Inertia::defer(fn () => $projects),
-            'folders' => Folder::all(),
+            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())),
+            'folders' => Inertia::defer(fn() => GetFolders::handle()),
         ]);
     }
 
