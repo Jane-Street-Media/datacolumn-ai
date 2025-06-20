@@ -2,6 +2,7 @@ import CommandWithCopyButton from '@/pages/Utils/copyClipboardCommand';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { useEffect, useRef, useState } from 'react';
 import { router } from '@inertiajs/react';
+import { toast } from 'sonner';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
     const [billing, setBilling] = useState('Monthly');
@@ -45,10 +46,21 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         setLoadingPlanId(planId);
     };
 
-    const swapSubscription = (e, planId) => {
-        console.log('swap');
-        // router.patch(route(''))
-    }
+    const handleSwapSubscription = (e, planId) => {
+        e.preventDefault()
+        router.patch(route('checkout.swap', planId), {}, {
+            showProgress: false,
+            preserveScroll: true,
+            onStart: () => {
+                setLoading(true)
+                setLoadingPlanId(planId)
+            },
+            onSuccess: (response) => {
+                toast.success(response.props.flash.success)
+            },
+            onFinish: () => setLoading(false)
+        })
+    };
 
     const filteredPlans = plans.filter((plan) => {
         if (billing === 'Monthly' && plan.monthly_price !== undefined) {
@@ -213,7 +225,8 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             </a>
                                         ) : subscription.chargebee_price !== planId ? (
                                             <button
-                                                onClick={(e) => swapSubscription(e, planId)}
+                                                type={`button`}
+                                                onClick={(e) => handleSwapSubscription(e, planId)}
                                                 className={`block w-full rounded-lg px-4 py-3 text-center font-medium text-white transition-all ${
                                                     plan.default ? 'hover:bg-opacity-90 bg-[#FF3300]' : 'bg-[#012A38] hover:bg-[#FF3300]'
                                                 } ${loading ? 'cursor-not-allowed' : ''}`}
