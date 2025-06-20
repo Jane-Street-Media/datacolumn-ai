@@ -3,8 +3,8 @@
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Folders\FolderController;
-use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\ProjectChartsController;
+use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;

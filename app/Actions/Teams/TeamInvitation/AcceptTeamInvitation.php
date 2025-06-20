@@ -8,7 +8,7 @@ use App\Models\User;
 
 class AcceptTeamInvitation
 {
-    public static function handle(User $user, TeamInvitation $teamInvitation): void
+    public static function handle(User $user, TeamInvitation $teamInvitation): TeamInvitation
     {
         $teamInvitation->team->users()->sync($user->id);
         $user->assignRole($teamInvitation->role);
@@ -18,6 +18,8 @@ class AcceptTeamInvitation
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(":causer.name accepted the invitation to join the team {$teamInvitation->team->name}.")
         );
+
+        return $teamInvitation;
 
     }
 }

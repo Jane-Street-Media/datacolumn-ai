@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Projects\CreateProjectRequest;
 use App\Http\Requests\Projects\ProjectFilterRequest;
 use App\Http\Requests\Projects\UpdateProjectRequest;
-use App\Models\Folder;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +22,8 @@ class ProjectsController extends Controller
     public function index(ProjectFilterRequest $request): Response
     {
         return Inertia::render('projects', [
-            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())),
-            'folders' => Inertia::defer(fn() => GetFolders::handle()),
+            'projects' => Inertia::defer(fn () => GetProjects::handle($request->validated())),
+            'folders' => Inertia::defer(fn () => GetFolders::handle()),
         ]);
     }
 

@@ -7,14 +7,15 @@ use App\Models\Project;
 
 class DeleteProject
 {
-    public static function handle(Project $project): true
+    public static function handle(Project $project): Project
     {
         $project->delete();
-        defer(fn() => activity()
+        defer(fn () => activity()
             ->performedOn($project)
             ->event(ActivityEvents::TEAM_PROJECT_DELETED->value)
             ->log(":causer.name deleted a project named {$project->name} from folder {$project->folder->name}")
         );
-        return true;
+
+        return $project;
     }
 }

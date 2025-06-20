@@ -15,6 +15,7 @@ class UpdateTeam
             ->event(ActivityEvents::TEAM_UPDATED->value)
             ->log(":causer.name updated the team named {$team->name}")
         );
+
         return $team;
     }
 }

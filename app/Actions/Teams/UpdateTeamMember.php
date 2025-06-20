@@ -10,11 +10,12 @@ class UpdateTeamMember
     public static function handle(array $data, User $user): User
     {
         $user->syncRoles($data['role']);
-        defer(fn() => activity()
+        defer(fn () => activity()
             ->performedOn($user)
             ->event(ActivityEvents::TEAM_MEMBER_UPDATED->value)
             ->log(":causer.name updated a team member named {$user->name}.")
         );
+
         return $user;
     }
 }
