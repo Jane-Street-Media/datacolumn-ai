@@ -117,7 +117,7 @@ export default function ProjectDialog({ folders, project = null }) {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    {folders.map((folder) => (
+                                    {folders?.map((folder) => (
                                         <SelectItem key={folder.id} value={String(folder.id)}>
                                             {folder.name}
                                         </SelectItem>

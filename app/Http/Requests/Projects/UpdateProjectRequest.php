@@ -4,6 +4,7 @@ namespace App\Http\Requests\Projects;
 
 use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Validation\Rule;
 
 class UpdateProjectRequest extends BaseTeamRequest
 {
@@ -25,7 +26,11 @@ class UpdateProjectRequest extends BaseTeamRequest
         return [
             'name' => ['required', 'string'],
             'description' => ['nullable', 'string'],
-            'folder_id' => ['required', 'exists:folders,id'],
-        ];
+            'folder_id' => [
+                'required',
+                Rule::exists('folders', 'id')->where(function ($query) {
+                    $query->where('team_id', $this->team_id);
+                }),
+            ],];
     }
 }

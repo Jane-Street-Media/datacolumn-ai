@@ -7,13 +7,15 @@ use App\Models\Team;
 
 class DeleteTeam
 {
-    public static function handle(Team $team): void
+    public static function handle(Team $team)
     {
         $team->delete();
-        defer(fn () => activity()
+        defer(fn() => activity()
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_DELETED->value)
             ->log(":causer.name deleted the team named {$team->name}")
         );
+
+        return true;
     }
 }

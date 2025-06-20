@@ -10,10 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import {
-    Search,
-    X
-} from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -45,7 +42,6 @@ export default function Projects({ folders, projects }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
-
     const clearFilters = () => {
         setFilters({ search: null, folder: null });
         router.reload({
@@ -56,7 +52,6 @@ export default function Projects({ folders, projects }) {
             },
         });
     };
-
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -85,22 +80,25 @@ export default function Projects({ folders, projects }) {
                                         placeholder="Your search..."
                                         className="pl-8"
                                         value={filters.search}
-                                        onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value.trim() }))}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({
+                                                ...prev,
+                                                search: e.target.value.trim(),
+                                            }))
+                                        }
                                     />
                                 </div>
 
                                 <Select
                                     value={filters.folder?.toString() || ''}
-                                    onValueChange={(value) =>
-                                        setFilters((prev) => ({ ...prev, folder: Number(value) }))
-                                    }
+                                    onValueChange={(value) => setFilters((prev) => ({ ...prev, folder: Number(value) }))}
                                 >
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select a folder" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            {folders.map((folder) => (
+                                            {folders?.map((folder) => (
                                                 <SelectItem key={folder.id} value={String(folder.id)}>
                                                     {folder.name}
                                                 </SelectItem>
@@ -110,11 +108,10 @@ export default function Projects({ folders, projects }) {
                                 </Select>
                             </div>
                             <div className="flex items-center justify-end gap-4">
-                                <Button variant="destructive" onClick={()=>clearFilters()}>
+                                <Button variant="destructive" onClick={() => clearFilters()}>
                                     <X />
                                     Clear
                                 </Button>
-
                             </div>
                         </div>
                     </CardContent>
