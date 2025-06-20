@@ -77,7 +77,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="w-full border-t border" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-background text-secondary-foreground transition-colors duration-300">Or continue with email</span>
+                        <span className="px-2 bg-card text-secondary-foreground transition-colors duration-300">Or continue with email</span>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
 
-                    <Button type="submit" className="w-full" tabIndex={4} disabled={processing}>
+                    <Button type="submit" variant={'gradient'} className="w-full" tabIndex={4} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Log in
                     </Button>
