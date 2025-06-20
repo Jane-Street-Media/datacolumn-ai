@@ -51,7 +51,6 @@ export default function ProjectDialog({ folders, project = null }) {
         action(formRoute, {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                console.log(response);
                 reset('name', 'description');
                 setOpen(false);
                 toast(response.props.flash.success, {
