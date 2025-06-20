@@ -27,7 +27,7 @@ type ProjectForm = {
 };
 
 export default function ProjectDialog({ folders, project = null }) {
-    const [open, setOpen] = useState(false); // dialog state
+    const [open, setOpen] = useState(false);
     const { data, setData, post, patch, processing, errors, reset } = useForm<ProjectForm>({
         name: project?.name ?? '',
         description: project?.description ?? '',

@@ -10,10 +10,10 @@ class DeleteTeamInvitation
     public static function handle(TeamInvitation $teamInvitation): void
     {
         $teamInvitation->delete();
-        defer(fn () => activity()
+        defer(fn() => activity()
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_DELETED->value)
-            ->log(':causer.name deleted the team invitation')
+            ->log(":causer.name deleted the invitation sent to {$teamInvitation->email} for team {$teamInvitation->team->name}.")
         );
     }
 }

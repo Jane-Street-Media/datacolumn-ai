@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Projects;
 
+use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateProjectRequest extends BaseTeamRequest

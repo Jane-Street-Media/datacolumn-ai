@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Projects;
 
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CreateProjectRequest extends BaseTeamRequest
+class ProjectFilterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +23,8 @@ class CreateProjectRequest extends BaseTeamRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'description' => ['nullable', 'string'],
-            'folder_id' => ['required', 'exists:folders,id'],
+            'folder' => 'nullable|exists:folders,id',
+            'search' => 'nullable|string',
         ];
     }
 }
