@@ -4,9 +4,10 @@ import SettingsLayout from '@/layouts/settings/layout';
 import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
 import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,40 +16,58 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const CancelSubscriptionButton = () => {
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleClick = (e: React.MouseEvent) => {
-        if (isLoading) {
-            e.preventDefault(); // Prevent navigation if disabled or already loading
-            return;
-        }
-        setIsLoading(true);
-    };
-
-    return !isLoading ? (
-        <a
-            href={`/subscription/cancel-subscription`}
-            className={`rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 ${isLoading ? 'cursor-wait bg-red-400' : ''}`}
-            aria-disabled={isLoading}
-            onClick={handleClick}
-        >
-            Cancel now
-        </a>
-    ) : (
-        <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing...
-        </>
-    );
-};
 
 const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) => {
     const { auth } = usePage<SharedData>().props;
     const isSubscribed = subscription != null;
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
-    const [cancelModalOpen, setCancelModalOpen] = useState(false);
+    const [pauseModalOpen, setPauseModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+
+    const PauseSubscriptionButton = () => {
+        const [isLoading, setIsLoading] = useState(false);
+
+        const handleClick = (e: React.MouseEvent) => {
+            if(isLoading){
+                e.preventDefault()
+                return;
+            }
+            router.patch(
+                route('subscription.pause'),
+                {},
+                {
+                    showProgress: false,
+                    preserveScroll: true,
+                    onStart: () => {
+                        setIsLoading(true);
+                    },
+                    onSuccess: (response) => {
+                        toast.success(response.props.flash.success);
+                        setPauseModalOpen(false)
+                    },
+                    onFinish: () => setIsLoading(false),
+                },
+            );
+        };
+
+        return !isLoading ? (
+            <button
+                type={`button`}
+                href={route('subscription.pause')}
+                className={`rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 ${isLoading ? 'cursor-wait bg-red-400' : ''}`}
+                aria-disabled={isLoading}
+                onClick={handleClick}
+            >
+                Pause now
+            </button>
+        ) : (
+            <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+            </>
+        );
+    };
+
 
     // Format date for display
     const formatDate = (dateString: string) => {
@@ -67,6 +86,26 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const handleUpdatePaymentMethod = () => {
         setIsUpdating(true);
         window.location.href = '/update-payment-method';
+    };
+
+    const [loading, setLoading] = useState(false);
+    const handleResumeSubscription = (e) => {
+        e.preventDefault()
+        router.patch(
+            route('subscription.resume'),
+            {},
+            {
+                showProgress: false,
+                preserveScroll: true,
+                onStart: () => {
+                    setLoading(true);
+                },
+                onSuccess: (response) => {
+                    toast.success(response.props.flash.success);
+                },
+                onFinish: () => setLoading(false),
+            },
+        );
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -260,9 +299,39 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                             </span>
                                         )}
                                     </button>
-                                    {subscription?.chargebee_status !== 'cancelled' ? (
+                                    {subscription?.chargebee_status === 'paused' ? (
                                         <button
-                                            onClick={() => setCancelModalOpen(true)}
+                                            onClick={(e) => handleResumeSubscription(e)}
+                                            className="flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                                        >
+                                            {loading ? (
+                                                <span className="flex items-center justify-center">
+                                                    <>
+                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                        Processing...
+                                                    </>
+                                                </span>
+                                            ) : (
+                                                <span className="flex items-center justify-center">
+                                                    <svg
+                                                        className="mr-2 h-5 w-5"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                    Resume Subscription
+                                                </span>
+                                            )}
+                                        </button>
+                                    ) : subscription?.chargebee_status === 'active' ? (
+                                        <button
+                                            onClick={() => setPauseModalOpen(true)}
                                             className="flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
                                         >
                                             <span className="flex items-center justify-center">
@@ -278,7 +347,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                         clipRule="evenodd"
                                                     />
                                                 </svg>
-                                                Cancel Subscription
+                                                Pause Subscription
                                             </span>
                                         </button>
                                     ) : (
@@ -289,7 +358,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         </div>
                     )}
 
-                    {cancelModalOpen && (
+                    {pauseModalOpen && (
                         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
                             <div className="w-full max-w-md rounded-lg bg-white p-6 dark:bg-zinc-800">
                                 <h3 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Confirm Cancellation</h3>
@@ -299,12 +368,12 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                 </p>
                                 <div className="flex justify-end space-x-4">
                                     <button
-                                        onClick={() => setCancelModalOpen(false)}
+                                        onClick={() => setPauseModalOpen(false)}
                                         className="cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
                                     >
                                         Keep Subscription
                                     </button>
-                                    <CancelSubscriptionButton />
+                                    <PauseSubscriptionButton />
                                 </div>
                             </div>
                         </div>

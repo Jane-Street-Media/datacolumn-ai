@@ -47,7 +47,10 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     };
 
     const handleSwapSubscription = (e, planId) => {
-        e.preventDefault()
+        if (loading) {
+            e.preventDefault();
+            return;
+        }
         router.patch(route('checkout.swap', planId), {}, {
             showProgress: false,
             preserveScroll: true,

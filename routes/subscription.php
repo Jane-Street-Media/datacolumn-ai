@@ -3,12 +3,17 @@
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/subscription/cancel-subscription', [SubscriptionController::class, 'cancelSubscription'])
-    ->middleware(['auth', 'verified'])
-    ->name('cancel-subscription');
+Route::group(['middleware' => ['auth', 'verified']], function () {
 
-Route::get('/user/invoice/{invoice}', [SubscriptionController::class, 'downloadInvoices'])
-    ->middleware(['auth', 'verified'])
-    ->name('download-invoice');
+    Route::patch('/subscription/pause-subscription', [SubscriptionController::class, 'pauseSubscription'])
+        ->name('subscription.pause');
+
+    Route::patch('/subscription/resume-subscription', [SubscriptionController::class, 'resumeSubscription'])
+        ->name('subscription.resume');
+
+    Route::get('/user/invoice/{invoice}', [SubscriptionController::class, 'downloadInvoices'])
+        ->name('download-invoice');
+});
+
 
 require __DIR__.'/auth.php';
