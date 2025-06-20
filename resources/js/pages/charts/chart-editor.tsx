@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
 import { Head } from '@inertiajs/react';
-import { Download, Save, Share2, Grid3X3, Import, List, Search } from 'lucide-react';
+import { Upload, Save, Share2, Import } from 'lucide-react';
 import * as React from 'react';
 import {
     PageHeader,
@@ -12,8 +12,7 @@ import {
 } from '@/components/page-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import ProjectCard from '@/components/projects/project-card';
+import { Card, CardContent } from '@/components/ui/card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -52,7 +51,7 @@ export default function ChartEditor() {
                                             <span>Import</span>
                                         </Button>
                                         <Button variant={'ghost'} className="border">
-                                            <Download />
+                                            <Upload />
                                             <span>Export</span>
                                         </Button>
                                         <Button variant={'ghost'} className="border">
@@ -70,7 +69,7 @@ export default function ChartEditor() {
                     </CardContent>
                 </Card>
 
-                <Tabs defaultValue="account" className="w-full">
+                <Tabs defaultValue="design" className="w-full">
                     <TabsList>
                         <TabsTrigger value="design">Design</TabsTrigger>
                         <TabsTrigger value="data">Data</TabsTrigger>
