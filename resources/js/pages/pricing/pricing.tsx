@@ -278,10 +278,6 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                     );
                 })}
             </div>
-            <CommandWithCopyButton
-                command="php artisan chargebee:fetch-plans"
-                note="Use the following command to import plans from chargebee dashboard, ensure env is populated."
-            />
         </section>
     );
 }
