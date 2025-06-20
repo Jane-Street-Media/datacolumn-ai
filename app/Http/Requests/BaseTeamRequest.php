@@ -14,7 +14,7 @@ class BaseTeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // <-- This must be true to allow the request
+        return true;
     }
 
     /**
