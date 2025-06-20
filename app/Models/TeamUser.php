@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class TeamUser extends TeamBootModel
 {
     protected $table = 'team_user';
@@ -13,7 +15,7 @@ class TeamUser extends TeamBootModel
         'user_id',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
