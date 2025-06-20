@@ -76,7 +76,7 @@ Route::prefix('team')->group(function () {
 
 // Team Invitations
 Route::prefix('team-invitation')->group(function () {
-    Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept');
+    Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
     Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
 });
 
