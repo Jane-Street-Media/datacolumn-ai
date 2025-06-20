@@ -4,6 +4,7 @@ namespace App\Http\Requests\Projects;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProjectFilterRequest extends FormRequest
 {
@@ -23,8 +24,13 @@ class ProjectFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'folder' => 'nullable|exists:folders,id',
             'search' => 'nullable|string',
+            'folder_id' => [
+                'required',
+                Rule::exists('folders', 'id')->where(function ($query) {
+                    $query->where('team_id', $this->team_id);
+                }),
+            ],
         ];
     }
 }
