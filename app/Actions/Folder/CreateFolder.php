@@ -9,10 +9,11 @@ class CreateFolder
 {
     public static function handle(User $user, array $data): void
     {
-        $user->folders()->create($data);
+        $folder = $user->folders()->create($data);
         activity()
-            ->causedBy($user)
+            ->performedOn($folder)
             ->event(ActivityEvents::TEAM_FOLDER_CREATED->value)
-            ->log(':causer.name created a folder.');
+            ->log(":causer.name created a folder named : {$folder->name}. under team {$folder->team->name} ");
+
     }
 }

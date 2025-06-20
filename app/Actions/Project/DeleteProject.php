@@ -11,8 +11,8 @@ class DeleteProject
     {
         $project->delete();
         activity()
-            ->causedBy($project->user)
+            ->performedOn($project)
             ->event(ActivityEvents::TEAM_PROJECT_DELETED->value)
-            ->log(':causer.name deleted a project.');
+            ->log(":causer.name deleted a project named : {$project->name}. from folder {$project->folder->name} ");
     }
 }

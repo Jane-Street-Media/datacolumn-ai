@@ -21,6 +21,7 @@ class CreateTeam
             ->causedBy($user)
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_CREATED->value)
-            ->log(':causer.name created a new team.');
+            ->log(":causer.name created a new team named {$team->name}.");
+
     }
 }

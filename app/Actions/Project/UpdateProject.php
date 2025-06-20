@@ -11,8 +11,8 @@ class UpdateProject
     {
         $project->update($data);
         activity()
-            ->causedBy($project->user)
+            ->performedOn($project)
             ->event(ActivityEvents::TEAM_PROJECT_CREATED->value)
-            ->log(':causer.name updated a project.');
+            ->log(":causer.name update a project named : {$project->name}. in folder {$project->folder->name} ");
     }
 }

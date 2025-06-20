@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class GetProjects
 {
-    public static function handle(array $data):Collection
+    public static function handle(array $data): Collection
     {
         return Project::withCount('charts')
             ->when(isset($data['folder']), fn ($q) => $q->whereRelation('folder', 'id', $data['folder']))

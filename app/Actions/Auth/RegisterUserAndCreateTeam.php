@@ -17,7 +17,7 @@ class RegisterUserAndCreateTeam
             $user->markEmailAsVerified();
         }
         CreateTeam::handle(CreateTeamData::from([
-            'name' => $user->name,
+            'name' => "{$user->name}'s team",
             'personal_team' => true,
         ]), $user);
         event(new Registered($user));

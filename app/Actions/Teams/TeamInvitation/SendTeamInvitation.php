@@ -16,6 +16,6 @@ class SendTeamInvitation
             ->causedBy($user)
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
-            ->log(':causer.name sent the invitation to :subject.email');
+            ->log(":causer.name invited :subject.email to join {$team->name} team.");
     }
 }
