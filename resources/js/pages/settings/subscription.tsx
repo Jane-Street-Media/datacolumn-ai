@@ -16,7 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-
 const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) => {
     const { auth } = usePage<SharedData>().props;
     const isSubscribed = subscription != null;
@@ -28,8 +27,8 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         const [isLoading, setIsLoading] = useState(false);
 
         const handleClick = (e: React.MouseEvent) => {
-            if(isLoading){
-                e.preventDefault()
+            if (isLoading) {
+                e.preventDefault();
                 return;
             }
             router.patch(
@@ -43,7 +42,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                     },
                     onSuccess: (response) => {
                         toast.success(response.props.flash.success);
-                        setPauseModalOpen(false)
+                        setPauseModalOpen(false);
                     },
                     onFinish: () => setIsLoading(false),
                 },
@@ -68,7 +67,6 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         );
     };
 
-
     // Format date for display
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -90,7 +88,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
 
     const [loading, setLoading] = useState(false);
     const handleResumeSubscription = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         router.patch(
             route('subscription.resume'),
             {},
@@ -379,7 +377,11 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         </div>
                     )}
 
-                    <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                    {subscription?.chargebee_status !== 'paused' ? (
+                        <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                    ) : (
+                        <></>
+                    )}
                 </div>
             </SettingsLayout>
         </AppLayout>
