@@ -41,7 +41,8 @@ export default function ProjectCard({ index = 1, project ,folders}) {
         <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
+
+                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-gradient-from to-gradient-to">
                         <BarChart3 className="h-5 w-5" />
                     </div>
                 </CardTitle>

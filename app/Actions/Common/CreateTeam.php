@@ -23,7 +23,6 @@ class CreateTeam
             ->event(ActivityEvents::TEAM_CREATED->value)
             ->log(":causer.name created a new team named {$team->name}.")
         );
-
         return $team;
     }
 }

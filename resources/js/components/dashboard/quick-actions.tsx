@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 export default function QuickActions() {
     return (
-        <Card className="bg-gradient-to-r from-blue-600 to-purple-600">
+        <Card className="bg-gradient-to-r from-gradient-from to-gradient-to">
             <CardHeader>
                 <CardTitle className="text-white">Quick Actions</CardTitle>
             </CardHeader>

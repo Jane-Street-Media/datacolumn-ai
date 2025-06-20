@@ -13,7 +13,6 @@ class AcceptTeamInvitation
         $teamInvitation->team->users()->sync($user->id);
         $user->assignRole($teamInvitation->role);
         $teamInvitation->delete();
-
         defer(fn () => activity()
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)

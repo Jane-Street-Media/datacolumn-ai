@@ -4,6 +4,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\Projects\ProjectsController;
+use App\Http\Controllers\ProjectChartsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
@@ -53,6 +54,9 @@ Route::prefix('projects')->group(function () {
 Route::prefix('folder')->group(function () {
     Route::post('/', [FolderController::class, 'store'])->name('folder.store');
 
+    Route::prefix('{project}/charts')->group(function () {
+        Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
+    });
 });
 
 Route::prefix('team')->group(function () {
