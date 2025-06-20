@@ -3,8 +3,9 @@
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\ProjectChartsController;
-use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
@@ -46,10 +47,15 @@ Route::middleware([])->group(function () {
     })->name('something-went-wrong');
 });
 
-
-
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
+    Route::post('/', [ProjectsController::class, 'store'])->name('project.store');
+    Route::patch('/{project}', [ProjectsController::class, 'update'])->name('project.update');
+    Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
+
+});
+Route::prefix('folder')->group(function () {
+    Route::post('/', [FolderController::class, 'store'])->name('folder.store');
 
     Route::prefix('{project}/charts')->group(function () {
         Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');

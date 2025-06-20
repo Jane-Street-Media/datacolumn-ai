@@ -18,12 +18,10 @@ class GetTeamStats
         $adminStats = ValueMetric::query(GetAdminQuery::handle())->for(Period::LAST_30_DAYS, true)->count();
         $pendingMemberStats = ValueMetric::query(GetPendingMemberQuery::handle())->for(Period::LAST_30_DAYS, true)->count();
 
-
         $totalMembersStats['percentage_change'] = ValueMetric::calculatePercentageChange($totalMembersStats['value'], $totalMembersStats['compare_value']);
         $activeMembersStats['percentage_change'] = ValueMetric::calculatePercentageChange($activeMembersStats['value'], $activeMembersStats['compare_value']);
         $adminStats['percentage_change'] = ValueMetric::calculatePercentageChange($adminStats['value'], $adminStats['compare_value']);
         $pendingMemberStats['percentage_change'] = ValueMetric::calculatePercentageChange($pendingMemberStats['value'], $pendingMemberStats['compare_value']);
-
 
         return [
             'totalMembersStats' => $totalMembersStats,

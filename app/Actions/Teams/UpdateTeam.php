@@ -4,17 +4,18 @@ namespace App\Actions\Teams;
 
 use App\Enums\ActivityEvents;
 use App\Models\Team;
-use App\Models\User;
 
 class UpdateTeam
 {
-    public static function handle(array $data, Team $team): void
+    public static function handle(array $data, Team $team): Team
     {
         $team->update($data);
-
-        activity()
+        defer(fn () => activity()
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_UPDATED->value)
-            ->log(':causer.name updated the team.');
+            ->log(":causer.name updated the team named {$team->name}")
+        );
+
+        return $team;
     }
 }

@@ -1,14 +1,14 @@
 <?php
 
-    namespace App\Actions\Queries\Team;
+namespace App\Actions\Queries\Team;
 
-    use App\Models\TeamUser;
-    use Illuminate\Database\Eloquent\Builder;
+use App\Models\TeamUser;
+use Illuminate\Database\Eloquent\Builder;
 
-    class GetAdminQuery
+class GetAdminQuery
+{
+    public static function handle(): Builder
     {
-        public static function handle(): Builder
-        {
-            return TeamUser::whereRelation('user.roles', 'name', 'admin');
-        }
+        return TeamUser::whereRelation('user.roles', 'name', 'admin');
     }
+}
