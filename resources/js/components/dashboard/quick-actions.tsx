@@ -22,12 +22,6 @@ export default function QuickActions() {
                         <Users className="w-4 h-4" />
                         <span>Invite Team Member</span>
                     </Button>
-                    <Button
-                        className="w-full bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition-colors duration-200 flex items-center space-x-3"
-                    >
-                        <Layout className="w-4 h-4" />
-                        <span>Browse Templates</span>
-                    </Button>
                 </div>
             </CardContent>
         </Card>
