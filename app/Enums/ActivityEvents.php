@@ -36,12 +36,24 @@ enum ActivityEvents: string
     public function getIconClasses(): string
     {
         return match ($this) {
-            self::TEAM_CREATED, self::TEAM_PROJECT_CREATED, self::TEAM_PROJECT_UPDATED,self::TEAM_FOLDER_CREATED => 'w-4 h-4 text-green-600 dark:text-green-400',
+            self::TEAM_CREATED, self::TEAM_PROJECT_CREATED, self::TEAM_PROJECT_UPDATED, self::TEAM_FOLDER_CREATED => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_DELETED, self::TEAM_MEMBER_DELETED, self::TEAM_PROJECT_DELETED => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_INVITATION_SENT => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_INVITATION_DELETED => 'w-4 h-4 text-green-600 dark:text-green-400',
             self::TEAM_INVITATION_ACCEPTED => 'w-4 h-4 text-green-600 dark:text-green-400',
+        };
+    }
+
+    public function getIconBackgroundClasses(): string
+    {
+        return match ($this) {
+            self::TEAM_CREATED, self::TEAM_PROJECT_CREATED, self::TEAM_FOLDER_CREATED => 'bg-emerald-100 dark:bg-emerald-900/20',
+            self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED, self::TEAM_PROJECT_UPDATED => 'bg-indigo-100 dark:bg-indigo-900/20',
+            self::TEAM_DELETED, self::TEAM_MEMBER_DELETED , self::TEAM_PROJECT_DELETED => 'bg-rose-100 dark:bg-rose-900/20',
+            self::TEAM_INVITATION_SENT => 'bg-sky-100 dark:bg-sky-900/20',
+            self::TEAM_INVITATION_DELETED => 'bg-orange-100 dark:bg-orange-900/20',
+            self::TEAM_INVITATION_ACCEPTED => 'bg-lime-100 dark:bg-lime-900/20',
         };
     }
 }
