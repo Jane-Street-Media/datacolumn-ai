@@ -1,44 +1,37 @@
-import {
-    PageHeader,
-    PageHeaderAction,
-    PageHeaderDescription,
-    PageHeaderHead,
-    PageHeaderTitle
-} from '@/components/page-header';
+import { LoadingSkeleton } from '@/components/loading-skeleton';
+import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import FolderDialog from '@/components/projects/folder-dialog';
 import ProjectCard from '@/components/projects/project-card';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
-import { Grid3X3, List, Search } from 'lucide-react';
+import { Deferred, Head, router } from '@inertiajs/react';
+import {
+    Search,
+    X
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Projects',
-        href: '/projects'
-    }
+        href: '/projects',
+    },
 ];
 
 export default function Projects({ folders, projects }) {
     const [filters, setFilters] = useState({
         search: '',
-        folder: ''
+        folder: '',
     });
 
     useEffect(() => {
+        if (filters.search === '' && filters.folder === '') return;
+
         const debounce = setTimeout(() => {
             router.reload({
                 only: ['projects'],
@@ -53,6 +46,18 @@ export default function Projects({ folders, projects }) {
     }, [filters]);
 
 
+    const clearFilters = () => {
+        setFilters({ search: null, folder: null });
+        router.reload({
+            only: ['projects'],
+            data: {
+                search: '',
+                folder: '',
+            },
+        });
+    };
+
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -60,8 +65,7 @@ export default function Projects({ folders, projects }) {
                 <PageHeader>
                     <PageHeaderHead>
                         <PageHeaderTitle>Projects</PageHeaderTitle>
-                        <PageHeaderDescription>Manage your data visualization projects and collaborate with your
-                            team.</PageHeaderDescription>
+                        <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
                                 <FolderDialog />
@@ -81,16 +85,16 @@ export default function Projects({ folders, projects }) {
                                         placeholder="Your search..."
                                         className="pl-8"
                                         value={filters.search}
-                                        onChange={(e) =>
-                                            setFilters(prev => ({ ...prev, search: e.target.value.trim() }))
-                                        }
+                                        onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value.trim() }))}
                                     />
-
                                 </div>
 
-                                <Select onValueChange={(value) =>
-                                    setFilters(prev => ({ ...prev, folder: Number(value) }))
-                                }>
+                                <Select
+                                    value={filters.folder?.toString() || ''}
+                                    onValueChange={(value) =>
+                                        setFilters((prev) => ({ ...prev, folder: Number(value) }))
+                                    }
+                                >
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select a folder" />
                                     </SelectTrigger>
@@ -106,20 +110,28 @@ export default function Projects({ folders, projects }) {
                                 </Select>
                             </div>
                             <div className="flex items-center justify-end gap-4">
-                                <Button variant="ghost">
-                                    <Grid3X3 />
+                                <Button variant="destructive" onClick={()=>clearFilters()}>
+                                    <X />
+                                    Clear
                                 </Button>
-                                <Button variant="ghost">
-                                    <List />
-                                </Button>
+
                             </div>
                         </div>
                     </CardContent>
                 </Card>
-                <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {projects.map((project, index) => (
-                        <ProjectCard key={project.id} index={index} project={project} folders={folders} />
-                    ))}
+                <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <Deferred
+                        data="projects"
+                        fallback={
+                            <Card>
+                                <CardContent>
+                                    <LoadingSkeleton />
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        {projects?.map((project, index) => <ProjectCard key={project.id} index={index} project={project} folders={folders} />)}{' '}
+                    </Deferred>
                 </div>
             </div>
         </AppLayout>

@@ -13,10 +13,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Folder;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Concurrency;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,9 +21,10 @@ class ProjectsController extends Controller
 {
     public function index(ProjectFilterRequest $request): Response
     {
-        $projects = GetProjects::handle($request->validated())->paginate(5);
+        $projects = GetProjects::handle($request->validated());
+
         return Inertia::render('projects', [
-            'projects' => $projects->items(),
+            'projects' => Inertia::defer(fn () => $projects),
             'folders' => Folder::all(),
         ]);
     }

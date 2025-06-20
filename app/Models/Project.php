@@ -35,4 +35,9 @@ class Project extends TeamBootModel
     {
         return $this->hasMany(Chart::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
