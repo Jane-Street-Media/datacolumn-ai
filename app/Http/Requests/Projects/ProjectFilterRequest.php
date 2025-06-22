@@ -25,7 +25,7 @@ class ProjectFilterRequest extends BaseTeamRequest
     {
         return [
             'search' => 'nullable|string',
-            'folder_id' => [
+            'folder' => [
                 'nullable',
                 Rule::exists('folders', 'id')->where(function ($query) {
                     $query->where('team_id', $this->team_id);

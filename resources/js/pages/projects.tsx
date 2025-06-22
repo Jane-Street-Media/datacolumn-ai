@@ -27,8 +27,6 @@ export default function Projects({ folders, projects }) {
     });
 
     useEffect(() => {
-        if (filters.search === '' && filters.folder === '') return;
-
         const debounce = setTimeout(() => {
             router.reload({
                 only: ['projects'],

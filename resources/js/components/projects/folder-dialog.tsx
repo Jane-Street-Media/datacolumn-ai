@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FolderOpen, LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
@@ -80,6 +80,7 @@ export default function FolderDialog() {
                             id="description"
                             required
                             autoFocus
+                            tabIndex={2}
                             autoComplete="description"
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
@@ -92,7 +93,7 @@ export default function FolderDialog() {
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit" tabIndex={5} disabled={processing}>
+                        <Button type="submit" tabIndex={3} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                             Create Folder
                         </Button>
