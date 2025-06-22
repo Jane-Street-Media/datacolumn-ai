@@ -20,7 +20,7 @@ export default function RecentProjects({ projects }) {
             <CardContent>
                 <div className="space-y-4">
                     {projects.length ? (
-                        projects.map((project, index) => (
+                        projects?.map((project, index) => (
                             <motion.div
                                 key={project.id}
                                 initial={{ opacity: 0, x: -20 }}

@@ -7,7 +7,6 @@ use App\Actions\Queries\Dashboard\GetRecentProjectQuery;
 use App\Actions\Queries\Dashboard\GetTeamMemberQuery;
 use App\Enums\Period;
 use App\Helpers\ValueMetric;
-use Illuminate\Support\Facades\Concurrency;
 
 class GetStats
 {
@@ -31,5 +30,4 @@ class GetStats
             'chartStats' => $chartStats,
         ];
     }
-
 }
