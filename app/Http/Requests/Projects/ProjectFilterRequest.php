@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Projects;
 
+use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProjectFilterRequest extends FormRequest
+class ProjectFilterRequest extends BaseTeamRequest
 {
     /**
      * Determine if the user is authorized to make this request.

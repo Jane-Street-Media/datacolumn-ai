@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Teams;
 
+use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-class TeamMemberUpdateRequest extends FormRequest
+class TeamMemberUpdateRequest extends BaseTeamRequest
 {
     /**
      * Determine if the user is authorized to make this request.
