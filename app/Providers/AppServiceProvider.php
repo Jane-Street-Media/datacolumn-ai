@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //TODO: This is only for ngrok
-        if (app()->environment('local')) {
+        if (app()->environment('production')) {
             URL::forceScheme('https');
         }
         Cashier::useSubscriptionModel(Subscription::class);

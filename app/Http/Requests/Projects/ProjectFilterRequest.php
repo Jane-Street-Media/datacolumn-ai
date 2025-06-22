@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Projects;
 
+use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProjectFilterRequest extends FormRequest
+class ProjectFilterRequest extends BaseTeamRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class ProjectFilterRequest extends FormRequest
     {
         return [
             'search' => 'nullable|string',
-            'folder_id' => [
-                'required',
+            'folder' => [
+                'nullable',
                 Rule::exists('folders', 'id')->where(function ($query) {
                     $query->where('team_id', $this->team_id);
                 }),
