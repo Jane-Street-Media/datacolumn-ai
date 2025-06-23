@@ -15,8 +15,7 @@ class CreateProjectRequest extends BaseTeamRequest
      */
     public function authorize(): bool
     {
-        $team = Team::find($this->team_id);
-        return $team?->users()->where('user_id', Auth::id())->exists();
+        return true;
     }
 
     /**
