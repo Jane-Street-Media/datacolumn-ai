@@ -89,7 +89,7 @@ export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialo
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    {roles.map((role) => (
+                                    {roles?.map((role) => (
                                         <SelectItem key={role.id} value={String(role.name)}>
                                             {role.name}
                                         </SelectItem>

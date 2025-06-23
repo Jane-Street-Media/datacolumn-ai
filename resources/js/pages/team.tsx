@@ -1,11 +1,10 @@
 import InviteMemberDialog from '@/components/InviteMemberDialog';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
-import { CrownIcon, MailIcon, ShieldIcon, UserPlus, Users } from 'lucide-react';
+import { CrownIcon, MailIcon, ShieldIcon, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ role, statistics, roles }) {
+export default function Team({ roles, statistics }) {
     const stats = [
         {
             name: 'Total Members',
@@ -58,15 +57,7 @@ export default function Team({ role, statistics, roles }) {
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
                             <Deferred data="roles">
-                                <InviteMemberDialog
-                                    roles={roles}
-                                    trigger={
-                                        <Button className="flex w-full items-center space-x-3 rounded-lg bg-white/20 p-3 text-white transition-colors duration-200 hover:bg-white/30">
-                                            <Users className="h-4 w-4" />
-                                            <span>Invite Team Member</span>
-                                        </Button>
-                                    }
-                                />{' '}
+                                <InviteMemberDialog roles={roles} />{' '}
                             </Deferred>
                         </PageHeaderAction>
                     </PageHeaderHead>
