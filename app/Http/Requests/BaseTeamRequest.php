@@ -24,7 +24,7 @@ class BaseTeamRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'team_id' => Auth::user()->current_team_id ?? User::first()->current_team_id,
+            'team_id' => Auth::user()->current_team_id,
         ]);
     }
 
