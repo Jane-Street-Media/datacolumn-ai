@@ -4,6 +4,7 @@ namespace App\Http\Requests\Teams;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TeamRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class TeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->hasRole('owner');
     }
 
     /**

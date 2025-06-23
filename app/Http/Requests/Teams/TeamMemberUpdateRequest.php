@@ -3,7 +3,11 @@
 namespace App\Http\Requests\Teams;
 
 use App\Http\Requests\BaseTeamRequest;
+use App\Models\Team;
+use App\Models\User;
+use Illuminate\Container\Attributes\RouteParameter;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Validation\Validator;
 
 class TeamMemberUpdateRequest extends BaseTeamRequest
 {
@@ -12,7 +16,7 @@ class TeamMemberUpdateRequest extends BaseTeamRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->hasRole('owner');
     }
 
     /**
@@ -24,6 +28,21 @@ class TeamMemberUpdateRequest extends BaseTeamRequest
     {
         return [
             'role' => ['required', 'integer', 'exists:roles,id'],
+        ];
+    }
+
+    public function after(#[RouteParameter('user')] User $user): array
+    {
+        $team = Team::find($this->team_id);
+        return [
+            function (Validator $validator) use ($user, $team) {
+                if (!$team?->users()->where('user_id', $user->id)->exists()) {
+                    $validator->errors()->add(
+                        'user',
+                        'This user is not a member of the team.'
+                    );
+                }
+            },
         ];
     }
 }

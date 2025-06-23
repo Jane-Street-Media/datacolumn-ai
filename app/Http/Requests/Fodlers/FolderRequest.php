@@ -4,6 +4,7 @@ namespace App\Http\Requests\Fodlers;
 
 use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Auth;
 
 class FolderRequest extends BaseTeamRequest
 {
@@ -12,7 +13,7 @@ class FolderRequest extends BaseTeamRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->hasRole('owner');
     }
 
     /**

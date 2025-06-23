@@ -4,6 +4,7 @@ namespace App\Http\Requests\Projects;
 
 use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class CreateProjectRequest extends BaseTeamRequest
@@ -13,7 +14,7 @@ class CreateProjectRequest extends BaseTeamRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->hasRole('owner');
     }
 
     /**

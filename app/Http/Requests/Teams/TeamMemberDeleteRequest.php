@@ -6,6 +6,7 @@ use App\Models\Team;
 use Illuminate\Container\Attributes\RouteParameter;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TeamMemberDeleteRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class TeamMemberDeleteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->hasRole('owner');
     }
 
     /**
@@ -26,7 +27,7 @@ class TeamMemberDeleteRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'integer', 'exists:users,id', function ($attribute, $value, $fail) use ($team) {
-                if (! $team->users()->where('user_id', $value)->exists()) {
+                if (!$team->users()->where('user_id', $value)->exists()) {
                     $fail('The selected user is not a member of this team.');
                 }
             }],
