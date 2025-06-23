@@ -13,7 +13,7 @@ class TeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->hasRole('owner');
+        return true;
     }
 
     /**

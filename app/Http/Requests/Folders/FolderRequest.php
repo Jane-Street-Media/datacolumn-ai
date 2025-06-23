@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Requests\Fodlers;
+namespace App\Http\Requests\Folders;
 
 use App\Http\Requests\BaseTeamRequest;
+use App\Models\Team;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,8 @@ class FolderRequest extends BaseTeamRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->hasRole('owner');
+        $team = Team::find($this->team_id);
+        return $team?->users()->where('user_id', Auth::id())->exists();
     }
 
     /**
