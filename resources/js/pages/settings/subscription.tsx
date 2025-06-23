@@ -1,4 +1,3 @@
-import AppLogoIcon from '@/components/app-logo-icon';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
@@ -8,6 +7,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { isBefore } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,7 +22,16 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-
+    const [canResumeSubscription] = useState(() => {
+        if(subscription?.ends_at){
+            const now = new Date();
+            const endsAt = new Date(subscription?.ends_at);
+            if(isBefore(now, endsAt)){
+                return true;
+            }
+        }
+        return false;
+    });
     const PauseSubscriptionButton = () => {
         const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +46,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                 {
                     showProgress: false,
                     preserveScroll: true,
+                    only: ['subscription'],
                     onStart: () => {
                         setIsLoading(true);
                     },
@@ -296,7 +306,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                             </span>
                                         )}
                                     </button>
-                                    {subscription?.chargebee_status === 'paused' ? (
+                                    {canResumeSubscription ? (
                                         <button
                                             onClick={(e) => handleResumeSubscription(e)}
                                             className="flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"

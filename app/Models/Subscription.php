@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Chargebee\Cashier\Cashier;
 use LogicException;
 
@@ -20,8 +21,10 @@ class Subscription extends \Chargebee\Cashier\Subscription
         $chargebee = Cashier::chargebee();
         $chargebeeSubscription = $chargebee->subscription()->pause($this->chargebee_id)->subscription;
 
+
         $this->fill([
             'chargebee_status' => $chargebeeSubscription->status->value,
+            'ends_at' => Carbon::createFromTimestamp($chargebeeSubscription->pause_date)
         ])->save();
 
         return $this;
