@@ -3,6 +3,7 @@ import getSymbolFromCurrency from 'currency-symbol-map';
 import { useEffect, useRef, useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
     const [billing, setBilling] = useState('Monthly');
@@ -83,7 +84,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
             </div>
 
             <div className="mb-12 flex justify-center">
-                <div className="relative inline-flex items-center justify-center rounded-full border-2 border-[#FF3300] p-1 dark:border-[#FF3300]">
+                <div className="relative inline-flex items-center justify-center rounded-full border p-1">
                     <div
                         ref={monthlyRef}
                         onClick={() => {
@@ -106,14 +107,12 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                 toggleRepositionMarker(yearlyRef.current);
                             }
                         }}
-                        className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                            billing === 'Yearly' ? 'text-white' : 'text-[#012A38] dark:text-white'
-                        } ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium transition-colors text-white ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     >
                         Yearly
                     </div>
                     <div ref={markerRef} className="absolute left-0 z-10 h-full w-1/2 opacity-0">
-                        <div className="h-full w-full rounded-full bg-[#FF3300]"></div>
+                        <div className="h-full w-full rounded-full bg-primary"></div>
                     </div>
                 </div>
             </div>
@@ -132,19 +131,17 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                             className={`mb-6 max-w-[400px] min-w-[300px] flex-1 px-3 transition-all duration-300 ease-in-out ${loading && !isLoading ? 'opacity-50' : ''}`}
                         >
                             <div
-                                className={`relative flex h-full flex-col overflow-hidden rounded-xl border-2 bg-white shadow-md dark:bg-zinc-800 ${
+                                className={`relative flex h-full flex-col overflow-hidden rounded-xl border-2 bg-card shadow-md ${
                                     hoveredCard === index
-                                        ? 'border-1 border-[#FF3300]'
+                                        ? 'border-primary'
                                         : plan.default && hoveredCard === null
-                                          ? 'border-[#FF3300]'
-                                          : 'border-opacity-30 dark:border-opacity-50 border-[#012A38]'
+                                          ? 'border-primary'
+                                          : 'border-card'
                                 }`}
                             >
                                 <div className="px-6 pt-6">
                                     <span
-                                        className={`inline-block rounded-full px-4 py-1 text-sm font-medium text-white ${
-                                            hoveredCard === index ? 'bg-[#FF3300]' : 'bg-[#012A38]'
-                                        }`}
+                                        className={`inline-block rounded-full px-4 py-1 text-sm font-medium text-white`}
                                     >
                                         {plan.name}
                                     </span>
@@ -153,27 +150,27 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     <div className="flex items-baseline">
                                         <span
                                             className={`text-4xl font-bold ${
-                                                hoveredCard === index ? 'text-[#FF3300]' : 'text-[#012A38] dark:text-zinc-50'
+                                                hoveredCard === index ? 'text-primary' : 'text-foreground'
                                             }`}
                                         >
                                             {getSymbolFromCurrency(plan?.currency)}
                                             {billing === 'Monthly' ? plan.monthly_price : plan.yearly_price}
                                         </span>
-                                        <span className="ml-1 text-lg font-medium text-zinc-500 dark:text-zinc-400">
+                                        <span className="ml-1 text-lg font-medium text-secondary-foreground">
                                             /{billing === 'Monthly' ? 'mo' : 'yr'}
                                         </span>
                                     </div>
-                                    <p className="mt-2 text-zinc-600 dark:text-zinc-300">Plan description goes here.</p>
+                                    <p className="mt-2 text-secondary-foreground">Plan description goes here.</p>
                                 </div>
 
-                                <div className="mt-auto bg-zinc-50 p-6 dark:bg-zinc-900">
+                                <div className="mt-auto p-6 bg-card">
                                     <ul className="space-y-3">
                                         {plan.features &&
                                             plan.features.map((feature, i) => (
                                                 <li key={i} className="flex items-start">
                                                     <svg
                                                         className={`mt-0.5 mr-2 h-5 w-5 flex-shrink-0 ${
-                                                            hoveredCard === index ? 'text-[#FF3300]' : 'text-[#FF3300]'
+                                                            hoveredCard === index ? 'text-primary' : 'text-foreground'
                                                         }`}
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 20 20"
@@ -185,7 +182,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                             clipRule="evenodd"
                                                         />
                                                     </svg>
-                                                    <span className="text-zinc-700 dark:text-zinc-300">{feature}</span>
+                                                    <span className="text-foreground">{feature}</span>
                                                 </li>
                                             ))}
                                     </ul>
@@ -194,8 +191,8 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             <a
                                                 href={`/checkout/${planId}`}
                                                 onClick={(e) => handleCheckoutClick(e, planId)}
-                                                className={`block w-full rounded-lg px-4 py-3 text-center font-medium text-white transition-all ${
-                                                    plan.default ? 'hover:bg-opacity-90 bg-[#FF3300]' : 'bg-[#012A38] hover:bg-[#FF3300]'
+                                                className={`block w-full rounded-lg px-4 py-3 text-center font-medium transition-all ${
+                                                    plan.default ? 'bg-primary' : 'bg-gradient-to-r from-gradient-from to-gradient-to hover:bg-gradient-to'
                                                 } ${loading ? 'cursor-not-allowed' : ''}`}
                                             >
                                                 {isLoading ? (
@@ -227,12 +224,10 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 )}
                                             </a>
                                         ) : subscription.chargebee_price !== planId ? (
-                                            <button
-                                                type={`button`}
+                                            <Button
                                                 onClick={(e) => handleSwapSubscription(e, planId)}
-                                                className={`block w-full rounded-lg px-4 py-3 text-center font-medium text-white transition-all ${
-                                                    plan.default ? 'hover:bg-opacity-90 bg-[#FF3300]' : 'bg-[#012A38] hover:bg-[#FF3300]'
-                                                } ${loading ? 'cursor-not-allowed' : ''}`}
+                                                variant="gradient"
+                                                className={`${loading ? 'cursor-not-allowed' : ''}`}
                                             >
                                                 {isLoading ? (
                                                     <span className="flex items-center justify-center">
@@ -261,7 +256,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 ) : (
                                                     'Swap Subscription'
                                                 )}
-                                            </button>
+                                            </Button>
                                         ) : (
                                             <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
                                                 Current Plan

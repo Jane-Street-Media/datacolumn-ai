@@ -120,7 +120,6 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                             <div className="border-opacity-30 dark:border-opacity-50 mb-8 overflow-hidden rounded-xl border-2 border-[#012A38] bg-white shadow-lg dark:bg-zinc-800">
                                 <div className="border-b border-gray-200 p-6 dark:border-gray-700">
                                     <div className="mb-4 flex items-center justify-center space-x-2">
-                                        <AppLogoIcon className="h-8 w-8" />
                                         <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">No Active Subscription</h2>
                                     </div>
                                     <p className="mb-4 text-center text-zinc-600 dark:text-zinc-300">
