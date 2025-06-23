@@ -23,7 +23,7 @@ class TeamController extends Controller
     {
         return Inertia::render('team', [
             'statistics' => GetTeamStats::handle(),
-            'roles' => Inertia::defer(fn()=>Role::all())
+            'roles' => Inertia::defer(fn () => Role::all()),
         ]);
     }
 

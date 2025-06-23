@@ -19,7 +19,7 @@ class DashboardController extends Controller
             'statistics' => GetStats::handle(),
             'activityLogs' => GetActivityLogs::handle(),
             'folders' => Inertia::defer(fn () => GetFolders::handle()),
-            'roles' => Inertia::defer(fn()=>Role::all())
+            'roles' => Inertia::defer(fn () => Role::all()),
         ]);
     }
 }
