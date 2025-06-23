@@ -20,10 +20,6 @@ class Subscription extends \Chargebee\Cashier\Subscription
         $chargebee = Cashier::chargebee();
         $chargebee->subscription()->pause($this->chargebee_id)->subscription;
 
-//        $this->fill([
-//            'chargebee_status' => $chargebeeSubscription->status->value,
-//        ])->save();
-
         return $this;
     }
 }
