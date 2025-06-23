@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Carbon\Carbon;
 use Chargebee\Cashier\Cashier;
 use Illuminate\Support\Facades\Log;
 
@@ -22,6 +23,26 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
             ]);
         } else {
             Log::info('Subscription paused attempted, but no matching user found.', [
+                'customer_id' => $payload['content']['subscription']['customer_id'],
+            ]);
+        }
+    }
+
+    protected function handleSubscriptionPauseScheduled(array $payload): void
+    {
+        if ($user = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+            $endsAt = $payload['content']['subscription']['pause_date'];
+            $subscription = $user->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription->update([
+                'ends_at' => Carbon::createFromTimestamp($endsAt),
+            ]);
+
+            Log::info('Subscription pause scheduled successfully.', [
+                'subscription_id' => $subscription->id,
+                'chargebee_subscription_id' => $payload['content']['subscription']['id'],
+            ]);
+        } else {
+            Log::info('Subscription pause scheduled attempted, but no matching user found.', [
                 'customer_id' => $payload['content']['subscription']['customer_id'],
             ]);
         }
