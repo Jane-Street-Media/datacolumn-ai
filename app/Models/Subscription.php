@@ -18,11 +18,11 @@ class Subscription extends \Chargebee\Cashier\Subscription
             throw new LogicException('Only active subscriptions can be paused.');
         }
         $chargebee = Cashier::chargebee();
-        $chargebeeSubscription = $chargebee->subscription()->pause($this->chargebee_id)->subscription;
+        $chargebee->subscription()->pause($this->chargebee_id)->subscription;
 
-        $this->fill([
-            'chargebee_status' => $chargebeeSubscription->status->value,
-        ])->save();
+//        $this->fill([
+//            'chargebee_status' => $chargebeeSubscription->status->value,
+//        ])->save();
 
         return $this;
     }
