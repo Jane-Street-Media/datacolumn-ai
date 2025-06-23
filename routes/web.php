@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
+use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\ProjectChartsController;
@@ -84,6 +85,7 @@ Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->
 
 Route::prefix('chart-ai')->group(function () {
     Route::get('/', ChartAIController::class)->name('chart-ai');
+    Route::get('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
 });
 
 require __DIR__.'/settings.php';
