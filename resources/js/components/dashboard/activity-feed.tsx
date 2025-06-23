@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardAction, CardFooter } from '@/components/ui/card';
 import { formatDistanceToNow } from 'date-fns'
-import { UserPlus, UserMinus, UserPen, Send, Trash, Check} from 'lucide-react';
+import { UserPlus, UserMinus, UserPen, Send, Trash, Check, FolderPlus, FolderMinus, Pencil} from 'lucide-react';
 
 const Icons = {
     UserPlus,
@@ -9,6 +9,9 @@ const Icons = {
     Send,
     Trash,
     Check,
+    FolderPlus,
+    FolderMinus,
+    Pencil
 };
 export default function ActivityFeed({ activityLogs }) {
 
