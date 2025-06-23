@@ -1,10 +1,10 @@
+import InviteMemberDialog from '@/components/InviteMemberDialog';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Deferred, Head } from '@inertiajs/react';
 import { CrownIcon, MailIcon, ShieldIcon, Users } from 'lucide-react';
-import InviteMemberDialog from '@/components/InviteMemberDialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ role, statistics }) {
+export default function Team({ roles, statistics }) {
     const stats = [
         {
             name: 'Total Members',
@@ -47,7 +47,6 @@ export default function Team({ role, statistics }) {
         // },
     ];
 
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Teams" />
@@ -57,7 +56,9 @@ export default function Team({ role, statistics }) {
                         <PageHeaderTitle>Team Management</PageHeaderTitle>
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
-                            <InviteMemberDialog role={role} />
+                            <Deferred data="roles">
+                                <InviteMemberDialog roles={roles} />{' '}
+                            </Deferred>
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>

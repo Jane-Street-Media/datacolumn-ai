@@ -3,9 +3,7 @@
 namespace App\Http\Requests\Projects;
 
 use App\Http\Requests\BaseTeamRequest;
-use App\Models\Team;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class CreateProjectRequest extends BaseTeamRequest
@@ -29,7 +27,7 @@ class CreateProjectRequest extends BaseTeamRequest
             'name' => ['required', 'string'],
             'description' => ['nullable', 'string'],
             'folder_id' => [
-                'required',
+                'nullable',
                 Rule::exists('folders', 'id')->where(function ($query) {
                     $query->where('team_id', $this->team_id);
                 }),

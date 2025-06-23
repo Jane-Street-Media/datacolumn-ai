@@ -4,7 +4,6 @@ namespace App\Http\Requests\Teams;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class TeamRequest extends FormRequest
 {
