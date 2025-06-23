@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class TeamController extends Controller
 {
@@ -22,7 +23,7 @@ class TeamController extends Controller
     {
         return Inertia::render('team', [
             'statistics' => GetTeamStats::handle(),
-            'role' => 'owner',
+            'roles' => Inertia::defer(fn()=>Role::all())
         ]);
     }
 

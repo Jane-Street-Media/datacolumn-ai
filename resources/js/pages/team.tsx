@@ -1,12 +1,11 @@
+import InviteMemberDialog from '@/components/InviteMemberDialog';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { CrownIcon, MailIcon, Plus, ShieldIcon, UserPlus, Users } from 'lucide-react';
-import InviteMemberDialog from '@/components/InviteMemberDialog';
-import ProjectDialog from '@/components/projects/project-dialog';
-import { Button } from '@/components/ui/button';
+import { CrownIcon, MailIcon, ShieldIcon, UserPlus, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ role, statistics }) {
+export default function Team({ role, statistics, roles }) {
     const stats = [
         {
             name: 'Total Members',
@@ -49,7 +48,6 @@ export default function Team({ role, statistics }) {
         // },
     ];
 
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Teams" />
@@ -60,7 +58,7 @@ export default function Team({ role, statistics }) {
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
                             <InviteMemberDialog
-                                role={role}
+                                roles={roles}
                                 trigger={
                                     <Button>
                                         <UserPlus className="mr-2 h-4 w-4" />

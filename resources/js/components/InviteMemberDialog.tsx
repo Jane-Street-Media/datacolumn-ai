@@ -16,6 +16,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle, UserPlus } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type InviteForm = {
     email: string;
@@ -24,21 +25,22 @@ type InviteForm = {
 type InviteMemberDialogProps = {
     role: string;
 };
-export default function InviteMemberDialog({ role, trigger }: InviteMemberDialogProps) {
+export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialogProps) {
     const { auth } = usePage().props;
     const user = auth.user;
     const [open, setOpen] = useState(false); // dialog state
     const { data, setData, post, processing, errors, reset } = useForm<InviteForm>({
         email: '',
-        role: role,
+        role: '',
     });
+    console.log('roles:', roles);
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('team.member.store', user.current_team_id), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                console.log(response);
-                reset('email');
+                reset('email','role');
                 setOpen(false);
                 toast(response.props.flash.success, {
                     description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
@@ -81,6 +83,24 @@ export default function InviteMemberDialog({ role, trigger }: InviteMemberDialog
                             placeholder="xyz.com"
                         />
                         <InputError message={errors.email} />
+                        <Select
+                            value={data.role}
+                            onValueChange={(value) => setData('role', value)}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {roles?.map((role) => (
+                                        <SelectItem key={role.id} value={String(role.name)}>
+                                            {role.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.role} />
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
