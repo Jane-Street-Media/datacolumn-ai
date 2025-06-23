@@ -12,11 +12,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle, UserPlus } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type InviteForm = {
     email: string;
@@ -39,7 +39,7 @@ export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialo
         post(route('team.member.store', user.current_team_id), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                reset('email','role');
+                reset('email', 'role');
                 setOpen(false);
                 toast(response.props.flash.success, {
                     description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
@@ -82,23 +82,22 @@ export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialo
                             placeholder="xyz.com"
                         />
                         <InputError message={errors.email} />
-                        <Select
-                            value={data.role}
-                            onValueChange={(value) => setData('role', value)}
-                        >
+
+                        <Select value={data.role} onValueChange={(value) => setData('role', value)}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    {roles?.map((role) => (
+                                    {roles.map((role) => (
                                         <SelectItem key={role.id} value={String(role.name)}>
                                             {role.name}
                                         </SelectItem>
-                                    ))}
+                                    ))}{' '}
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+
                         <InputError message={errors.role} />
                     </div>
                     <DialogFooter>

@@ -4,7 +4,7 @@ import StatsCard from '@/components/stats-card';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Deferred, Head } from '@inertiajs/react';
 import { CrownIcon, MailIcon, ShieldIcon, UserPlus, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -57,15 +57,17 @@ export default function Team({ role, statistics, roles }) {
                         <PageHeaderTitle>Team Management</PageHeaderTitle>
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
-                            <InviteMemberDialog
-                                roles={roles}
-                                trigger={
-                                    <Button>
-                                        <UserPlus className="mr-2 h-4 w-4" />
-                                        <span>Invite Member</span>
-                                    </Button>
-                                }
-                            />{' '}
+                            <Deferred data="roles">
+                                <InviteMemberDialog
+                                    roles={roles}
+                                    trigger={
+                                        <Button className="flex w-full items-center space-x-3 rounded-lg bg-white/20 p-3 text-white transition-colors duration-200 hover:bg-white/30">
+                                            <Users className="h-4 w-4" />
+                                            <span>Invite Team Member</span>
+                                        </Button>
+                                    }
+                                />{' '}
+                            </Deferred>
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>
