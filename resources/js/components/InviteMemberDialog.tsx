@@ -33,7 +33,6 @@ export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialo
         email: '',
         role: '',
     });
-    console.log('roles:', roles);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
