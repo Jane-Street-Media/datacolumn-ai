@@ -27,7 +27,7 @@ export default function RecentProjects({ projects, folders }) {
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
-                    {projects?.length > 0 ? (
+                    {projects?.length  ? (
                         projects?.map((project, index) => (
                             <motion.div
                                 key={project.id}
