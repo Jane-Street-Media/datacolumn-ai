@@ -10,7 +10,7 @@ class AcceptTeamInvitation
 {
     public static function handle(User $user, TeamInvitation $teamInvitation): TeamInvitation
     {
-        $teamInvitation->team->users()->sync($user->id);
+        $teamInvitation->team->users()->attach($user->id);
         $user->assignRole($teamInvitation->role);
         $teamInvitation->delete();
         defer(fn () => activity()
