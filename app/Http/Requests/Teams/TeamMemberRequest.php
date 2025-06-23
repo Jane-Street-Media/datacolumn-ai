@@ -6,6 +6,7 @@ use App\Models\Team;
 use Illuminate\Container\Attributes\RouteParameter;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TeamMemberRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class TeamMemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->hasRole('owner');
     }
 
     /**

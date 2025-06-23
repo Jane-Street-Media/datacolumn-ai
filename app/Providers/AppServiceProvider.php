@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //TODO: This is only for ngrok
+        // TODO: This is only for ngrok
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
