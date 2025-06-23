@@ -6,7 +6,7 @@ import InviteMemberDialog from '@/components/InviteMemberDialog';
 
 export default function QuickActions({ folders }) {
     return (
-        <Card className="from-gradient-from to-gradient-to bg-gradient-to-r">
+            <Card className="bg-gradient-to-r from-gradient-from to-gradient-to">
             <CardHeader>
                 <CardTitle className="text-white">Quick Actions</CardTitle>
             </CardHeader>
