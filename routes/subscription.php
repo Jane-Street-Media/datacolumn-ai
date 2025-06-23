@@ -15,5 +15,4 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         ->name('download-invoice');
 });
 
-
 require __DIR__.'/auth.php';

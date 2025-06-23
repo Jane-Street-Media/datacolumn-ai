@@ -8,7 +8,6 @@ use App\Models\Team;
 use App\Models\TeamInvitation;
 use Illuminate\Support\Facades\Mail;
 
-
 class SendTeamInvitation
 {
     public static function handle(array $data, Team $team): TeamInvitation

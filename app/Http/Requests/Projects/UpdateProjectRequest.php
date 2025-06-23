@@ -32,6 +32,6 @@ class UpdateProjectRequest extends BaseTeamRequest
                 Rule::exists('folders', 'id')->where(function ($query) {
                     $query->where('team_id', $this->team_id);
                 }),
-            ],];
+            ], ];
     }
 }

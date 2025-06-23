@@ -23,7 +23,7 @@ enum ActivityEvents: string
 
     public function getIcon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEAM_CREATED => 'UserPlus',
             self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED => 'UserPen',
             self::TEAM_DELETED, self::TEAM_MEMBER_DELETED => 'UserMinus',
@@ -36,10 +36,9 @@ enum ActivityEvents: string
         };
     }
 
-
     public function getIconClasses(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEAM_CREATED => 'w-4 h-4 text-emerald-600 dark:text-emerald-400',
             self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED => 'w-4 h-4 text-indigo-600 dark:text-indigo-400',
             self::TEAM_DELETED, self::TEAM_MEMBER_DELETED => 'w-4 h-4 text-rose-600 dark:text-rose-400',
@@ -52,10 +51,9 @@ enum ActivityEvents: string
         };
     }
 
-
     public function getIconBackgroundClasses(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEAM_CREATED => 'bg-emerald-100 dark:bg-emerald-900/20',
             self::TEAM_UPDATED, self::TEAM_MEMBER_UPDATED => 'bg-indigo-100 dark:bg-indigo-900/20',
             self::TEAM_DELETED, self::TEAM_MEMBER_DELETED => 'bg-rose-100 dark:bg-rose-900/20',
@@ -67,5 +65,4 @@ enum ActivityEvents: string
             self::TEAM_PROJECT_DELETED => 'bg-pink-100 dark:bg-pink-900/20',
         };
     }
-
 }
