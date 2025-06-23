@@ -3,8 +3,10 @@ import StatsCard from '@/components/stats-card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { CrownIcon, MailIcon, ShieldIcon, Users } from 'lucide-react';
+import { CrownIcon, MailIcon, Plus, ShieldIcon, UserPlus, Users } from 'lucide-react';
 import InviteMemberDialog from '@/components/InviteMemberDialog';
+import ProjectDialog from '@/components/projects/project-dialog';
+import { Button } from '@/components/ui/button';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -57,7 +59,15 @@ export default function Team({ role, statistics }) {
                         <PageHeaderTitle>Team Management</PageHeaderTitle>
                         <PageHeaderDescription>Manage team members, roles, and permissions across your organization.</PageHeaderDescription>
                         <PageHeaderAction>
-                            <InviteMemberDialog role={role} />
+                            <InviteMemberDialog
+                                role={role}
+                                trigger={
+                                    <Button>
+                                        <UserPlus className="mr-2 h-4 w-4" />
+                                        <span>Invite Member</span>
+                                    </Button>
+                                }
+                            />{' '}
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>

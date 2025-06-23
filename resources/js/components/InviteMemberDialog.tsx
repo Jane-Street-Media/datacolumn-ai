@@ -24,7 +24,7 @@ type InviteForm = {
 type InviteMemberDialogProps = {
     role: string;
 };
-export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
+export default function InviteMemberDialog({ role, trigger }: InviteMemberDialogProps) {
     const { auth } = usePage().props;
     const user = auth.user;
     const [open, setOpen] = useState(false); // dialog state
@@ -37,7 +37,7 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
         post(route('team.member.store', user.current_team_id), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                console.log(response)
+                console.log(response);
                 reset('email');
                 setOpen(false);
                 toast(response.props.flash.success, {
@@ -50,10 +50,14 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    <span>Invite Member</span>
-                </Button>
+                {trigger ? (
+                    trigger
+                ) : (
+                    <Button>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        <span>Invite Member</span>
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
