@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm } from '@inertiajs/react';
-import { LoaderCircle, Plus } from 'lucide-react';
+import { LoaderCircle, UserPlus } from 'lucide-react';
 import { FormEventHandler, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -67,7 +67,7 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                     trigger
                 ) : (
                     <Button variant="ghost" className="border">
-                        <Plus className="mr-2 h-4 w-4" />
+                        <UserPlus className="mr-2 h-4 w-4" />
                         <span>New Project</span>
                     </Button>
                 )}
