@@ -7,7 +7,6 @@ use App\Enums\ActivityEvents;
 use App\Models\Project;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\RedirectResponse;
 
 class CreateProject
 {
@@ -18,7 +17,7 @@ class CreateProject
             throw new Exception('You have reached the maximum number of projects allowed by your plan');
         }
         $project = $user->projects()->create($data);
-        defer(fn() => activity()
+        defer(fn () => activity()
             ->performedOn($project)
             ->event(ActivityEvents::TEAM_PROJECT_CREATED->value)
             ->log(":causer.name created a new project named {$project->name} under folder {$project->folder->name}.")

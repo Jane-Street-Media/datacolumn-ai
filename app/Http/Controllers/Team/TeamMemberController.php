@@ -20,6 +20,7 @@ class TeamMemberController extends Controller
     {
         try {
             SendTeamInvitation::handle($request->validated(), $team);
+
             return back()->with('success', 'Invite sent successfully.');
         } catch (Exception $exception) {
             return back()->with('error', $exception->getMessage());

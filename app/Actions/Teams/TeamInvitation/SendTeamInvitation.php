@@ -7,7 +7,6 @@ use App\Enums\ActivityEvents;
 use App\Mail\InvitationSent;
 use App\Models\Team;
 use App\Models\TeamInvitation;
-use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 
@@ -22,7 +21,7 @@ class SendTeamInvitation
         $teamInvitation = $team->invitations()->create($data);
         Mail::to($teamInvitation->email)->send(new InvitationSent($teamInvitation));
 
-        defer(fn() => activity()
+        defer(fn () => activity()
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(":causer.name invited :subject.email to join {$team->name} team.")
