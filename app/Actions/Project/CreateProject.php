@@ -11,14 +11,14 @@ use Illuminate\Http\RedirectResponse;
 
 class CreateProject
 {
-    public static function handle(User $user, array $data): RedirectResponse|Project
+    public static function handle(User $user, array $data): Project
     {
         $subscribedPlan = GetSubscriptionPlanWithFeatures::handle($user);
         if ($user->currentTeam->projects()->count() >= $subscribedPlan['features']['no_of_projects']) {
             throw new Exception('You have reached the maximum number of projects allowed by your plan');
         }
         $project = $user->projects()->create($data);
-        defer(fn () => activity()
+        defer(fn() => activity()
             ->performedOn($project)
             ->event(ActivityEvents::TEAM_PROJECT_CREATED->value)
             ->log(":causer.name created a new project named {$project->name} under folder {$project->folder->name}.")
