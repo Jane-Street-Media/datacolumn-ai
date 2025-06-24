@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Helpers\SubscriptionLockHelper;
+use App\Models\Team;
 use Carbon\Carbon;
 use Chargebee\Cashier\Cashier;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,9 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
     protected function handleSubscriptionCreated(array $payload): void
     {
         parent::handleSubscriptionCreated($payload);
-        SubscriptionLockHelper::unlock(Auth::user()?->id);
+        $customerId = $payload['content']['customer']['id'];
+        $userId =  Team::query()->where('chargebee_id', $customerId)->first()->user_id;
+        SubscriptionLockHelper::unlock($userId);
     }
     protected function handleSubscriptionPaused(array $payload): void
     {
