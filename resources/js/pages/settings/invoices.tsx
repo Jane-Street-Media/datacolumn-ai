@@ -66,19 +66,19 @@ const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
             <SettingsLayout>
                 <div className="p-6">
                     <div className="text-center max-w-3xl mx-auto mb-12">
-                        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mb-3">Invoices</h1>
-                        <p className="text-lg text-zinc-600 dark:text-zinc-300">
+                        <h1 className="text-3xl font-bold text-foreground mb-3">Invoices</h1>
+                        <p className="text-lg text-secondary-foreground">
                             View and download your billing history
                         </p>
                     </div>
 
                     {isLoading ? (
                         <div className="flex justify-center items-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF3300]"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-card"></div>
                         </div>
                     ) : invoices.length === 0 ? (
-                        <div className="text-center py-10 bg-white dark:bg-zinc-800 rounded-xl shadow-md">
-                            <p className="text-zinc-600 dark:text-zinc-300">No invoices found.</p>
+                        <div className="text-center py-10 bg-card rounded-xl shadow-md">
+                            <p className="text-foreground">No invoices found.</p>
                         </div>
                     ) : (
                         <div className="mx-33 flex-1">
@@ -90,20 +90,12 @@ const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
                                     onMouseLeave={() => setHoveredInvoiceId(null)}
                                 >
                                     <div
-                                        className={`bg-white dark:bg-zinc-800 shadow-lg rounded-xl border-2 overflow-hidden flex flex-col h-full transition-all duration-300 ${
-                                            hoveredInvoiceId === invoice.id
-                                                ? "border-[#FF3300]"
-                                                : "border-[#012A38] border-opacity-30 dark:border-opacity-50"
-                                        }`}
+                                        className={`bg-white dark:bg-zinc-800 shadow-lg rounded-xl border-2 overflow-hidden flex flex-col h-full transition-all duration-300`}
                                     >
                                         <div
                                             className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
                                             <div>
-                                                <h2 className={`text-lg font-semibold ${
-                                                    hoveredInvoiceId === invoice.id
-                                                        ? "text-[#FF3300] dark:text-[#FF3300]"
-                                                        : "text-zinc-900 dark:text-zinc-50"
-                                                } transition-colors duration-300`}>
+                                                <h2 className={`text-lg font-semibold transition-colors duration-300`}>
                                                     Invoice #{invoice.id}
                                                 </h2>
                                                 <p className={`text-sm font-medium ${
@@ -179,7 +171,7 @@ const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
                                                 href={`/user/invoice/${invoice.id}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className={`block w-full px-4 py-3 text-center font-medium rounded-lg transition-all text-white bg-[#012A38] hover:bg-[#FF3300]`}
+                                                className={`block w-full px-4 py-3 text-center font-medium rounded-lg transition-all text-white bg-primary`}
                                             >
                                                 <span className="flex items-center justify-center">
                                                     <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
