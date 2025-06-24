@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Mail;
 
 class SendTeamInvitation
 {
+    /**
+     * @throws Exception
+     */
     public static function handle(array $data, Team $team): TeamInvitation
     {
         $subscribedPlanFeatures = GetSubscriptionPlanWithFeatures::handle($team->owner);

@@ -10,6 +10,9 @@ use Exception;
 
 class CreateProject
 {
+    /**
+     * @throws Exception
+     */
     public static function handle(User $user, array $data): Project
     {
         $subscribedPlanFeatures = GetSubscriptionPlanWithFeatures::handle($user);
