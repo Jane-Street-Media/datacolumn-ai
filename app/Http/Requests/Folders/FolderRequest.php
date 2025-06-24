@@ -3,9 +3,7 @@
 namespace App\Http\Requests\Folders;
 
 use App\Http\Requests\BaseTeamRequest;
-use App\Models\Team;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\Auth;
 
 class FolderRequest extends BaseTeamRequest
 {

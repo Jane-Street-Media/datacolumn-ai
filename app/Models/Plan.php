@@ -11,6 +11,8 @@ class Plan extends Model
 
     protected $table = 'plans';
 
+    const FREE_PLAN = 'free plan';
+
     protected $fillable = [
         'chargebee_id',
         'display_name',
@@ -19,5 +21,9 @@ class Plan extends Model
         'frequency',
         'currency',
         'quantity',
+    ];
+
+    protected $casts = [
+        'features' => 'array',
     ];
 }

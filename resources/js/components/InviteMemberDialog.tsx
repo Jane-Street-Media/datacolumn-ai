@@ -37,12 +37,19 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
         post(route('team.member.store', user.current_team_id), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                console.log(response)
+                console.log(response);
                 reset('email');
                 setOpen(false);
-                toast(response.props.flash.success, {
-                    description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
-                });
+
+                if (response.props.flash.success) {
+                    toast(response.props.flash.success, {
+                        description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
+                    });
+                } else if (response.props.flash.error) {
+                    toast.error(response.props.flash.error, {
+                        description: 'Upgrade your plan to send more invites.',
+                    });
+                }
             },
         });
     };

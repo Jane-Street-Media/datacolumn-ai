@@ -2,14 +2,21 @@
 
 namespace App\Actions\Project;
 
+use App\Actions\GetSubscriptionPlanFeatures;
 use App\Enums\ActivityEvents;
 use App\Models\Project;
 use App\Models\User;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 
 class CreateProject
 {
-    public static function handle(User $user, array $data): Project
+    public static function handle(User $user, array $data): RedirectResponse|Project
     {
+        $subscribedPlanFeatures = GetSubscriptionPlanFeatures::handle($user);
+        if ($user->currentTeam->projects()->count() >= $subscribedPlanFeatures['no_of_projects']) {
+            throw new Exception('You have reached the maximum number of projects allowed by your plan');
+        }
         $project = $user->projects()->create($data);
         defer(fn () => activity()
             ->performedOn($project)

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Team extends Model
 {
-    use HasFactory, Billable;
+    use Billable, HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -26,12 +26,17 @@ class Team extends Model
 
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function invitations(): HasMany
     {
         return $this->hasMany(TeamInvitation::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
     }
 
     public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription

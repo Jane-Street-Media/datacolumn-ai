@@ -11,15 +11,19 @@ use App\Http\Requests\Teams\TeamMemberRequest;
 use App\Http\Requests\Teams\TeamMemberUpdateRequest;
 use App\Models\Team;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 
 class TeamMemberController extends Controller
 {
     public function store(TeamMemberRequest $request, Team $team): RedirectResponse
     {
-        SendTeamInvitation::handle($request->validated(), $team);
-
-        return back()->with('success', 'Invite sent successfully.');
+        try {
+            SendTeamInvitation::handle($request->validated(), $team);
+            return back()->with('success', 'Invite sent successfully.');
+        } catch (Exception $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
     }
 
     public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse

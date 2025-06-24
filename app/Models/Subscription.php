@@ -21,10 +21,9 @@ class Subscription extends \Chargebee\Cashier\Subscription
         $chargebee = Cashier::chargebee();
         $chargebeeSubscription = $chargebee->subscription()->pause($this->chargebee_id)->subscription;
 
-
         $this->fill([
             'chargebee_status' => $chargebeeSubscription->status->value,
-            'ends_at' => Carbon::createFromTimestamp($chargebeeSubscription->pause_date)
+            'ends_at' => Carbon::createFromTimestamp($chargebeeSubscription->pause_date),
         ])->save();
 
         return $this;
@@ -40,7 +39,7 @@ class Subscription extends \Chargebee\Cashier\Subscription
 
         $this->fill([
             'chargebee_status' => $chargebeeSubscription->status->value,
-            'ends_at' => null
+            'ends_at' => null,
         ])->save();
 
         return $this;
