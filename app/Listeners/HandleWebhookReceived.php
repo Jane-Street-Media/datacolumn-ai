@@ -2,12 +2,19 @@
 
 namespace App\Listeners;
 
+use App\Helpers\SubscriptionLockHelper;
 use Carbon\Carbon;
 use Chargebee\Cashier\Cashier;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookReceived
 {
+    protected function handleSubscriptionCreated(array $payload): void
+    {
+        parent::handleSubscriptionCreated($payload);
+        SubscriptionLockHelper::unlock(Auth::user()?->id);
+    }
     protected function handleSubscriptionPaused(array $payload): void
     {
         if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {

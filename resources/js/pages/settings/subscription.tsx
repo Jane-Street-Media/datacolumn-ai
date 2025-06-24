@@ -4,10 +4,10 @@ import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
 import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
+import { isBefore } from 'date-fns';
 import { Loader2 } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { isBefore } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,19 +22,18 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const canResumeSubscription = useMemo(() => {
-        if(subscription?.ends_at){
+        if (subscription?.ends_at) {
             const now = new Date();
             const endsAt = new Date(subscription?.ends_at);
-            if(isBefore(now, endsAt)){
+            if (isBefore(now, endsAt)) {
                 return true;
             }
         }
         return false;
     }, [subscription]);
     const PauseSubscriptionButton = () => {
-        const [isLoading, setIsLoading] = useState(false);
-
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
                 e.preventDefault();
@@ -51,10 +50,16 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         setIsLoading(true);
                     },
                     onSuccess: (response) => {
-                        toast.success(response.props.flash.success);
-                        setPauseModalOpen(false);
+                        if (response.props.flash.error) {
+                            toast.error(response.props.flash.error);
+                        } else {
+                            toast.success(response.props.flash.success);
+                        }
                     },
-                    onFinish: () => setIsLoading(false),
+                    onFinish: () => {
+                        setPauseModalOpen(false);
+                        setIsLoading(false);
+                    },
                 },
             );
         };
@@ -109,7 +114,11 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                     setLoading(true);
                 },
                 onSuccess: (response) => {
-                    toast.success(response.props.flash.success);
+                    if (response.props.flash.error) {
+                        toast.error(response.props.flash.error);
+                    } else {
+                        toast.success(response.props.flash.success);
+                    }
                 },
                 onFinish: () => setLoading(false),
             },
@@ -375,8 +384,16 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                 </p>
                                 <div className="flex justify-end space-x-4">
                                     <button
-                                        onClick={() => setPauseModalOpen(false)}
-                                        className="cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                                        onClick={(e) => {
+                                            if (isLoading) {
+                                                e.preventDefault();
+                                                return;
+                                            } else {
+                                                setPauseModalOpen(false);
+                                            }
+                                        }}
+                                        aria-disabled={isLoading}
+                                        className={`${isLoading ? 'cursor-wait bg-red-400' : ''} cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700`}
                                     >
                                         Keep Subscription
                                     </button>
@@ -386,11 +403,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         </div>
                     )}
 
-                    {subscription?.chargebee_status !== 'paused' ? (
-                        <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
-                    ) : (
-                        <></>
-                    )}
+                    {!canResumeSubscription ? <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} /> : <></>}
                 </div>
             </SettingsLayout>
         </AppLayout>

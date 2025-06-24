@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SubscriptionLockHelper;
 use Chargebee\Cashier\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckoutController extends Controller
 {
-    public function productCheckout(Request $request, string $plan): RedirectResponse
+    public function productCheckout(Request $request, string $plan): Response
     {
+        // 1. Prevent duplicate
+        if (SubscriptionLockHelper::isLocked($request->user()->id) || $request->user()->currentTeam->subscribed()) {
+            return redirect()->back()->with('error', 'You already have a subscription in progress. Please wait a few minutes or refresh the page.');
+        }
+
+        // 2. Lock user for 5 mins
+        SubscriptionLockHelper::lock($request->user()->id, 2);
+
         $checkout = $request
             ->user()
             ->currentTeam
@@ -19,11 +30,14 @@ class CheckoutController extends Controller
                 'cancel_url' => route('failed-payment'),
             ]);
 
-        return redirect()->away($checkout->url);
+        return Inertia::location($checkout->url);
     }
 
     public function swapProduct(Request $request, string $plan): RedirectResponse
     {
+        if ($request->user()->currentTeam->subscribedToPrice($plan)) {
+            return redirect()->back()->with('error', 'Your team is already subscribed to this plan.');
+        }
         $request->user()->currentTeam->subscription()->swap($plan);
 
         return redirect()->back()->with('success', 'Swapped successfully');
@@ -33,7 +47,8 @@ class CheckoutController extends Controller
     {
         return $request->user()->currentTeam->checkout([], [
             'mode' => Session::MODE_SETUP,
-            'success_url' => route('billing'),
+            'success_url' => route('billing'), // Ensure this route uses port 80 or 443
+            'cancel_url' => route('billing'),  // Optional: allow cancel fallback
         ]);
     }
 }
