@@ -21,6 +21,7 @@ class Plan extends Model
         'frequency',
         'currency',
         'quantity',
+        'features',
     ];
 
     protected $casts = [
