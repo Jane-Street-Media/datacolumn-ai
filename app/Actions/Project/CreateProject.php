@@ -2,7 +2,7 @@
 
 namespace App\Actions\Project;
 
-use App\Actions\GetSubscriptionPlanWithFeatures;
+use App\Actions\GetSubscriptionPlanFeatures;
 use App\Enums\ActivityEvents;
 use App\Models\Project;
 use App\Models\User;
@@ -15,7 +15,7 @@ class CreateProject
      */
     public static function handle(User $user, array $data): Project
     {
-        $subscribedPlanFeatures = GetSubscriptionPlanWithFeatures::handle($user);
+        $subscribedPlanFeatures = GetSubscriptionPlanFeatures::handle($user);
         if ($user->currentTeam->projects()->count() >= $subscribedPlanFeatures['no_of_projects']) {
             throw new Exception('You have reached the maximum number of projects allowed by your plan');
         }
