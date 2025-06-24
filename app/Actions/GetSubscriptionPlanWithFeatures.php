@@ -16,9 +16,9 @@ class GetSubscriptionPlanWithFeatures
         if (! $subscription) {
             return [
                 'features' => [
-                    'no_of_folders' => 3,
-                    'no_of_projects' => 3,
-                    'no_of_invitation' => 3,
+                    'no_of_folders' => Plan::FREE_PLAN_NO_OF_FOLDERS,
+                    'no_of_projects' => Plan::FREE_PLAN_NO_OF_PROJECTS,
+                    'no_of_invitation' => Plan::FREE_PLAN_NO_OF_INVITATIONS,
                 ],
             ];
         }
