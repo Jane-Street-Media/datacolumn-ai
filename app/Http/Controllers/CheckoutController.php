@@ -13,12 +13,9 @@ class CheckoutController extends Controller
 {
     public function productCheckout(Request $request, string $plan): Response
     {
-        // 1. Prevent duplicate
         if (SubscriptionLockHelper::isLocked($request->user()->id) || $request->user()->currentTeam->subscribed()) {
             return redirect()->back()->with('error', 'You already have a subscription in progress. Please wait a few minutes or refresh the page.');
         }
-
-        // 2. Lock user for 5 mins
         SubscriptionLockHelper::lock($request->user()->id, 2);
 
         $checkout = $request
