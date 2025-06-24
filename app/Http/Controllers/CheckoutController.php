@@ -12,6 +12,7 @@ class CheckoutController extends Controller
     {
         $checkout = $request
             ->user()
+            ->currentTeam
             ->newSubscription('default', $plan)
             ->checkout([
                 'success_url' => route('successful-subscription'),
@@ -23,14 +24,14 @@ class CheckoutController extends Controller
 
     public function swapProduct(Request $request, string $plan): RedirectResponse
     {
-        $request->user()->subscription()->swap($plan);
+        $request->user()->currentTeam->subscription()->swap($plan);
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }
 
     public function updatePaymentMethod(Request $request)
     {
-        return $request->user()->checkout([], [
+        return $request->user()->currentTeam->checkout([], [
             'mode' => Session::MODE_SETUP,
             'success_url' => route('billing'),
         ]);

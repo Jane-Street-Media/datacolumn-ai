@@ -10,7 +10,7 @@ class SubscriptionController extends Controller
     public function pauseSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->subscription('default');
+            $subscription = $request->user()?->currentTeam->subscription('default');
 
             if ($subscription && $subscription->pause()) {
                 return back()->with('success', 'Subscription paused successfully.');
@@ -18,7 +18,6 @@ class SubscriptionController extends Controller
 
             return back()->with('error', 'Something went wrong while pausing the subscription.');
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
@@ -26,20 +25,19 @@ class SubscriptionController extends Controller
     public function resumeSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->subscription('default');
+            $subscription = $request->user()?->currentTeam->subscription('default');
             if ($subscription && $subscription->resumePauseScheduled()) {
                 return back()->with('success', 'Subscription resumed successfully.');
             }
 
             return back()->with('error', 'Something went wrong while resuming the subscription.');
         } catch (\Exception $e) {
-            dd($e);
             return back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
 
     public function downloadInvoices(Request $request, string $invoiceId)
     {
-        return $request->user()?->downloadInvoice($invoiceId);
+        return $request->user()?->currentTeam->downloadInvoice($invoiceId);
     }
 }

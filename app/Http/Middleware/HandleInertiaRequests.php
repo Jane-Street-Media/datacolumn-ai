@@ -53,7 +53,7 @@ class HandleInertiaRequests extends Middleware
             },
             'auth' => [
                 'user' => $request->user(),
-                'subscription' => $request?->user()?->subsriptionWithProductDetails() ?? null,
+                'subscription' => $request?->user()?->currentTeam?->subscriptionWithProductDetails() ?? null,
             ],
 
         ];

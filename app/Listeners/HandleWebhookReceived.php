@@ -10,9 +10,9 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
 {
     protected function handleSubscriptionPaused(array $payload): void
     {
-        if ($user = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+        if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
             $status = $payload['content']['subscription']['status'];
-            $subscription = $user->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
             $subscription->update([
                 'chargebee_status' => $status,
             ]);
@@ -30,9 +30,9 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
 
     protected function handleSubscriptionPauseScheduled(array $payload): void
     {
-        if ($user = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+        if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
             $endsAt = $payload['content']['subscription']['pause_date'];
-            $subscription = $user->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
             $subscription->update([
                 'ends_at' => Carbon::createFromTimestamp($endsAt),
             ]);
@@ -50,8 +50,8 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
 
     protected function handleSubscriptionScheduledPauseRemoved(array $payload): void
     {
-        if ($user = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
-            $subscription = $user->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+        if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+            $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
             $subscription->update([
                 'ends_at' => null,
             ]);
