@@ -33,7 +33,7 @@ class UpdatePlanFeatures extends Command
         ];
 
         return Plan::query()->update([
-            'features' => json_encode($features),
+            'features' => $features,
         ]);
     }
 }
