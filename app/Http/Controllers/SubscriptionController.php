@@ -10,7 +10,7 @@ class SubscriptionController extends Controller
     public function pauseSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->currentTeam->subscription('default');
+            $subscription = $request->user()->currentTeam->subscription('default');
 
             if ($subscription && $subscription->pause()) {
                 return back()->with('success', 'Subscription paused successfully.');
@@ -25,7 +25,7 @@ class SubscriptionController extends Controller
     public function resumeSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->currentTeam->subscription('default');
+            $subscription = $request->user()->currentTeam->subscription('default');
             if ($subscription && $subscription->resumePauseScheduled()) {
                 return back()->with('success', 'Subscription resumed successfully.');
             }
@@ -38,6 +38,6 @@ class SubscriptionController extends Controller
 
     public function downloadInvoices(Request $request, string $invoiceId)
     {
-        return $request->user()?->currentTeam->downloadInvoice($invoiceId);
+        return $request->user()->currentTeam->downloadInvoice($invoiceId);
     }
 }

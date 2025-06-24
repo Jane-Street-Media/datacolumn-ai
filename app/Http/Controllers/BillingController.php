@@ -45,7 +45,7 @@ class BillingController extends Controller
 
     public function billing(Request $request): Response|RedirectResponse
     {
-        if ($request->user()?->currentTeam->subscribed('default')) {
+        if ($request->user()->currentTeam->subscribed('default')) {
             return redirect()->route('subscription-settings');
         }
 
@@ -57,14 +57,14 @@ class BillingController extends Controller
     public function invoices(Request $request): Response
     {
         return Inertia::render('settings/invoices', [
-            'invoices' => $request->user()?->currentTeam->invoices(),
+            'invoices' => $request->user()->currentTeam->invoices(),
         ]);
     }
 
     public function subscriptions(Request $request): Response
     {
         return Inertia::render('settings/subscription', [
-            'subscription' => $request?->user()?->currentTeam?->subscriptionWithProductDetails() ?? null,
+            'subscription' => $request->user()->currentTeam->subscriptionWithProductDetails() ?? null,
             'plans' => $this->getAllPlans(),
         ]);
     }
