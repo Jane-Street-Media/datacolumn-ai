@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardAction, CardFooter } from '@/components/ui/card';
 import { formatDistanceToNow } from 'date-fns'
-import { UserPlus, UserMinus, UserPen, Send, Trash, Check} from 'lucide-react';
+import { UserPlus, UserMinus, UserPen, Send, Trash, Check, FolderPlus, FolderMinus, Pencil} from 'lucide-react';
 
 const Icons = {
     UserPlus,
@@ -9,6 +9,9 @@ const Icons = {
     Send,
     Trash,
     Check,
+    FolderPlus,
+    FolderMinus,
+    Pencil
 };
 export default function ActivityFeed({ activityLogs }) {
 
@@ -20,7 +23,7 @@ export default function ActivityFeed({ activityLogs }) {
             <CardHeader>
                 <CardTitle>Activity Feed</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="h-96 overflow-y-scroll">
                 <div className="space-y-4">
                     {activityLogs.map((log, index) => {
                         const Icon = Icons[log.icon_name]; // dynamically resolve from string

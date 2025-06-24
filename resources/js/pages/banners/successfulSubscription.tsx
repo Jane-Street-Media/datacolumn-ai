@@ -33,14 +33,8 @@ const SubscriptionWelcome = () => {
                             description="Thanks for upgrading to a subscription plan."
                         />
                         <div className="py-5 space-y-5">
-                            <p>This is your customer's successful purchase welcome screen. After a user upgrades their
-                                account they will be redirected to this page after a successful transaction.</p>
+                            <p>You have successfully subscribed.</p>
                         </div>
-                        <CommandWithCopyButton
-                            command={"/resources/js/pages/banners/successfulSubscription.tsx"}
-                            note={"You can modify this view from here."}
-                        >
-                        </CommandWithCopyButton>
                     </div>
                 </div>
             </div>

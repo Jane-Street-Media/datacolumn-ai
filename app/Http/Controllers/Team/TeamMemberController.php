@@ -12,7 +12,6 @@ use App\Http\Requests\Teams\TeamMemberUpdateRequest;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 
 class TeamMemberController extends Controller
 {
@@ -23,9 +22,9 @@ class TeamMemberController extends Controller
         return back()->with('success', 'Invite sent successfully.');
     }
 
-    public function update(TeamMemberUpdateRequest $request, User $teamMember): RedirectResponse
+    public function update(TeamMemberUpdateRequest $request, User $user): RedirectResponse
     {
-        UpdateTeamMember::handle($request->validated(), $teamMember);
+        UpdateTeamMember::handle($request->validated(), $user);
 
         return back()->with('success', 'Role assigned successfully.');
     }

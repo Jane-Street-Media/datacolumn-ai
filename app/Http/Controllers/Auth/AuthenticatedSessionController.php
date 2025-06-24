@@ -27,17 +27,13 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): \Symfony\Component\HttpFoundation\Response
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return redirect()->intended(
-            $request->user()?->subscribed('default')
-                ? route('dashboard', absolute: false)
-                : route('home', absolute: false)
-        );
+        return Inertia::location(route('dashboard'));
     }
 
     /**

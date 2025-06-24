@@ -72,6 +72,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(TeamInvitation::class, 'email', 'email');
     }
 
+    public function folders(): HasMany
+    {
+        return $this->hasMany(Folder::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
     public function subsriptionWithProductDetails()
     {
         $subscriptionDetails = $this->subscription('default');

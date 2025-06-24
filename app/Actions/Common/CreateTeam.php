@@ -17,11 +17,12 @@ class CreateTeam
         $team->users()->attach($user->id);
         $user->assignRole('owner');
 
-        activity()
+        defer(fn () => activity()
             ->causedBy($user)
             ->performedOn($team)
             ->event(ActivityEvents::TEAM_CREATED->value)
-            ->log(':causer.name created a new team.');
+            ->log(":causer.name created a new team named {$team->name}.")
+        );
 
         return $team;
     }

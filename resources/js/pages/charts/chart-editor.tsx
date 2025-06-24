@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
 import { Head } from '@inertiajs/react';
-import { Download, Save, Share2, Grid3X3, Import, List, Search } from 'lucide-react';
+import { Upload, Save, Share2, Import } from 'lucide-react';
 import * as React from 'react';
 import {
     PageHeader,
@@ -157,7 +157,7 @@ export default function ChartEditor() {
                                             <span>Import</span>
                                         </Button>
                                         <Button variant={'ghost'} className="border">
-                                            <Download />
+                                            <Upload />
                                             <span>Export</span>
                                         </Button>
                                         <Button variant={'ghost'} className="border">

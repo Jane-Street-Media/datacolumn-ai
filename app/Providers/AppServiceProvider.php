@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Console\Commands\FetchPlans;
 use App\Models\Subscription;
 use Chargebee\Cashier\Cashier;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // TODO: This is only for ngrok
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
         Cashier::useSubscriptionModel(Subscription::class);
     }
 }

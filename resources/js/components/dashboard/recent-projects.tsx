@@ -1,48 +1,52 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardAction, CardFooter } from '@/components/ui/card';
+import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
-import { Plus, BarChart3 } from 'lucide-react';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
+import { motion } from 'framer-motion';
+import { BarChart3, Plus } from 'lucide-react';
 
-export default function RecentProjects({ projects }) {
+export default function RecentProjects({ projects, folders }) {
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Recent Projects</CardTitle>
                 <CardDescription>These are the most recent projects you worked on.</CardDescription>
-                <CardAction>
-                    <Button>
-                        <Plus />
-                        <span>New Project</span>
-                    </Button>
-                </CardAction>
+                {projects?.length > 0 && (
+                    <CardAction>
+                        <ProjectDialog
+                            folders={folders}
+                            trigger={
+                                <Button>
+                                    <Plus />
+                                    <span>New Project</span>
+                                </Button>
+                            }
+                        />
+                    </CardAction>
+                )}
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
-                    {projects.length ? (
+                    {projects?.length  ? (
                         projects.map((project, index) => (
                             <motion.div
                                 key={project.id}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                                className="flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors duration-200 hover:bg-secondary"
+                                className="hover:bg-secondary flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors duration-200"
                             >
                                 {/* LEFT SIDE: icon + text */}
-                                <div className="flex flex-1 items-center space-x-4 min-w-0">
+                                <div className="flex min-w-0 flex-1 items-center space-x-4">
                                     {/* icon: never shrink */}
-                                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-gradient-from to-gradient-to">
+                                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
                                         <BarChart3 className="h-5 w-5" />
                                     </div>
 
                                     {/* text: allow truncation */}
                                     <div className="min-w-0">
-                                        <h3 className="truncate font-medium text-foreground">
-                                            {project.name}
-                                        </h3>
-                                        <p className="mt-1 truncate text-sm text-secondary-foreground">
-                                            {project.description}
-                                        </p>
+                                        <h3 className="text-foreground truncate font-medium">{project.name}</h3>
+                                        <p className="text-secondary-foreground mt-1 truncate text-sm">{project.description}</p>
                                     </div>
                                 </div>
 
@@ -57,19 +61,20 @@ export default function RecentProjects({ projects }) {
                                     >
                                         {project.status}
                                     </div>
-                                    <p className="mt-1 text-xs text-secondary-foreground">
-                                        {format(new Date(project.created_at), 'MMM d, yyyy')}
-                                    </p>
+                                    <p className="text-secondary-foreground mt-1 text-xs">{format(new Date(project.created_at), 'MMM d, yyyy')}</p>
                                 </div>
                             </motion.div>
                         ))
                     ) : (
                         <div className="py-8 text-center">
                             <BarChart3 className="mx-auto mb-4 h-12 w-12" />
-                            <p className="mb-4 text-secondary-foreground">No projects yet</p>
-                            <Button>
-                                Create Your First Project
-                            </Button>
+                            <p className="text-secondary-foreground mb-4">No projects yet</p>
+                            <ProjectDialog
+                                folders={folders}
+                                trigger={
+                                    <Button>Create Your First Project</Button>
+                                }
+                            />
                         </div>
                     )}
                 </div>
