@@ -15,8 +15,8 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
     {
         parent::handleSubscriptionCreated($payload);
         $customerId = $payload['content']['customer']['id'];
-        $userId =  Team::query()->where('chargebee_id', $customerId)->first()->user_id;
-        SubscriptionLockHelper::unlock($userId);
+        $teamOwnerId =  Team::query()->where('chargebee_id', $customerId)->first()->user_id;
+        SubscriptionLockHelper::unlock($teamOwnerId);
     }
     protected function handleSubscriptionPaused(array $payload): void
     {
