@@ -57,7 +57,7 @@ class BillingController extends Controller
     public function invoices(Request $request): Response
     {
         return Inertia::render('settings/invoices', [
-            'invoices' => $request->user()->invoices(),
+            'invoices' => $request->user()?->currentTeam->invoices(),
         ]);
     }
 
