@@ -15,7 +15,7 @@ class CreateProject
      */
     public static function handle(User $user, array $data): Project
     {
-        $subscribedPlanFeatures = GetSubscribedPlanFeatures::handle($user);
+        $subscribedPlanFeatures = GetSubscribedPlanFeatures::handle($user->currentTeam);
         if ($user->currentTeam->projects()->count() >= $subscribedPlanFeatures['no_of_projects']) {
             throw new Exception('You have reached the maximum number of projects allowed by your plan');
         }

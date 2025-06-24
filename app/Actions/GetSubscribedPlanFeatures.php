@@ -3,13 +3,14 @@
 namespace App\Actions;
 
 use App\Models\Plan;
+use App\Models\Team;
 use App\Models\User;
 
 class GetSubscribedPlanFeatures
 {
-    public static function handle(User $user)
+    public static function handle(Team $team)
     {
-        $subscription = $user->currentTeam->subscriptionWithProductDetails();
+        $subscription = $team->subscriptionWithProductDetails();
 
         if (! $subscription) {
             return [
