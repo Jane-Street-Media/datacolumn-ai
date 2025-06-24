@@ -21,9 +21,11 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
     {
         if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
             $status = $payload['content']['subscription']['status'];
+            $endsAt = $payload['content']['subscription']['pause_date'];
             $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
             $subscription->update([
                 'chargebee_status' => $status,
+                'ends_at' => Carbon::createFromTimestamp($endsAt),
             ]);
 
             Log::info('Subscription paused successfully.', [
@@ -41,8 +43,10 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
     {
         if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
             $endsAt = $payload['content']['subscription']['pause_date'];
+            $status = $payload['content']['subscription']['status'];
             $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
             $subscription->update([
+                'chargebee_status' => $status,
                 'ends_at' => Carbon::createFromTimestamp($endsAt),
             ]);
 
@@ -61,7 +65,9 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
     {
         if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
             $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $status = $payload['content']['subscription']['status'];
             $subscription->update([
+                'chargebee_status' => $status,
                 'ends_at' => null,
             ]);
 
