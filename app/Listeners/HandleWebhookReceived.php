@@ -47,4 +47,23 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
             ]);
         }
     }
+
+    protected function handleSubscriptionScheduledPauseRemoved(array $payload): void
+    {
+        if ($user = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+            $subscription = $user->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription->update([
+                'ends_at' => null,
+            ]);
+
+            Log::info('Subscription pause scheduled successfully.', [
+                'subscription_id' => $subscription->id,
+                'chargebee_subscription_id' => $payload['content']['subscription']['id'],
+            ]);
+        } else {
+            Log::info('Subscription pause scheduled attempted, but no matching user found.', [
+                'customer_id' => $payload['content']['subscription']['customer_id'],
+            ]);
+        }
+    }
 }

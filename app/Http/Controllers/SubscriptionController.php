@@ -18,6 +18,7 @@ class SubscriptionController extends Controller
 
             return back()->with('error', 'Something went wrong while pausing the subscription.');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
@@ -26,12 +27,13 @@ class SubscriptionController extends Controller
     {
         try {
             $subscription = $request->user()?->subscription('default');
-            if ($subscription && $subscription->resume()) {
+            if ($subscription && $subscription->resumePauseScheduled()) {
                 return back()->with('success', 'Subscription resumed successfully.');
             }
 
             return back()->with('error', 'Something went wrong while resuming the subscription.');
         } catch (\Exception $e) {
+            dd($e);
             return back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }

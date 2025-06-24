@@ -5,7 +5,7 @@ import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { isBefore } from 'date-fns';
 
@@ -22,7 +22,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [canResumeSubscription] = useState(() => {
+    const canResumeSubscription = useMemo(() => {
         if(subscription?.ends_at){
             const now = new Date();
             const endsAt = new Date(subscription?.ends_at);
@@ -31,7 +31,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
             }
         }
         return false;
-    });
+    }, [subscription]);
     const PauseSubscriptionButton = () => {
         const [isLoading, setIsLoading] = useState(false);
 

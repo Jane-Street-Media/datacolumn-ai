@@ -29,4 +29,20 @@ class Subscription extends \Chargebee\Cashier\Subscription
 
         return $this;
     }
+
+    public function resumePauseScheduled(): self
+    {
+        if (is_null($this->ends_at)) {
+            throw new LogicException('Only pause scheduled subscriptions can be resumed.');
+        }
+        $chargebee = Cashier::chargebee();
+        $chargebeeSubscription = $chargebee->subscription()->removeScheduledPause($this->chargebee_id)->subscription;
+
+        $this->fill([
+            'chargebee_status' => $chargebeeSubscription->status->value,
+            'ends_at' => null
+        ])->save();
+
+        return $this;
+    }
 }
