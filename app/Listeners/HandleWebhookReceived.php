@@ -14,9 +14,8 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
     protected function handleSubscriptionCreated(array $payload): void
     {
         parent::handleSubscriptionCreated($payload);
-        $customerId = $payload['content']['customer']['id'];
-        $teamOwnerId =  Team::query()->where('chargebee_id', $customerId)->first()->user_id;
-        SubscriptionLockHelper::unlock($teamOwnerId);
+        $team = Cashier::findBillable($payload['content']['subscription']['customer_id']);
+        SubscriptionLockHelper::unlock($team->user_id);
     }
     protected function handleSubscriptionPaused(array $payload): void
     {
