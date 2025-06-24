@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Models\Plan;
 use App\Models\User;
 
-class GetSubscriptionPlanFeatures
+class GetSubscribedPlanFeatures
 {
     public static function handle(User $user)
     {
