@@ -42,12 +42,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
             e.preventDefault();
             return;
         }
-        router.post(
+        router.get(
             route('checkout', planId),
             {},
             {
                 showProgress: false,
                 preserveScroll: true,
+                preserveState: true,
                 onStart: () => {
                     setLoading(true);
                     setLoadingPlanId(planId);

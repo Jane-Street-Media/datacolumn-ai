@@ -4,7 +4,7 @@ use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
-    Route::post('/checkout/{plan?}', [CheckoutController::class, 'productCheckout'])
+    Route::get('/checkout/{plan?}', [CheckoutController::class, 'productCheckout'])
         ->name('checkout');
 
     Route::patch('/checkout/{plan}/swap', [CheckoutController::class, 'swapProduct'])
