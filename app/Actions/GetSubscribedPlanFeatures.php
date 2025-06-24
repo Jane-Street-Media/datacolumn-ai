@@ -19,6 +19,6 @@ class GetSubscribedPlanFeatures
             ];
         }
 
-        return Plan::where('chargebee_id', $subscription->items[0]->chargebee_price)->first()->features;
+        return Plan::where('chargebee_id', $subscription->chargebee_price)->first()->features;
     }
 }
