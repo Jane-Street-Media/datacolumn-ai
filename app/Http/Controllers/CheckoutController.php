@@ -32,10 +32,10 @@ class CheckoutController extends Controller
 
     public function swapProduct(Request $request, string $plan): RedirectResponse
     {
-        if ($request->user()->currentTeam->subscribedToPrice($plan)) {
-            return redirect()->back()->with('error', 'Your team is already subscribed to this plan.');
+        if ($request->user()->currentTeam->subscribedToPrice($plan) || !is_null($request->user()->currentTeamLatestSubscription()->ends_at)) {
+            return redirect()->back()->with('error', 'Something went wrong while swapping your price. Please try again later.');
         }
-        $request->user()->currentTeam->subscription()->swap($plan);
+        $request->user()->currentTeamLatestSubscription()->swap($plan);
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }

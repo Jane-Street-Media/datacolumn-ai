@@ -65,6 +65,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Team::class, 'current_team_id', 'id');
     }
 
+    public function currentTeamLatestSubscription(): ?Subscription
+    {
+        return $this->currentTeam->subscriptions()->latest()->first();
+    }
+
     public function sentTeamInvitations(): HasMany
     {
         return $this->hasMany(TeamInvitation::class, 'invited_by_id');

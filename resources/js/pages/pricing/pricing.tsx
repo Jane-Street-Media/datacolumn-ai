@@ -201,7 +201,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             ))}
                                     </ul>
                                     <div className="mt-6">
-                                        {!isSubscribed ? (
+                                        {!isSubscribed || subscription.chargebee_status === 'cancelled' ? (
                                             <button
                                                 onClick={(e) => handleCheckoutClick(e, planId)}
                                                 className={`block w-full rounded-lg px-4 py-3 text-center font-medium transition-all ${

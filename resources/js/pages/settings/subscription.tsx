@@ -20,7 +20,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const { auth } = usePage<SharedData>().props;
     const isSubscribed = subscription != null;
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
-    const [pauseModalOpen, setPauseModalOpen] = useState(false);
+    const [cancelSubscriptionModalOpen, setCancelSubscriptionModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const canResumeSubscription = useMemo(() => {
@@ -33,14 +33,14 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         }
         return false;
     }, [subscription]);
-    const PauseSubscriptionButton = () => {
+    const CancelSubscriptionButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
                 e.preventDefault();
                 return;
             }
             router.patch(
-                route('subscription.pause'),
+                route('subscription.cancel'),
                 {},
                 {
                     showProgress: false,
@@ -57,7 +57,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         }
                     },
                     onFinish: () => {
-                        setPauseModalOpen(false);
+                        setCancelSubscriptionModalOpen(false);
                         setIsLoading(false);
                     },
                 },
@@ -67,12 +67,11 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         return !isLoading ? (
             <button
                 type={`button`}
-                href={route('subscription.pause')}
                 className={`rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 ${isLoading ? 'cursor-wait bg-red-400' : ''}`}
                 aria-disabled={isLoading}
                 onClick={handleClick}
             >
-                Pause now
+                Cancel now
             </button>
         ) : (
             <>
@@ -182,7 +181,13 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                     </div>
                                     <div className="text-right">
                                         <p className="text-sm text-zinc-600 dark:text-zinc-300">Started: {formatDate(subscription.created_at)}</p>
-                                        <p className="text-sm text-zinc-600 dark:text-zinc-300">Renews: {formatDate(subscription.next_billing_at)}</p>
+                                        {subscription.ends_at ? (
+                                            <p className="text-sm text-zinc-600 dark:text-zinc-300">Ends at: {formatDate(subscription.ends_at)}</p>
+                                        ) : (
+                                            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+                                                Renews: {formatDate(subscription.next_billing_at)}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -345,9 +350,9 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                 </span>
                                             )}
                                         </button>
-                                    ) : subscription?.chargebee_status === 'active' ? (
+                                    ) : subscription?.chargebee_status.toLowerCase() === 'active' ? (
                                         <button
-                                            onClick={() => setPauseModalOpen(true)}
+                                            onClick={() => setCancelSubscriptionModalOpen(true)}
                                             className="flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
                                         >
                                             <span className="flex items-center justify-center">
@@ -363,7 +368,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                         clipRule="evenodd"
                                                     />
                                                 </svg>
-                                                Pause Subscription
+                                                Cancel Subscription
                                             </span>
                                         </button>
                                     ) : (
@@ -374,7 +379,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         </div>
                     )}
 
-                    {pauseModalOpen && (
+                    {cancelSubscriptionModalOpen && (
                         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
                             <div className="w-full max-w-md rounded-lg bg-white p-6 dark:bg-zinc-800">
                                 <h3 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Confirm Cancellation</h3>
@@ -389,7 +394,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                 e.preventDefault();
                                                 return;
                                             } else {
-                                                setPauseModalOpen(false);
+                                                setCancelSubscriptionModalOpen(false);
                                             }
                                         }}
                                         aria-disabled={isLoading}
@@ -397,7 +402,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                     >
                                         Keep Subscription
                                     </button>
-                                    <PauseSubscriptionButton />
+                                    <CancelSubscriptionButton />
                                 </div>
                             </div>
                         </div>
