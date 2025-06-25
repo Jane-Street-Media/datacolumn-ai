@@ -18,8 +18,8 @@ class CreateProject
     {
         EnsurePlanLimitNotExceeded::handle($user->currentTeam, PlanFeatureEnum::NO_OF_PROJECTS);
         $project = $user->projects()->create($data);
-        $message = ':causer.name created a new project named ' . $project->name
-            . ($project->folder ? ' under folder ' . $project->folder->name : '.');;
+        $message = ':causer.name created a new project named '.$project->name
+            .($project->folder ? ' under folder '.$project->folder->name : '.');
 
         defer(fn () => activity()
             ->performedOn($project)
