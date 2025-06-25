@@ -40,10 +40,7 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
                     toast.error(err.package_restriction, {
                         description: 'Upgrade your plan to send more invites.',
                     });
-                }else {
-                    toast.error('Something Went Wrong');
                 }
-                console.log(errors, '🔥 This is the error');
             },
             onSuccess: (response) => {
                 reset('email');

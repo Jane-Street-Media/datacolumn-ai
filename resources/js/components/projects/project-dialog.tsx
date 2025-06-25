@@ -50,7 +50,6 @@ export default function ProjectDialog({ folders, project = null }) {
         e.preventDefault();
         action(formRoute, {
             onError: (err) => {
-                console.log(err , "this si erro ")
                 if (err.package_restriction) {
                     toast.error(err.package_restriction, {
                         description: 'Upgrade your plan to create more projects.',
