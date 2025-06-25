@@ -167,7 +167,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                 hoveredPlan === 'current' ? 'text-[#FF3300] dark:text-[#FF3300]' : 'text-zinc-900 dark:text-zinc-50'
                                             } transition-colors duration-300`}
                                         >
-                                            {subscription.items[0].plan_name}
+                                            {subscription.plan.display_name}
                                         </h2>
                                         <p
                                             className={`text-sm font-medium ${
@@ -209,7 +209,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                         </div>
                                         <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-700">
                                             <p className="text-sm text-gray-500 dark:text-gray-400">Currency</p>
-                                            <p className="text-sm text-zinc-900 dark:text-zinc-50">{subscription.currency}</p>
+                                            <p className="text-sm text-zinc-900 dark:text-zinc-50">{subscription.plan.currency}</p>
                                         </div>
                                     </div>
 
@@ -228,16 +228,14 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {subscription.items?.map((item, index) => (
-                                                        <tr key={index} className="border-t">
+                                                        <tr className="border-t">
                                                             <td className="border border-gray-200 p-2 text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
-                                                                {item.plan_name}
+                                                                {subscription.plan.display_name}
                                                             </td>
                                                             <td className="border border-gray-200 p-2 text-center text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
-                                                                {item.quantity}
+                                                                {subscription.plan.quantity}
                                                             </td>
                                                         </tr>
-                                                    ))}
                                                 </tbody>
                                             </table>
                                         </div>

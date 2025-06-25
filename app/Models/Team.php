@@ -41,10 +41,14 @@ class Team extends Model
 
     public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription
     {
-        $subscriptionDetails = $this->subscriptions()->latest()->first();
-        if (! $subscriptionDetails) {
-            return null;
+        if ($this->subscribed()) {
+            $subscription = $this->subscriptions()->first();
+            $subscription->setRelation('plan', Plan::where('chargebee_id', $subscription->chargebee_price)->first());
+            return $subscription;
         }
+
+        return null;
+
         foreach ($subscriptionDetails->items as $item) {
             $chargebeeProductId = $item->chargebee_product;
             $plan = Plan::where('chargebee_product', $chargebeeProductId)->first();
