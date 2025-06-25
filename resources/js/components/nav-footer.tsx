@@ -16,7 +16,7 @@ export function NavFooter({
 }) {
     const { auth } = usePage().props;
     const teams = auth.user.teams;
-    const { data, setData, patch, processing, errors, reset } = useForm({
+    const { data, setData, patch} = useForm({
         team_id: auth.user.current_team_id,
     });
 

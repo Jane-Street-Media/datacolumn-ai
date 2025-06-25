@@ -48,48 +48,50 @@ Route::middleware([])->group(function () {
     })->name('something-went-wrong');
 });
 
-Route::prefix('projects')->group(function () {
-    Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
-    Route::post('/', [ProjectsController::class, 'store'])->name('project.store');
-    Route::patch('/{project}', [ProjectsController::class, 'update'])->name('project.update');
-    Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
-});
-Route::prefix('folder')->group(function () {
-    Route::post('/', [FolderController::class, 'store'])->name('folder.store');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('projects')->group(function () {
+        Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
+        Route::post('/', [ProjectsController::class, 'store'])->name('project.store');
+        Route::patch('/{project}', [ProjectsController::class, 'update'])->name('project.update');
+        Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
-    Route::prefix('{project}/charts')->group(function () {
-        Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
     });
-});
+    Route::prefix('folder')->group(function () {
+        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
 
-Route::prefix('team')->group(function () {
-    Route::get('/', [TeamController::class, 'index'])->name('teams.store');
-    Route::post('/', [TeamController::class, 'store'])->name('teams.store');
-    Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
-    Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+        Route::prefix('{project}/charts')->group(function () {
+            Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
+        });
+    });
 
-    // Team Member Management
-    Route::post('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
-    Route::post('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
-    Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
-});
+    Route::prefix('team')->group(function () {
+        Route::get('/', [TeamController::class, 'index'])->name('teams.store');
+        Route::post('/', [TeamController::class, 'store'])->name('teams.store');
+        Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
+        Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
 
-Route::patch('/current-team/update', [CurrentTeamUpdateController::class, 'update'])->name('current-team.update');
+        // Team Member Management
+        Route::post('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
+        Route::post('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
+        Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
+    });
+
+    Route::patch('/current-team/update', [CurrentTeamUpdateController::class, 'update'])->name('current-team.update');
 
 // Team Invitations
-Route::prefix('team-invitation')->group(function () {
-    Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
-    Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
-});
+    Route::prefix('team-invitation')->group(function () {
+        Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
+        Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
+    });
 
-Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
+    Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
 
-Route::prefix('chart-ai')->group(function () {
-    Route::get('/', ChartAIController::class)->name('chart-ai');
-});
-
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-require __DIR__.'/checkout.php';
-require __DIR__.'/subscription.php';
+    Route::prefix('chart-ai')->group(function () {
+        Route::get('/', ChartAIController::class)->name('chart-ai');
+    });
+}
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/checkout.php';
+require __DIR__ . '/subscription.php';
