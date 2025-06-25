@@ -28,9 +28,6 @@ class ProjectsController extends Controller
         ]);
     }
 
-    /**
-     * @throws PackageLimitExceededException|\Exception
-     */
     public function store(CreateProjectRequest $request): RedirectResponse
     {
         try {
