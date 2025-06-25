@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useAppearance } from '@/hooks/use-appearance';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { HTMLAttributes } from 'react';
+import { useAppearanceContext } from '@/contexts/appearance-context';
 
 export default function AppearanceToggleDropdown({ className = '', ...props }: HTMLAttributes<HTMLDivElement>) {
-    const { appearance, updateAppearance } = useAppearance();
+    const { appearance, setAppearance } = useAppearanceContext();
 
     const getCurrentIcon = () => {
         switch (appearance) {
@@ -28,19 +28,19 @@ export default function AppearanceToggleDropdown({ className = '', ...props }: H
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => updateAppearance('light')}>
+                    <DropdownMenuItem onClick={() => setAppearance('light')}>
                         <span className="flex items-center gap-2">
                             <Sun className="h-5 w-5" />
                             Light
                         </span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => updateAppearance('dark')}>
+                    <DropdownMenuItem onClick={() => setAppearance('dark')}>
                         <span className="flex items-center gap-2">
                             <Moon className="h-5 w-5" />
                             Dark
                         </span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => updateAppearance('system')}>
+                    <DropdownMenuItem onClick={() => setAppearance('system')}>
                         <span className="flex items-center gap-2">
                             <Monitor className="h-5 w-5" />
                             System
