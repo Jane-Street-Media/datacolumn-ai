@@ -13,8 +13,11 @@ class CheckoutController extends Controller
 {
     public function productCheckout(Request $request, string $plan): Response
     {
-        if (SubscriptionLockHelper::isLocked($request->user()->id) || $request->user()->currentTeam->subscribed()) {
+        if (SubscriptionLockHelper::isLocked($request->user()->id)) {
             return redirect()->back()->withErrors(['error' => 'You already have a subscription in progress. Please wait a few minutes or refresh the page.']);
+        }
+        if ($request->user()->currentTeam->subscribed()){
+            return redirect()->back()->withErrors(['error' => 'You already have a subscription.']);
         }
         SubscriptionLockHelper::lock($request->user()->id, 2);
 
