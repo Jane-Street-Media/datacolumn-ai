@@ -85,6 +85,14 @@ Route::prefix('chart-ai')->group(function () {
     Route::get('/', ChartAIController::class)->name('chart-ai');
 });
 
+Route::get('chart/embed/{uuid}', function ($uuid) {
+    $chart = \App\Models\Chart::where('uuid', $uuid)->firstOrFail();
+    return Inertia::render('charts/chart-embed', [
+        'config' => $chart->config,
+        'data' => $chart->data,
+    ]);
+})->name('chart.1');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/checkout.php';

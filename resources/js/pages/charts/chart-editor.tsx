@@ -30,8 +30,9 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useRef, useState } from 'react';
-import { ChartControls } from '@/pages/charts/chartControls';
+import { ChartControls } from '@/components/chart-editor/chartControls';
 import { CustomChartConfig } from '@/pages/charts/types';
+import { ChartHeaderActions } from '@/components/chart-editor/chart-header-actions';
 
 export const description = "An area chart with axes"
 const chartData = [
@@ -144,36 +145,7 @@ export default function ChartEditor() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <Card>
-                    <CardContent>
-                        <PageHeader className="py-0">
-                            <PageHeaderHead>
-                                <PageHeaderTitle>Q1 Sales Analysis</PageHeaderTitle>
-                                <PageHeaderDescription>Create and customize your data visualizations.</PageHeaderDescription>
-                                <PageHeaderAction>
-                                    <div className="flex items-center gap-2">
-                                        <Button>
-                                            <Import />
-                                            <span>Import</span>
-                                        </Button>
-                                        <Button variant={'ghost'} className="border">
-                                            <Upload />
-                                            <span>Export</span>
-                                        </Button>
-                                        <Button variant={'ghost'} className="border">
-                                            <Save />
-                                            <span>Save</span>
-                                        </Button>
-                                        <Button variant={'ghost'} className="border">
-                                            <Share2 />
-                                            <span>Share</span>
-                                        </Button>
-                                    </div>
-                                </PageHeaderAction>
-                            </PageHeaderHead>
-                        </PageHeader>
-                    </CardContent>
-                </Card>
+                <ChartHeaderActions />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>
@@ -184,11 +156,10 @@ export default function ChartEditor() {
                     <Card>
                         <CardContent>
                             <TabsContent value="design">
-
                                 <div className="flex-1 overflow-hidden">
                                     <div className="h-full flex flex-col lg:grid lg:grid-cols-3 lg:gap-6 p-4 sm:p-6">
                                         <div className="lg:col-span-2 order-2 lg:order-1 mb-6 lg:mb-0">
-                                            <ChartContainer config={chartConfig} className={'bg-white'}>
+                                            <ChartContainer config={chartConfig}>
                                                 <CardHeader>
                                                     <CardTitle>Area Chart</CardTitle>
                                                     <CardDescription>Showing total visitors for the last 6 months</CardDescription>
@@ -234,12 +205,9 @@ export default function ChartEditor() {
                                         </div>
                                     </div>
                                 </div>
-
-
-
                             </TabsContent>
-                            <TabsContent value="data">Change your password here.</TabsContent>
-                            <TabsContent value="preview">Change your password here.</TabsContent>
+                            <TabsContent value="data">data</TabsContent>
+                            <TabsContent value="preview">preview</TabsContent>
                         </CardContent>
                     </Card>
                 </Tabs>

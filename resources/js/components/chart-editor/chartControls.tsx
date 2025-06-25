@@ -16,7 +16,7 @@ import {
     LayoutGrid,
     Layers
 } from 'lucide-react';
-import { CustomChartConfig } from './types';
+import { CustomChartConfig } from '../../pages/charts/types';
 import { useCallback } from 'react';
 
 const chartControls = [
