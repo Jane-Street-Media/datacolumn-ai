@@ -49,6 +49,7 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         action(formRoute, {
+            only:['projects'],
             onError: (err) => {
                 if (err.package_restriction) {
                     toast.error(err.package_restriction, {
