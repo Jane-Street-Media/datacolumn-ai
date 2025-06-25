@@ -2,6 +2,7 @@
 
 namespace App\Actions\PlanLimitations;
 
+use App\Enums\PlanFeatureEnum;
 use App\Models\Plan;
 use App\Models\Team;
 
@@ -11,11 +12,10 @@ class GetSubscribedPlanFeatures
     {
         $subscription = $team->subscriptionWithProductDetails();
 
-        if (! $subscription) {
+        if (!$subscription) {
             return [
-                'no_of_folders' => Plan::FREE_PLAN_NO_OF_FOLDERS,
-                'no_of_projects' => Plan::FREE_PLAN_NO_OF_PROJECTS,
-                'no_of_invitations' => Plan::FREE_PLAN_NO_OF_INVITATIONS,
+                PlanFeatureEnum::NO_OF_PROJECTS->value => Plan::FREE_PLAN_NO_OF_PROJECTS,
+                PlanFeatureEnum::NO_OF_INVITATIONS->value => Plan::FREE_PLAN_NO_OF_INVITATIONS,
             ];
         }
 

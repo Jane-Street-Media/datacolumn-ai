@@ -2,7 +2,7 @@
 
 namespace App\Actions\Project;
 
-use App\Actions\PlanLimitations\CheckPlanLimit;
+use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Enums\ActivityEvents;
 use App\Enums\PlanFeatureEnum;
 use App\Models\Project;
@@ -16,7 +16,7 @@ class CreateProject
      */
     public static function handle(User $user, array $data): Project
     {
-        CheckPlanLimit::handle($user->currentTeam, PlanFeatureEnum::NO_OF_PROJECTS);
+        EnsurePlanLimitNotExceeded::handle($user->currentTeam, PlanFeatureEnum::NO_OF_PROJECTS);
         $project = $user->projects()->create($data);
         defer(fn () => activity()
             ->performedOn($project)
