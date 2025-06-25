@@ -11,9 +11,7 @@ use Exception;
 
 class CreateProject
 {
-    /**
-     * @throws Exception
-     */
+
     public static function handle(User $user, array $data): Project
     {
         EnsurePlanLimitNotExceeded::handle($user->currentTeam, PlanFeatureEnum::NO_OF_PROJECTS);

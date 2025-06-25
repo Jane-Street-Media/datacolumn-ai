@@ -8,14 +8,11 @@ use App\Enums\PlanFeatureEnum;
 use App\Mail\InvitationSent;
 use App\Models\Team;
 use App\Models\TeamInvitation;
-use Exception;
 use Illuminate\Support\Facades\Mail;
 
 class SendTeamInvitation
 {
-    /**
-     * @throws Exception
-     */
+
     public static function handle(array $data, Team $team): TeamInvitation
     {
         EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_INVITATIONS);
