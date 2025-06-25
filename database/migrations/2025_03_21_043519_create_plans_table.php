@@ -12,12 +12,17 @@ return new class extends Migration
             $table->id();
             $table->string('chargebee_id')->unique();
             $table->string('display_name');
+            $table->string('description')->nullable();
             $table->integer('price');
             $table->string('chargebee_product');
             $table->string('frequency');
-            $table->string('currency');
+            $table->string('currency')->default('USD');
             $table->json('features')->nullable();
             $table->integer('quantity')->default(1);
+            $table->json('details')->nullable();
+            $table->json('limitations')->nullable();
+            $table->string('cta')->nullable();
+            $table->boolean('popular')->default(false);
             $table->timestamps();
         });
     }

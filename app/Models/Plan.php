@@ -22,15 +22,22 @@ class Plan extends Model
     protected $fillable = [
         'chargebee_id',
         'display_name',
+        'description',
         'price',
         'chargebee_product',
         'frequency',
         'currency',
         'quantity',
         'features',
+        'details',
+        'limitations',
+        'cta',
+        'popular',
     ];
 
     protected $casts = [
         'features' => 'array',
+        'details' => 'array',
+        'limitations' => 'array',
     ];
 }

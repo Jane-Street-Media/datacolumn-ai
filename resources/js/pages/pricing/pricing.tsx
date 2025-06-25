@@ -3,8 +3,10 @@ import { router } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import log from 'eslint-plugin-react/lib/util/log';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
+    console.log(plans);
     const [billing, setBilling] = useState('Monthly');
     const [hoveredCard, setHoveredCard] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -103,7 +105,6 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         }
         return false;
     });
-
     return (
         <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
@@ -176,13 +177,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             /{billing === 'Monthly' ? 'mo' : 'yr'}
                                         </span>
                                     </div>
-                                    <p className="text-secondary-foreground mt-2">Plan description goes here.</p>
+                                    <p className="text-secondary-foreground mt-2">{`${plan.description ?? ''}`}</p>
                                 </div>
 
                                 <div className="bg-card mt-auto p-6">
                                     <ul className="space-y-3">
-                                        {plan.features &&
-                                            plan.features.map((feature, i) => (
+                                        {plan.details &&
+                                            plan.details.map((detail, i) => (
                                                 <li key={i} className="flex items-start">
                                                     <svg
                                                         className={`mt-0.5 mr-2 h-5 w-5 flex-shrink-0 ${
@@ -198,7 +199,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                             clipRule="evenodd"
                                                         />
                                                     </svg>
-                                                    <span className="text-foreground">{feature}</span>
+                                                    <span className="text-foreground">{detail}</span>
                                                 </li>
                                             ))}
                                     </ul>

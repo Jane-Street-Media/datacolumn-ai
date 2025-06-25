@@ -22,11 +22,14 @@ class BillingController extends Controller
 
             return array_filter([
                 'name' => $group->first()->display_name,
-                'monthly_price' => $monthlyPrice > 0 ? $monthlyPrice : null,
-                'yearly_price' => $yearlyPrice > 0 ? $yearlyPrice : null,
-                'monthly_chargebee_id' => $monthlyPrice > 0 ? optional($monthly)->chargebee_id : null,
-                'yearly_chargebee_id' => $yearlyPrice > 0 ? optional($yearly)->chargebee_id : null,
+                'description' => $group->first()->description,
+                'monthly_price' => max($monthlyPrice, 0),
+                'yearly_price' => max($yearlyPrice, 0),
+                'monthly_chargebee_id' => $monthlyPrice > 0 ? optional($monthly)->chargebee_id : 0,
+                'yearly_chargebee_id' => $yearlyPrice > 0 ? optional($yearly)->chargebee_id : 0,
                 'features' => ['Feature A', 'Feature B', 'Feature C'],
+                'details' => $group->first()->details,
+                'limitations' => $group->first()->limitations,
                 'default' => false,
                 'currency' => $monthly?->currency ?? $yearly?->currency,
             ], fn ($value) => ! is_null($value));

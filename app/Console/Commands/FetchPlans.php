@@ -4,7 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\Plan;
 use Chargebee\ChargebeeClient;
+use Database\Seeders\EnterprisePlanSeeder;
+use Database\Seeders\FreePlanSeeder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class FetchPlans extends Command
 {
@@ -17,6 +20,10 @@ class FetchPlans extends Command
      */
     public function handle()
     {
+        Artisan::call('db:seed', [
+            '--class' => FreePlanSeeder::class,
+        ]);
+
         $site = env('CHARGEBEE_SITE');
         $apiKey = env('CHARGEBEE_API_KEY');
 
@@ -48,13 +55,12 @@ class FetchPlans extends Command
                     ],
                     'limit' => 30,
                 ]);
-
                 foreach ($response->list as $entry) {
                     $itemPrice = $entry->item_price;
                     if (! $itemPrice?->price || $itemPrice->price === 0) {
                         continue;
                     }
-                    Plan::updateOrCreate(
+                    $plan = Plan::updateOrCreate(
                         ['chargebee_id' => $itemPrice->id],
                         [
                             'display_name' => $item->external_name ?? $item->name,
@@ -65,6 +71,42 @@ class FetchPlans extends Command
                             'quantity' => 1,
                         ]
                     );
+
+                    if ($plan->display_name === 'Pro') {
+                        $plan->update([
+                            'description' => 'For professional journalists and content creators',
+                            'details' => [
+                                'Unlimited charts & exports',
+                                'No watermark',
+                                'Priority rendering',
+                                'Chart presets',
+                                'Custom embed domain',
+                                'Advanced customization',
+                                'SVG/PNG exports',
+                                'Email support'
+                            ],
+                            'cta' => 'Start Pro Trial',
+                            'popular' => true,
+                        ]);
+                    }
+
+                    if ($plan->display_name === 'Team') {
+                        $plan->update([
+                            'description' => 'For newsrooms and content teams',
+                            'details' => [
+                                '5 seats included',
+                                'Shared folders & styles',
+                                'Access controls',
+                                'Priority support',
+                                'Team collaboration',
+                                'Brand customization',
+                                'Usage analytics'
+                            ],
+                            'cta' => 'Start Team Trial',
+                            'popular' => false,
+                        ]);
+                    }
+
                 }
 
                 $this->info('Plans '.$item->id.' details successfully stored in the database.');
@@ -73,5 +115,9 @@ class FetchPlans extends Command
         } catch (\Exception $e) {
             $this->error('Error fetching plans: '.$e->getMessage());
         }
+
+        Artisan::call('db:seed', [
+            '--class' => EnterprisePlanSeeder::class,
+        ]);
     }
 }
