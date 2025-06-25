@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
+use App\Http\Controllers\CurrentTeamUpdateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\ProjectChartsController;
@@ -73,6 +74,10 @@ Route::prefix('team')->group(function () {
     Route::post('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
     Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
 });
+
+Route::patch('/current-team/update', [CurrentTeamUpdateController::class, 'update'])->name('current-team.update');
+
+
 
 // Team Invitations
 Route::prefix('team-invitation')->group(function () {

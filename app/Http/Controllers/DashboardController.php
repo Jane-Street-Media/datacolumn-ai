@@ -6,6 +6,7 @@ use App\Actions\Dashboard\GetActivityLogs;
 use App\Actions\Dashboard\GetStats;
 use App\Actions\Folder\GetFolders;
 use App\Actions\Queries\Dashboard\GetRecentProjectQuery;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;

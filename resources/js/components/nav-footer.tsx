@@ -1,10 +1,11 @@
 import { Icon } from '@/components/icon';
-import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { type ComponentPropsWithoutRef } from 'react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePage } from '@inertiajs/react';
+import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { type NavItem } from '@/types';
+import { useForm, usePage } from '@inertiajs/react';
+import { type ComponentPropsWithoutRef } from 'react';
+import { toast } from 'sonner';
 
 export function NavFooter({
     items,
@@ -13,14 +14,26 @@ export function NavFooter({
 }: ComponentPropsWithoutRef<typeof SidebarGroup> & {
     items: NavItem[];
 }) {
-
     const { auth } = usePage().props;
     const teams = auth.user.teams;
-
+    const currentTeam = auth.current_team;
+    const { data, setData, patch, processing, errors, reset } = useForm({
+        team_id: currentTeam.id,
+    });
+    const handleTeamChange = (value) => {
+        setData(data.team_id = value)
+        patch(route('current-team.update'), {
+            onSuccess: (response) => {
+                toast(response.props.flash.success, {
+                    description: 'Team is switched',
+                });
+            },
+        });
+    };
     return (
         <>
             <Label htmlFor="folder">Switch Team</Label>
-            <Select>
+            <Select value={String(data.team_id)} onValueChange={handleTeamChange}>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select a Team" />
                 </SelectTrigger>

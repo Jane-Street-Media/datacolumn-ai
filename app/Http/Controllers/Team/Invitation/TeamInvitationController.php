@@ -7,6 +7,7 @@ use App\Actions\Teams\TeamInvitation\DeleteTeamInvitation;
 use App\Http\Controllers\Controller;
 use App\Models\Scopes\TeamScope;
 use App\Models\TeamInvitation;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,8 +16,11 @@ class TeamInvitationController extends Controller
     public function store(int $teamInvitationId): RedirectResponse
     {
         $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
+        $user = User::where('email', $teamInvitation->email)->first();
+        if (!$user) {
+            return redirect()->route('register');
+        }
         AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
-
         return redirect(route('dashboard'));
     }
 
