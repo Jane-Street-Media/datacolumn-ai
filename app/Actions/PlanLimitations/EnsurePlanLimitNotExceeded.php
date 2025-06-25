@@ -14,10 +14,10 @@ class EnsurePlanLimitNotExceeded
     public static function handle(Team $team, PlanFeatureEnum $feature): int
     {
         $features = GetSubscribedPlanFeatures::handle($team);
-        $packageLimit = $feature->getFeatureUsageCount($team);
-        if ($packageLimit >= $features[$feature->value]) {
+        $packageFeatureLimit = $feature->getFeatureUsageCount($team);
+        if ($packageFeatureLimit >= $features[$feature->value]) {
             throw new PackageLimitExceededException($feature->featureErrorMessage());
         }
-        return $packageLimit;
+        return $packageFeatureLimit;
     }
 }
