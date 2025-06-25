@@ -22,7 +22,7 @@ class Subscription extends \Chargebee\Cashier\Subscription
 
         $this->fill([
             'chargebee_status' => $chargebeeSubscription->status->value,
-            'ends_at' => null
+            'ends_at' => null,
         ])->save();
 
         return $this;
