@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Cache;
@@ -20,6 +21,7 @@ class SubscriptionLockHelper
     {
         $sessionId = (string) Str::uuid();
         Cache::put(self::getLockKey($userId), $sessionId, now()->addMinutes($minutes));
+
         return $sessionId;
     }
 
