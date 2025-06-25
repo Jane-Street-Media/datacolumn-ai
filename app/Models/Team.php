@@ -48,14 +48,5 @@ class Team extends Model
         }
 
         return null;
-
-        foreach ($subscriptionDetails->items as $item) {
-            $chargebeeProductId = $item->chargebee_product;
-            $plan = Plan::where('chargebee_product', $chargebeeProductId)->first();
-            $item->plan_name = $plan->display_name ?? null;
-        }
-        $subscriptionDetails->currency = $plan->currency ?? null;
-
-        return $subscriptionDetails;
     }
 }
