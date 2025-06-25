@@ -11,6 +11,7 @@ class UpdateUserCurrentTeam
         $user->update([
             'current_team_id' => $data['team_id'],
         ]);
+
         return $user;
     }
 }

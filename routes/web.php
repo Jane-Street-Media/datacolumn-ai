@@ -77,8 +77,6 @@ Route::prefix('team')->group(function () {
 
 Route::patch('/current-team/update', [CurrentTeamUpdateController::class, 'update'])->name('current-team.update');
 
-
-
 // Team Invitations
 Route::prefix('team-invitation')->group(function () {
     Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');

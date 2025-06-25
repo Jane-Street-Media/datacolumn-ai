@@ -20,7 +20,6 @@ export function NavFooter({
         team_id: auth.user.current_team_id,
     });
 
-        console.log(auth , 'this is auth')
     const handleTeamChange = (value) => {
         setData(data.team_id = value)
         patch(route('current-team.update'), {

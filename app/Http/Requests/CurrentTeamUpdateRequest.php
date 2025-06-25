@@ -29,7 +29,7 @@ class CurrentTeamUpdateRequest extends FormRequest
                 'required',
                 Rule::exists('teams', 'id'),
                 function ($attribute, $value, $fail) {
-                    if (!Auth::user()->teams()->where('teams.id', $value)->exists()) {
+                    if (! Auth::user()->teams()->where('teams.id', $value)->exists()) {
                         $fail('The selected team is invalid or does not belong to you.');
                     }
                 },

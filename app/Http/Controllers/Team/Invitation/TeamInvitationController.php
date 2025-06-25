@@ -17,10 +17,11 @@ class TeamInvitationController extends Controller
     {
         $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
         $user = User::where('email', $teamInvitation->email)->first();
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('register');
         }
         AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
+
         return redirect(route('dashboard'));
     }
 
