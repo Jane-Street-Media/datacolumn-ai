@@ -23,9 +23,10 @@ export function NavFooter({
     const handleTeamChange = (value) => {
         setData(data.team_id = value)
         patch(route('current-team.update'), {
+            only:['teams','flash'],
             onSuccess: (response) => {
                 toast(response.props.flash.success, {
-                    description: 'Team is switched',
+                    description: 'You\'re now operating with your selected team.',
                 });
             },
         });

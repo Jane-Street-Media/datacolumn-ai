@@ -13,6 +13,6 @@ class CurrentTeamUpdateController extends Controller
     {
         UpdateUserCurrentTeam::handle(Auth::user(), $currentTeamUpdateRequest->validated());
 
-        return redirect()->back()->with('success', 'Team updated successfully');
+        return redirect()->back()->with('success', 'Team switched successfully!');
     }
 }
