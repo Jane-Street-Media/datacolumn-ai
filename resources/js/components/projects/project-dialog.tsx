@@ -49,9 +49,15 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         action(formRoute, {
-            onError: (err) => console.error(err),
+            onError: (err) => {
+                if (err.package_restriction) {
+                    toast.error(err.package_restriction, {
+                        description: 'Upgrade your plan to create more projects.',
+                    });
+                }
+            },
             onSuccess: (response) => {
-                reset('name', 'description');
+                reset('name', 'description', 'folder_id');
                 setOpen(false);
                 toast(response.props.flash.success, {
                     description: isEdit ? '🛠️ Your changes are live and ready to shine.' : '🚀 Time to bring your ideas to life!',

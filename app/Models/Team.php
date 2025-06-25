@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Chargebee\Cashier\Billable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Team extends Model
 {
-    use HasFactory;
+    use Billable, HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -31,5 +32,21 @@ class Team extends Model
     public function invitations(): HasMany
     {
         return $this->hasMany(TeamInvitation::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription
+    {
+        if ($this->subscribed()) {
+            $subscription = $this->subscriptions()->first();
+            $subscription->setRelation('plan', Plan::where('chargebee_id', $subscription->chargebee_price)->first());
+            return $subscription;
+        }
+
+        return null;
     }
 }
