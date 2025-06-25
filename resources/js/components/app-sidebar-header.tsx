@@ -1,13 +1,105 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
+import { Monitor, Moon, Settings, Sun } from 'lucide-react';
+import { useAppearanceContext } from '@/contexts/appearance-context';
+import {
+    DropdownMenu,
+    DropdownMenuContent, DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useInitials } from '@/hooks/use-initials';
+import { Link } from '@inertiajs/react';
+
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
+
+    const { appearance, setAppearance } = useAppearanceContext();
+    const getCurrentThemeIcon = () => {
+        switch (appearance) {
+            case 'light': return Sun;
+            case 'dark': return Moon;
+            case 'system': return Monitor;
+            default: return Sun;
+        }
+    };
+
+    const CurrentThemeIcon = getCurrentThemeIcon();
+
+    const getInitials = useInitials();
+
     return (
-        <header className="border-sidebar-border/50 flex h-16 shrink-0 items-center gap-2 border-b px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
-            <div className="flex items-center gap-2">
+        <header className="border-sidebar-border/50 flex h-16 shrink-0 items-center border-b px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
+            <div className="flex flex-1 items-center gap-2">
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="flex items-center space-x-2 md:space-x-4">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <CurrentThemeIcon className="w-5 h-5" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end">
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem asChild>
+                                    <Button variant="ghost" className="w-full justify-start" onClick={() => setAppearance('light')}>
+                                        <Sun className="w-5 h-5 mr-2" />
+                                        Light
+                                    </Button>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Button variant="ghost" className="w-full justify-start" onClick={() => setAppearance('dark')}>
+                                        <Moon className="w-5 h-5 mr-2" />
+                                        Dark
+                                    </Button>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Button variant="ghost" className="w-full justify-start" onClick={() => setAppearance('system')}>
+                                        <Monitor className="w-5 h-5 mr-2" />
+                                        System
+                                    </Button>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <Link href={route('profile.edit')} as="button" prefetch>
+                        <Settings className="w-5 h-5">
+                                Settings
+                        </Settings>
+                    </Link>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="size-10 rounded-full p-1">
+                                <Avatar className="size-8 overflow-hidden rounded-full">
+                                    <AvatarFallback
+                                        className="rounded-lg bg-secondary text-foreground">
+                                        {getInitials('team name')}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end">
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem asChild>
+                                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch>
+                                        Settings
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch>
+                                        Settings
+                                    </Link>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
         </header>
     );

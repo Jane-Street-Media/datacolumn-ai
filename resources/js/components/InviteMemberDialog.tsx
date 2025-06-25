@@ -37,13 +37,19 @@ export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialo
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('team.member.store', user.current_team_id), {
-            onError: (err) => console.error(err),
+            onError: (err) => {
+                if (err.package_restriction){
+                    toast.error(err.package_restriction, {
+                        description: 'Upgrade your plan to send more invites.',
+                    });
+                }
+            },
             onSuccess: (response) => {
                 reset('email', 'role');
                 setOpen(false);
-                toast(response.props.flash.success, {
-                    description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
-                });
+                    toast(response.props.flash.success, {
+                        description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
+                    });
             },
         });
     };

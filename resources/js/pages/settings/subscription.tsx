@@ -1,12 +1,12 @@
-import AppLogoIcon from '@/components/app-logo-icon';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
 import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
+import { isBefore } from 'date-fns';
 import { Loader2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -20,31 +20,38 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const { auth } = usePage<SharedData>().props;
     const isSubscribed = subscription != null;
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
-    const [pauseModalOpen, setPauseModalOpen] = useState(false);
+    const [cancelSubscriptionModalOpen, setCancelSubscriptionModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-
-    const PauseSubscriptionButton = () => {
-        const [isLoading, setIsLoading] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
+    const canResumeSubscription = useMemo(() => (subscription?.chargebee_status === 'non_renewing'), [subscription]);
+    const CancelSubscriptionButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
                 e.preventDefault();
                 return;
             }
             router.patch(
-                route('subscription.pause'),
+                route('subscription.cancel'),
                 {},
                 {
                     showProgress: false,
                     preserveScroll: true,
+                    only: ['subscription', 'flash'],
                     onStart: () => {
                         setIsLoading(true);
                     },
                     onSuccess: (response) => {
-                        toast.success(response.props.flash.success);
-                        setPauseModalOpen(false);
+                            toast.success(response.props.flash.success);
                     },
-                    onFinish: () => setIsLoading(false),
+                    onError: (errors) => {
+                        if(errors.error){
+                            toast.error(errors.error);
+                        }
+                    },
+                    onFinish: () => {
+                        setCancelSubscriptionModalOpen(false);
+                        setIsLoading(false);
+                    },
                 },
             );
         };
@@ -52,12 +59,11 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         return !isLoading ? (
             <button
                 type={`button`}
-                href={route('subscription.pause')}
                 className={`rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 ${isLoading ? 'cursor-wait bg-red-400' : ''}`}
                 aria-disabled={isLoading}
                 onClick={handleClick}
             >
-                Pause now
+                Cancel now
             </button>
         ) : (
             <>
@@ -99,7 +105,12 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                     setLoading(true);
                 },
                 onSuccess: (response) => {
-                    toast.success(response.props.flash.success);
+                        toast.success(response.props.flash.success);
+                },
+                onError: (errors) => {
+                    if(errors.error){
+                        toast.error(errors.error);
+                    }
                 },
                 onFinish: () => setLoading(false),
             },
@@ -143,7 +154,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                         <h2
                                             className="text-lg font-semibold text-foreground"
                                         >
-                                            {subscription.items[0].plan_name}
+                                            {subscription.plan.display_name}
                                         </h2>
                                         <p
                                             className={`text-sm font-medium ${
@@ -158,8 +169,14 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-sm text-foreground">Started: {formatDate(subscription.created_at)}</p>
-                                        <p className="text-sm text-foreground">Renews: {formatDate(subscription.next_billing_at)}</p>
+                                        <p className="text-sm text-zinc-600 dark:text-zinc-300">Started: {formatDate(subscription.created_at)}</p>
+                                        {subscription.ends_at ? (
+                                            <p className="text-sm text-zinc-600 dark:text-zinc-300">Ends at: {formatDate(subscription.ends_at)}</p>
+                                        ) : (
+                                            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+                                                Renews: {formatDate(subscription.next_billing_at)}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -179,7 +196,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                         </div>
                                         <div className="rounded-lg p-3 border border-primary">
                                             <p className="text-sm text-foreground">Currency</p>
-                                            <p className="text-sm text-secondary-foreground">{subscription.currency}</p>
+                                            <p className="text-sm text-secondary-foreground">{subscription.plan.currency}</p>
                                         </div>
                                     </div>
 
@@ -198,16 +215,14 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {subscription.items?.map((item, index) => (
-                                                        <tr key={index} className="border-t">
-                                                            <td className="border p-2 text-foreground">
-                                                                {item.plan_name}
+                                                        <tr className="border-t">
+                                                            <td className="border border-gray-200 p-2 text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
+                                                                {subscription.plan.display_name}
                                                             </td>
-                                                            <td className="border text-center p-2 text-foreground">
-                                                                {item.quantity}
+                                                            <td className="border border-gray-200 p-2 text-center text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
+                                                                {subscription.plan.quantity}
                                                             </td>
                                                         </tr>
-                                                    ))}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -292,7 +307,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                             </span>
                                         )}
                                     </button>
-                                    {subscription?.chargebee_status === 'paused' ? (
+                                    {canResumeSubscription ? (
                                         <button
                                             onClick={(e) => handleResumeSubscription(e)}
                                             className="flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
@@ -322,9 +337,9 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                 </span>
                                             )}
                                         </button>
-                                    ) : subscription?.chargebee_status === 'active' ? (
+                                    ) : subscription?.chargebee_status.toLowerCase() === 'active' ? (
                                         <button
-                                            onClick={() => setPauseModalOpen(true)}
+                                            onClick={() => setCancelSubscriptionModalOpen(true)}
                                             className="flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
                                         >
                                             <span className="flex items-center justify-center">
@@ -340,7 +355,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                         clipRule="evenodd"
                                                     />
                                                 </svg>
-                                                Pause Subscription
+                                                Cancel Subscription
                                             </span>
                                         </button>
                                     ) : (
@@ -351,7 +366,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         </div>
                     )}
 
-                    {pauseModalOpen && (
+                    {cancelSubscriptionModalOpen && (
                         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
                             <div className="w-full max-w-md rounded-lg bg-white p-6 dark:bg-zinc-800">
                                 <h3 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Confirm Cancellation</h3>
@@ -361,22 +376,26 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                 </p>
                                 <div className="flex justify-end space-x-4">
                                     <button
-                                        onClick={() => setPauseModalOpen(false)}
-                                        className="cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                                        onClick={(e) => {
+                                            if (isLoading) {
+                                                e.preventDefault();
+                                                return;
+                                            } else {
+                                                setCancelSubscriptionModalOpen(false);
+                                            }
+                                        }}
+                                        aria-disabled={isLoading}
+                                        className={`${isLoading ? 'cursor-wait bg-red-400' : ''} cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700`}
                                     >
                                         Keep Subscription
                                     </button>
-                                    <PauseSubscriptionButton />
+                                    <CancelSubscriptionButton />
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {subscription?.chargebee_status !== 'paused' ? (
-                        <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
-                    ) : (
-                        <></>
-                    )}
+                    {!canResumeSubscription ? <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} /> : <></>}
                 </div>
             </SettingsLayout>
         </AppLayout>

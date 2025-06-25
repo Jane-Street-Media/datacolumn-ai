@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('chargebee_product');
             $table->string('frequency');
             $table->string('currency');
+            $table->json('features')->nullable();
             $table->integer('quantity')->default(1);
             $table->timestamps();
         });

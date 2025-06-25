@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plan;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class BillingController extends Controller
 {
-    private function getAllPlans()
+    private function getAllPlans(): Collection
     {
         $plans = Plan::all()->groupBy('chargebee_product')->map(function ($group) {
             $monthly = $group->where('frequency', 'month')->first();
@@ -33,16 +36,16 @@ class BillingController extends Controller
         return $plans;
     }
 
-    public function pricing()
+    public function pricing(): Response
     {
         return Inertia::render('pricing/pricing', [
             'plans' => $this->getAllPlans(),
         ]);
     }
 
-    public function billing(Request $request)
+    public function billing(Request $request): Response|RedirectResponse
     {
-        if ($request->user()?->subscribed('default')) {
+        if ($request->user()?->currentTeam->subscribed('default')) {
             return redirect()->route('subscription-settings');
         }
 
@@ -51,17 +54,17 @@ class BillingController extends Controller
         ]);
     }
 
-    public function invoices(Request $request)
+    public function invoices(Request $request): Response
     {
         return Inertia::render('settings/invoices', [
-            'invoices' => $request->user()->invoices(),
+            'invoices' => $request->user()->currentTeam->invoices(),
         ]);
     }
 
-    public function subscriptions(Request $request)
+    public function subscriptions(Request $request): Response
     {
         return Inertia::render('settings/subscription', [
-            'subscription' => $request?->user()?->subsriptionWithProductDetails() ?? null,
+            'subscription' => $request->user()->currentTeam->subscriptionWithProductDetails() ?? null,
             'plans' => $this->getAllPlans(),
         ]);
     }
