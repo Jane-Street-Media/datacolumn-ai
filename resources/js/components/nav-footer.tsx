@@ -16,10 +16,11 @@ export function NavFooter({
 }) {
     const { auth } = usePage().props;
     const teams = auth.user.teams;
-    const currentTeam = auth.current_team;
     const { data, setData, patch, processing, errors, reset } = useForm({
-        team_id: currentTeam.id,
+        team_id: auth.user.current_team_id,
     });
+
+        console.log(auth , 'this is auth')
     const handleTeamChange = (value) => {
         setData(data.team_id = value)
         patch(route('current-team.update'), {
