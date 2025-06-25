@@ -16,9 +16,9 @@ class SubscriptionController extends Controller
                 return back()->with('success', 'Subscription cancelled successfully.');
             }
 
-            return back()->with('error', 'Something went wrong while cancelling the subscription.');
+            return back()->withErrors(['error' => 'Something went wrong while cancelling the subscription.']);
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred: '.$e->getMessage());
+            return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
         }
     }
 
@@ -30,9 +30,9 @@ class SubscriptionController extends Controller
                 return back()->with('success', 'Subscription resumed successfully.');
             }
 
-            return back()->with('error', 'Something went wrong while resuming the subscription.');
+            return back()->withErrors(['error' => 'Something went wrong while resuming the subscription.']);
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred: '.$e->getMessage());
+            return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
         }
     }
 

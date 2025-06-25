@@ -54,10 +54,11 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                     setLoadingPlanId(planId);
                 },
                 onSuccess: (response) => {
-                    if (response.props.flash.error) {
-                        toast.error(response.props.flash.error);
-                    } else {
                         toast.success(response.props.flash.success);
+                },
+                onError: (errors) => {
+                    if(errors.error){
+                        toast.error(errors.error);
                     }
                 },
                 onFinish: () => setLoading(false),
@@ -81,10 +82,11 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                     setLoadingPlanId(planId);
                 },
                 onSuccess: (response) => {
-                    if (response.props.flash.error) {
-                        toast.error(response.props.flash.error);
-                    } else {
                         toast.success(response.props.flash.success);
+                },
+                onError: (errors) => {
+                    if(errors.error){
+                        toast.error(errors.error);
                     }
                 },
                 onFinish: () => setLoading(false),

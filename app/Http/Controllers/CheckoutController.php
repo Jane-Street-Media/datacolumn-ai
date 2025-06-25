@@ -14,7 +14,7 @@ class CheckoutController extends Controller
     public function productCheckout(Request $request, string $plan): Response
     {
         if (SubscriptionLockHelper::isLocked($request->user()->id) || $request->user()->currentTeam->subscribed()) {
-            return redirect()->back()->with('error', 'You already have a subscription in progress. Please wait a few minutes or refresh the page.');
+            return redirect()->back()->withErrors(['error' => 'You already have a subscription in progress. Please wait a few minutes or refresh the page.']);
         }
         SubscriptionLockHelper::lock($request->user()->id, 2);
 
@@ -33,7 +33,7 @@ class CheckoutController extends Controller
     public function swapProduct(Request $request, string $plan): RedirectResponse
     {
         if ($request->user()->currentTeam->subscribedToPrice($plan) || !is_null($request->user()->currentTeamLatestSubscription()->ends_at)) {
-            return redirect()->back()->with('error', 'Something went wrong while swapping your price. Please try again later.');
+            return redirect()->back()->withErrors(['error' => 'Something went wrong while swapping your price. Please try again later.']);
         }
         $request->user()->currentTeamLatestSubscription()->swap($plan);
 
