@@ -7,12 +7,12 @@ use App\Actions\Project\CreateProject;
 use App\Actions\Project\DeleteProject;
 use App\Actions\Project\GetProjects;
 use App\Actions\Project\UpdateProject;
+use App\Exceptions\PackageLimitExceededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Projects\CreateProjectRequest;
 use App\Http\Requests\Projects\ProjectFilterRequest;
 use App\Http\Requests\Projects\UpdateProjectRequest;
 use App\Models\Project;
-use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -28,14 +28,18 @@ class ProjectsController extends Controller
         ]);
     }
 
+    /**
+     * @throws PackageLimitExceededException|\Exception
+     */
     public function store(CreateProjectRequest $request): RedirectResponse
     {
         try {
             CreateProject::handle(Auth::user(), $request->validated());
 
             return back()->with('success', 'Project Created Successfully');
-        } catch (Exception $exception) {
-            return back()->with('error', $exception->getMessage());
+        } catch (PackageLimitExceededException $exception) {
+            return redirect()->back()
+                ->withErrors(['package_restriction' => $exception->getMessage()]);
         }
     }
 

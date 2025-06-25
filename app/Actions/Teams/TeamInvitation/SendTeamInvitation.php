@@ -2,8 +2,9 @@
 
 namespace App\Actions\Teams\TeamInvitation;
 
-use App\Actions\GetSubscribedPlanFeatures;
+use App\Actions\PlanLimitations\CheckPlanLimit;
 use App\Enums\ActivityEvents;
+use App\Enums\PlanFeatureEnum;
 use App\Mail\InvitationSent;
 use App\Models\Team;
 use App\Models\TeamInvitation;
@@ -17,10 +18,7 @@ class SendTeamInvitation
      */
     public static function handle(array $data, Team $team): TeamInvitation
     {
-        $subscribedPlanFeatures = GetSubscribedPlanFeatures::handle($team);
-        if ($team->users()->count() + $team->invitations()->count() >= $subscribedPlanFeatures['no_of_invitation']) {
-            throw new Exception('You have reached the maximum number of invitations allowed by your plan');
-        }
+        CheckPlanLimit::handle($team, PlanFeatureEnum::NO_OF_INVITATIONS);
         $teamInvitation = $team->invitations()->create($data);
         Mail::to($teamInvitation->email)->send(new InvitationSent($teamInvitation));
 

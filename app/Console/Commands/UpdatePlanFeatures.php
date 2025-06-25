@@ -29,7 +29,7 @@ class UpdatePlanFeatures extends Command
         $features = [
             'no_of_projects' => 10,
             'no_of_folders' => 10,
-            'no_of_invitation' => 10,
+            'no_of_invitations' => 10,
         ];
 
         return Plan::query()->update([

@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Team;
 use App\Actions\Teams\RemoveUserFromTeam;
 use App\Actions\Teams\TeamInvitation\SendTeamInvitation;
 use App\Actions\Teams\UpdateTeamMember;
+use App\Exceptions\PackageLimitExceededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teams\TeamMemberDeleteRequest;
 use App\Http\Requests\Teams\TeamMemberRequest;
 use App\Http\Requests\Teams\TeamMemberUpdateRequest;
 use App\Models\Team;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\RedirectResponse;
 
 class TeamMemberController extends Controller
@@ -22,8 +22,9 @@ class TeamMemberController extends Controller
             SendTeamInvitation::handle($request->validated(), $team);
 
             return back()->with('success', 'Invite sent successfully.');
-        } catch (Exception $exception) {
-            return back()->with('error', $exception->getMessage());
+        } catch (PackageLimitExceededException $exception) {
+            return redirect()->back()
+                ->withErrors(['package_restriction' => $exception->getMessage()]);
         }
     }
 

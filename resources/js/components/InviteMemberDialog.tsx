@@ -35,19 +35,22 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('team.member.store', user.current_team_id), {
-            onError: (err) => console.error(err),
+            onError: (err) => {
+                if (err.package_restriction){
+                    toast.error(err.package_restriction, {
+                        description: 'Upgrade your plan to send more invites.',
+                    });
+                }else {
+                    toast.error('Something Went Wrong');
+                }
+                console.log(errors, '🔥 This is the error');
+            },
             onSuccess: (response) => {
                 reset('email');
                 setOpen(false);
-                if (response.props.flash.success) {
                     toast(response.props.flash.success, {
                         description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
                     });
-                } else if (response.props.flash.error) {
-                    toast.error(response.props.flash.error, {
-                        description: 'Upgrade your plan to send more invites.',
-                    });
-                }
             },
         });
     };
