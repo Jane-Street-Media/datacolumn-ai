@@ -12,7 +12,7 @@ class GetSubscribedPlanFeatures
     {
         $subscription = $team->subscriptionWithProductDetails();
 
-        if (!$subscription) {
+        if (! $subscription) {
             return [
                 PlanFeatureEnum::NO_OF_PROJECTS->value => Plan::FREE_PLAN_NO_OF_PROJECTS,
                 PlanFeatureEnum::NO_OF_INVITATIONS->value => Plan::FREE_PLAN_NO_OF_INVITATIONS,

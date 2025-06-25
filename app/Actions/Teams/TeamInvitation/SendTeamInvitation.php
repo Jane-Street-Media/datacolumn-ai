@@ -5,6 +5,7 @@ namespace App\Actions\Teams\TeamInvitation;
 use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Enums\ActivityEvents;
 use App\Enums\PlanFeatureEnum;
+use App\Exceptions\PackageLimitExceededException;
 use App\Mail\InvitationSent;
 use App\Models\Team;
 use App\Models\TeamInvitation;
@@ -12,7 +13,9 @@ use Illuminate\Support\Facades\Mail;
 
 class SendTeamInvitation
 {
-
+    /**
+     * @throws PackageLimitExceededException
+     */
     public static function handle(array $data, Team $team): TeamInvitation
     {
         EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_INVITATIONS);

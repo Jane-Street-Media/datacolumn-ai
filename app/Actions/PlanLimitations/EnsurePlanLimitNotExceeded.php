@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Actions\PlanLimitations;
+
 use App\Enums\PlanFeatureEnum;
 use App\Exceptions\PackageLimitExceededException;
 use App\Models\Team;
@@ -17,6 +18,7 @@ class EnsurePlanLimitNotExceeded
         if ($featureUsageCount >= $features[$feature->value]) {
             throw new PackageLimitExceededException($feature->featureErrorMessage());
         }
+
         return $featureUsageCount;
     }
 }

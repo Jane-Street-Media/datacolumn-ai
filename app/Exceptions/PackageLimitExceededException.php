@@ -3,8 +3,5 @@
 namespace App\Exceptions;
 
 use Exception;
-use Throwable;
 
-class PackageLimitExceededException extends Exception
-{
-}
+class PackageLimitExceededException extends Exception {}

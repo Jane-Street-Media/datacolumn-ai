@@ -5,13 +5,15 @@ namespace App\Actions\Project;
 use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Enums\ActivityEvents;
 use App\Enums\PlanFeatureEnum;
+use App\Exceptions\PackageLimitExceededException;
 use App\Models\Project;
 use App\Models\User;
-use Exception;
 
 class CreateProject
 {
-
+    /**
+     * @throws PackageLimitExceededException
+     */
     public static function handle(User $user, array $data): Project
     {
         EnsurePlanLimitNotExceeded::handle($user->currentTeam, PlanFeatureEnum::NO_OF_PROJECTS);
