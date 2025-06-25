@@ -1,9 +1,8 @@
-import CommandWithCopyButton from '@/pages/Utils/copyClipboardCommand';
+import { Button } from '@/components/ui/button';
+import { router } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { useEffect, useRef, useState } from 'react';
-import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
     const [billing, setBilling] = useState('Monthly');
@@ -43,8 +42,27 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
             e.preventDefault();
             return;
         }
-        setLoading(true);
-        setLoadingPlanId(planId);
+        router.get(
+            route('checkout', planId),
+            {},
+            {
+                showProgress: false,
+                preserveScroll: true,
+                preserveState: true,
+                onStart: () => {
+                    setLoading(true);
+                    setLoadingPlanId(planId);
+                },
+                onSuccess: (response) => {
+                    if (response.props.flash.error) {
+                        toast.error(response.props.flash.error);
+                    } else {
+                        toast.success(response.props.flash.success);
+                    }
+                },
+                onFinish: () => setLoading(false),
+            },
+        );
     };
 
     const handleSwapSubscription = (e, planId) => {
@@ -52,18 +70,26 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
             e.preventDefault();
             return;
         }
-        router.patch(route('checkout.swap', planId), {}, {
-            showProgress: false,
-            preserveScroll: true,
-            onStart: () => {
-                setLoading(true)
-                setLoadingPlanId(planId)
+        router.patch(
+            route('checkout.swap', planId),
+            {},
+            {
+                showProgress: false,
+                preserveScroll: true,
+                onStart: () => {
+                    setLoading(true);
+                    setLoadingPlanId(planId);
+                },
+                onSuccess: (response) => {
+                    if (response.props.flash.error) {
+                        toast.error(response.props.flash.error);
+                    } else {
+                        toast.success(response.props.flash.success);
+                    }
+                },
+                onFinish: () => setLoading(false),
             },
-            onSuccess: (response) => {
-                toast.success(response.props.flash.success)
-            },
-            onFinish: () => setLoading(false)
-        })
+        );
     };
 
     const filteredPlans = plans.filter((plan) => {
@@ -107,12 +133,12 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                 toggleRepositionMarker(yearlyRef.current);
                             }
                         }}
-                        className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium transition-colors text-white ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     >
                         Yearly
                     </div>
                     <div ref={markerRef} className="absolute left-0 z-10 h-full w-1/2 opacity-0">
-                        <div className="h-full w-full rounded-full bg-primary"></div>
+                        <div className="bg-primary h-full w-full rounded-full"></div>
                     </div>
                 </div>
             </div>
@@ -131,39 +157,27 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                             className={`mb-6 max-w-[400px] min-w-[300px] flex-1 px-3 transition-all duration-300 ease-in-out ${loading && !isLoading ? 'opacity-50' : ''}`}
                         >
                             <div
-                                className={`relative flex h-full flex-col overflow-hidden rounded-xl border-2 bg-card shadow-md ${
-                                    hoveredCard === index
-                                        ? 'border-primary'
-                                        : plan.default && hoveredCard === null
-                                          ? 'border-primary'
-                                          : 'border-card'
+                                className={`bg-card relative flex h-full flex-col overflow-hidden rounded-xl border-2 shadow-md ${
+                                    hoveredCard === index ? 'border-primary' : plan.default && hoveredCard === null ? 'border-primary' : 'border-card'
                                 }`}
                             >
                                 <div className="px-6 pt-6">
-                                    <span
-                                        className={`inline-block rounded-full px-4 py-1 text-sm font-medium text-white`}
-                                    >
-                                        {plan.name}
-                                    </span>
+                                    <span className={`inline-block rounded-full px-4 py-1 text-sm font-medium text-white`}>{plan.name}</span>
                                 </div>
                                 <div className="mt-4 px-6">
                                     <div className="flex items-baseline">
-                                        <span
-                                            className={`text-4xl font-bold ${
-                                                hoveredCard === index ? 'text-primary' : 'text-foreground'
-                                            }`}
-                                        >
+                                        <span className={`text-4xl font-bold ${hoveredCard === index ? 'text-primary' : 'text-foreground'}`}>
                                             {getSymbolFromCurrency(plan?.currency)}
                                             {billing === 'Monthly' ? plan.monthly_price : plan.yearly_price}
                                         </span>
-                                        <span className="ml-1 text-lg font-medium text-secondary-foreground">
+                                        <span className="text-secondary-foreground ml-1 text-lg font-medium">
                                             /{billing === 'Monthly' ? 'mo' : 'yr'}
                                         </span>
                                     </div>
-                                    <p className="mt-2 text-secondary-foreground">Plan description goes here.</p>
+                                    <p className="text-secondary-foreground mt-2">Plan description goes here.</p>
                                 </div>
 
-                                <div className="mt-auto p-6 bg-card">
+                                <div className="bg-card mt-auto p-6">
                                     <ul className="space-y-3">
                                         {plan.features &&
                                             plan.features.map((feature, i) => (
@@ -187,12 +201,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             ))}
                                     </ul>
                                     <div className="mt-6">
-                                        {!isSubscribed ? (
-                                            <a
-                                                href={`/checkout/${planId}`}
+                                        {!isSubscribed || subscription.chargebee_status === 'cancelled' ? (
+                                            <button
                                                 onClick={(e) => handleCheckoutClick(e, planId)}
                                                 className={`block w-full rounded-lg px-4 py-3 text-center font-medium transition-all ${
-                                                    plan.default ? 'bg-primary' : 'bg-gradient-to-r from-gradient-from to-gradient-to hover:bg-gradient-to'
+                                                    plan.default
+                                                        ? 'bg-primary'
+                                                        : 'from-gradient-from to-gradient-to hover:bg-gradient-to bg-gradient-to-r'
                                                 } ${loading ? 'cursor-not-allowed' : ''}`}
                                             >
                                                 {isLoading ? (
@@ -222,7 +237,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 ) : (
                                                     'Get Started'
                                                 )}
-                                            </a>
+                                            </button>
                                         ) : subscription.chargebee_price !== planId ? (
                                             <Button
                                                 onClick={(e) => handleSwapSubscription(e, planId)}

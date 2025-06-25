@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SubscriptionLockHelper;
 use Chargebee\Cashier\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckoutController extends Controller
 {
-    public function productCheckout(Request $request, string $plan): RedirectResponse
+    public function productCheckout(Request $request, string $plan): Response
     {
+        if (SubscriptionLockHelper::isLocked($request->user()->id) || $request->user()->currentTeam->subscribed()) {
+            return redirect()->back()->with('error', 'You already have a subscription in progress. Please wait a few minutes or refresh the page.');
+        }
+        SubscriptionLockHelper::lock($request->user()->id, 2);
+
         $checkout = $request
             ->user()
             ->currentTeam
@@ -19,12 +27,15 @@ class CheckoutController extends Controller
                 'cancel_url' => route('failed-payment'),
             ]);
 
-        return redirect()->away($checkout->url);
+        return Inertia::location($checkout->url);
     }
 
     public function swapProduct(Request $request, string $plan): RedirectResponse
     {
-        $request->user()->currentTeam->subscription()->swap($plan);
+        if ($request->user()->currentTeam->subscribedToPrice($plan) || !is_null($request->user()->currentTeamLatestSubscription()->ends_at)) {
+            return redirect()->back()->with('error', 'Something went wrong while swapping your price. Please try again later.');
+        }
+        $request->user()->currentTeamLatestSubscription()->swap($plan);
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }
@@ -33,7 +44,8 @@ class CheckoutController extends Controller
     {
         return $request->user()->currentTeam->checkout([], [
             'mode' => Session::MODE_SETUP,
-            'success_url' => route('billing'),
+            'success_url' => route('billing'), // Ensure this route uses port 80 or 443
+            'cancel_url' => route('billing'),  // Optional: allow cancel fallback
         ]);
     }
 }

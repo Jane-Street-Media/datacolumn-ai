@@ -7,16 +7,16 @@ use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
-    public function pauseSubscription(Request $request): RedirectResponse
+    public function cancelSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->currentTeam->subscription('default');
+            $subscription = $request->user()->currentTeamLatestSubscription();
 
-            if ($subscription && $subscription->pause()) {
-                return back()->with('success', 'Subscription paused successfully.');
+            if ($subscription && $subscription->cancel()) {
+                return back()->with('success', 'Subscription cancelled successfully.');
             }
 
-            return back()->with('error', 'Something went wrong while pausing the subscription.');
+            return back()->with('error', 'Something went wrong while cancelling the subscription.');
         } catch (\Exception $e) {
             return back()->with('error', 'An error occurred: '.$e->getMessage());
         }
@@ -25,8 +25,8 @@ class SubscriptionController extends Controller
     public function resumeSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->currentTeam->subscription('default');
-            if ($subscription && $subscription->resumePauseScheduled()) {
+            $subscription = $request->user()->currentTeamLatestSubscription();
+            if ($subscription && $subscription->resumeCancelScheduled()) {
                 return back()->with('success', 'Subscription resumed successfully.');
             }
 
@@ -38,6 +38,6 @@ class SubscriptionController extends Controller
 
     public function downloadInvoices(Request $request, string $invoiceId)
     {
-        return $request->user()?->currentTeam->downloadInvoice($invoiceId);
+        return $request->user()->currentTeam->downloadInvoice($invoiceId);
     }
 }

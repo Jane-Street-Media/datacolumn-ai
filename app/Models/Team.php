@@ -41,7 +41,7 @@ class Team extends Model
 
     public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription
     {
-        $subscriptionDetails = $this->subscription('default');
+        $subscriptionDetails = $this->subscriptions()->latest()->first();
         if (! $subscriptionDetails) {
             return null;
         }
