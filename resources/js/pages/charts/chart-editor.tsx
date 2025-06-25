@@ -139,6 +139,9 @@ export default function ChartEditor() {
 
     const handleConfigChange = (newConfig: CustomChartConfig) => {
         setConfig(newConfig);
+
+        console.log('config');
+        console.log(config);
     };
 
     return (
