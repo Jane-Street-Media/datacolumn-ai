@@ -32,8 +32,14 @@ class UpdatePlanFeatures extends Command
             'no_of_invitations' => 10,
         ];
 
-        return Plan::query()->update([
-            'features' => $features,
-        ]);
+        $plans = Plan::all();
+
+        foreach ($plans as $k => $plan) {
+            $plan->features = [
+                'no_of_projects' => 10 - $k + 2,
+                'no_of_folders' => 10 - $k + 2,
+                'no_of_invitations' => 10 - $k + 2,
+            ];
+        }
     }
 }
