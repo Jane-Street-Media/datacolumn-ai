@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle, UserPlus } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
@@ -24,14 +25,15 @@ type InviteForm = {
 type InviteMemberDialogProps = {
     role: string;
 };
-export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
+export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialogProps) {
     const { auth } = usePage().props;
     const user = auth.user;
     const [open, setOpen] = useState(false); // dialog state
     const { data, setData, post, processing, errors, reset } = useForm<InviteForm>({
         email: '',
-        role: role,
+        role: '',
     });
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('team.member.store', user.current_team_id), {
@@ -43,7 +45,7 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
                 }
             },
             onSuccess: (response) => {
-                reset('email');
+                reset('email', 'role');
                 setOpen(false);
                     toast(response.props.flash.success, {
                         description: "🎉 We've rolled out the red carpet — your teammate's on their way!",
@@ -55,10 +57,14 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    <span>Invite Member</span>
-                </Button>
+                {trigger ? (
+                    trigger
+                ) : (
+                    <Button>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        <span>Invite Member</span>
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -82,6 +88,23 @@ export default function InviteMemberDialog({ role }: InviteMemberDialogProps) {
                             placeholder="xyz.com"
                         />
                         <InputError message={errors.email} />
+
+                        <Select value={data.role} onValueChange={(value) => setData('role', value)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {roles?.map((role) => (
+                                        <SelectItem key={role.id} value={String(role.name)}>
+                                            {role.name}
+                                        </SelectItem>
+                                    ))}{' '}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+
+                        <InputError message={errors.role} />
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>

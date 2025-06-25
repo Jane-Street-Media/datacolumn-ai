@@ -1,3 +1,4 @@
+import ProjectDialog from '@/components/projects/project-dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,13 +16,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { BarChart3, Calendar, Delete, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
+import { BarChart3, Calendar, Delete, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
-import ProjectDialog from '@/components/projects/project-dialog';
 
 const MotionCard = motion(Card);
-export default function ProjectCard({ index = 1, project ,folders}) {
+export default function ProjectCard({ index = 1, project, folders }) {
     const { delete: destroy, reset, processing } = useForm();
 
     const deleteProject: FormEventHandler = (e) => {
@@ -41,8 +41,7 @@ export default function ProjectCard({ index = 1, project ,folders}) {
         <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
-
-                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-gradient-from to-gradient-to">
+                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
                         <BarChart3 className="h-5 w-5" />
                     </div>
                 </CardTitle>
@@ -53,14 +52,23 @@ export default function ProjectCard({ index = 1, project ,folders}) {
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className="flex flex-col space-y-2">
-                                <ProjectDialog folders={folders} project={project}/>
+                                <ProjectDialog
+                                    folders={folders}
+                                    project={project}
+                                    trigger={
+                                        <Button variant="ghost" className="justify-start">
+                                            <Edit />
+                                            <span>Edit</span>
+                                        </Button>
+                                    }
+                                />{' '}
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button
                                             variant="ghost"
                                             className="text-destructive-foreground hover:text-destructive-foreground justify-start"
                                         >
-                                            <Delete/>
+                                            <Delete />
                                             Delete
                                         </Button>
                                     </AlertDialogTrigger>
@@ -88,7 +96,7 @@ export default function ProjectCard({ index = 1, project ,folders}) {
             <CardContent>
                 <div className="space-y-2">
                     <h3 className="text-foreground text-lg font-medium">{project.name}</h3>
-                    <p className="text-secondary-foreground text-sm line-clamp-3">{project.description}</p>
+                    <p className="text-secondary-foreground line-clamp-3 text-sm">{project.description}</p>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                     <div className="text-secondary-foreground flex items-center text-sm">

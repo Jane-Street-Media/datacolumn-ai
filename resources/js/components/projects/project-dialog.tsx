@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm } from '@inertiajs/react';
-import { Edit, LoaderCircle, UserPlus } from 'lucide-react';
+import { LoaderCircle, UserPlus } from 'lucide-react';
 import { FormEventHandler, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -26,7 +26,7 @@ type ProjectForm = {
     folder_id: number;
 };
 
-export default function ProjectDialog({ folders, project = null }) {
+export default function ProjectDialog({ folders, project = null, trigger }) {
     const [open, setOpen] = useState(false);
     const { data, setData, post, patch, processing, errors, reset } = useForm<ProjectForm>({
         name: project?.name ?? '',
@@ -59,9 +59,9 @@ export default function ProjectDialog({ folders, project = null }) {
             onSuccess: (response) => {
                 reset('name', 'description', 'folder_id');
                 setOpen(false);
-                    toast(response.props.flash.success, {
-                        description: isEdit ? '🛠️ Your changes are live and ready to shine.' : '🚀 Time to bring your ideas to life!',
-                    });
+                toast(response.props.flash.success, {
+                    description: isEdit ? '🛠️ Your changes are live and ready to shine.' : '🚀 Time to bring your ideas to life!',
+                });
             },
         });
     };
@@ -69,11 +69,8 @@ export default function ProjectDialog({ folders, project = null }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                {isEdit ? (
-                    <Button variant="ghost" className="justify-start">
-                        <Edit />
-                        <span>Edit</span>
-                    </Button>
+                {trigger ? (
+                    trigger
                 ) : (
                     <Button variant="ghost" className="border">
                         <UserPlus className="mr-2 h-4 w-4" />

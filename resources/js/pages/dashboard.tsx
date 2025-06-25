@@ -1,13 +1,13 @@
-import AppLayout from '@/layouts/app-layout';
-import {type BreadcrumbItem} from '@/types';
-import { Deferred, Head } from '@inertiajs/react';
-import { FileText, BarChart3, Users, TrendingUp } from 'lucide-react';
-import StatsCard from '@/components/stats-card';
-import RecentProjects from '@/components/dashboard/recent-projects';
 import ActivityFeed from '@/components/dashboard/activity-feed';
 import QuickActions from '@/components/dashboard/quick-actions';
+import RecentProjects from '@/components/dashboard/recent-projects';
 import { LoadingSkeleton } from '@/components/loading-skeleton';
-import { Card, CardContent, } from '@/components/ui/card';
+import StatsCard from '@/components/stats-card';
+import { Card, CardContent } from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Deferred, Head } from '@inertiajs/react';
+import { BarChart3, FileText, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard({ projects, statistics, activityLogs}) {
+export default function Dashboard({ projects, statistics, activityLogs, folders, roles }) {
     const stats = [
         {
             name: 'Total Projects',
@@ -56,19 +56,22 @@ export default function Dashboard({ projects, statistics, activityLogs}) {
 
                 <div className="mb-8 grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
                     <div className="col-span-2">
-                        <Deferred data="projects" fallback={
-                            <Card>
-                                <CardContent>
-                                    <LoadingSkeleton />
-                                </CardContent>
-                            </Card>
-                        }>
-                            <RecentProjects projects={projects} />
+                        <Deferred
+                            data="projects"
+                            fallback={
+                                <Card>
+                                    <CardContent>
+                                        <LoadingSkeleton />
+                                    </CardContent>
+                                </Card>
+                            }
+                        >
+                            <RecentProjects projects={projects} folders={folders} />
                         </Deferred>
                     </div>
                     <div className="space-y-4">
-                        <ActivityFeed activityLogs={activityLogs}/>
-                        <QuickActions />
+                        <ActivityFeed activityLogs={activityLogs} />
+                        <QuickActions folders={folders} roles={roles} />
                     </div>
                 </div>
             </div>

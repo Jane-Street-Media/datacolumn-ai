@@ -143,20 +143,16 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                     ) : (
                         <div className="mx-auto max-w-4xl">
                             <div
-                                className="border-opacity-30 dark:border-opacity-50 overflow-hidden rounded-xl border-2 border-[#012A38] bg-white shadow-lg hover:border-[#FF3300] dark:bg-zinc-800"
+                                className="border-opacity-30 dark:border-opacity-50 overflow-hidden rounded-xl bg-card"
                                 onMouseEnter={() => setHoveredPlan('current')}
                                 onMouseLeave={() => setHoveredPlan(null)}
                             >
                                 <div
-                                    className={`flex items-center justify-between border-b border-gray-200 p-6 transition-all duration-300 dark:border-gray-700 ${
-                                        hoveredPlan === 'current' ? 'border-[#FF3300]' : ''
-                                    }`}
+                                    className={`flex items-center justify-between p-6 transition-all duration-300`}
                                 >
                                     <div>
                                         <h2
-                                            className={`text-lg font-semibold ${
-                                                hoveredPlan === 'current' ? 'text-[#FF3300] dark:text-[#FF3300]' : 'text-zinc-900 dark:text-zinc-50'
-                                            } transition-colors duration-300`}
+                                            className="text-lg font-semibold text-foreground"
                                         >
                                             {subscription.plan.display_name}
                                         </h2>
@@ -186,34 +182,34 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
 
                                 <div className="p-6">
                                     <div className="mb-6 grid grid-cols-3 gap-4">
-                                        <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-700">
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">Card Number</p>
-                                            <p className="mt-1 text-sm text-zinc-900 dark:text-zinc-50">
+                                        <div className="rounded-lg p-3 border border-primary">
+                                            <p className="text-sm text-foreground">Card Number</p>
+                                            <p className="mt-1 text-sm text-secondary-foreground">
                                                 {`**** **** **** ${auth?.user.pm_last_four || '****'}`}
                                             </p>
                                         </div>
-                                        <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-700">
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">Billing Cycle</p>
-                                            <p className="text-sm text-zinc-900 dark:text-zinc-50">
+                                        <div className="rounded-lg p-3 border border-primary">
+                                            <p className="text-sm text-foreground">Billing Cycle</p>
+                                            <p className="text-sm text-secondary-foreground">
                                                 {subscription.chargebee_price?.match(/Monthly/i) ? 'Monthly' : 'Yearly'}
                                             </p>
                                         </div>
-                                        <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-700">
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">Currency</p>
-                                            <p className="text-sm text-zinc-900 dark:text-zinc-50">{subscription.plan.currency}</p>
+                                        <div className="rounded-lg p-3 border border-primary">
+                                            <p className="text-sm text-foreground">Currency</p>
+                                            <p className="text-sm text-secondary-foreground">{subscription.plan.currency}</p>
                                         </div>
                                     </div>
 
-                                    <div className="mb-6 rounded-lg bg-gray-50 p-4 dark:bg-zinc-700">
-                                        <h3 className="text-md mb-3 font-semibold text-zinc-900 dark:text-zinc-50">Subscription Items</h3>
+                                    <div className="mb-6 rounded-lg bg-card">
+                                        <h3 className="text-md mb-3 font-semibold text-foreground">Subscription Items</h3>
                                         <div className="overflow-x-auto">
                                             <table className="w-full border-collapse">
                                                 <thead>
-                                                    <tr className="bg-white dark:bg-zinc-800">
-                                                        <th className="border border-gray-200 p-2 text-left text-zinc-900 dark:border-gray-700 dark:text-zinc-50">
+                                                    <tr className="bg-secondary">
+                                                        <th className="border text-center text-foreground p-2">
                                                             Product
                                                         </th>
-                                                        <th className="border border-gray-200 p-2 text-center text-zinc-900 dark:border-gray-700 dark:text-zinc-50">
+                                                        <th className="border text-center text-foreground p-2">
                                                             Quantity
                                                         </th>
                                                     </tr>
@@ -267,7 +263,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                     <button
                                         onClick={handleUpdatePaymentMethod}
                                         disabled={isUpdating}
-                                        className={`flex-1 cursor-pointer rounded-lg bg-[#012A38] px-4 py-3 text-center font-medium text-white transition-all hover:bg-[#FF3300] disabled:cursor-not-allowed disabled:opacity-50`}
+                                        className={`flex-1 cursor-pointer rounded-lg bg-[#012A38] px-4 py-3 text-center font-medium text-white transition-all hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50`}
                                     >
                                         {isUpdating ? (
                                             <span className="flex items-center justify-center">
