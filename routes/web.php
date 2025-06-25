@@ -14,6 +14,11 @@ use Chargebee\Cashier\Http\Middleware\AuthenticateWebhook;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/forget-cache', function () {
+    \App\Helpers\SubscriptionLockHelper::unlock(\Illuminate\Support\Facades\Auth::user()->id);
+    dd('cache forgot');
+});
+
 Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('home');

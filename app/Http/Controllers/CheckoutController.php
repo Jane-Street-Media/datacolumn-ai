@@ -20,7 +20,6 @@ class CheckoutController extends Controller
             return redirect()->back()->withErrors(['error' => 'You are already subscribed to a plan.']);
         }
         SubscriptionLockHelper::lock($request->user()->id, 2);
-
         $checkout = $request
             ->user()
             ->currentTeam
