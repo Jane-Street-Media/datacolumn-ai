@@ -23,16 +23,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const [cancelSubscriptionModalOpen, setCancelSubscriptionModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const canResumeSubscription = useMemo(() => {
-        if (subscription?.ends_at) {
-            const now = new Date();
-            const endsAt = new Date(subscription?.ends_at);
-            if (isBefore(now, endsAt)) {
-                return true;
-            }
-        }
-        return false;
-    }, [subscription]);
+    const canResumeSubscription = useMemo(() => (subscription?.chargebee_status === 'non_renewing'), [subscription]);
     const CancelSubscriptionButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
