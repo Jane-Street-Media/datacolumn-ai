@@ -25,21 +25,21 @@ class ActivityLog extends Activity
     public function iconName(): Attribute
     {
         return Attribute::make(
-            get: fn() => ActivityEvents::tryFrom($this->event)?->getIcon()
+            get: fn () => ActivityEvents::tryFrom($this->event)?->getIcon()
         );
     }
 
     public function iconClass(): Attribute
     {
         return Attribute::make(
-            get: fn() => ActivityEvents::tryFrom($this->event)?->getIconClasses()
+            get: fn () => ActivityEvents::tryFrom($this->event)?->getIconClasses()
         );
     }
 
     public function iconBackgroundClass(): Attribute
     {
         return Attribute::make(
-            get: fn() => ActivityEvents::tryFrom($this->event)?->getIconBackgroundClasses()
+            get: fn () => ActivityEvents::tryFrom($this->event)?->getIconBackgroundClasses()
         );
     }
 
