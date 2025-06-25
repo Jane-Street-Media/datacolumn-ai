@@ -45,7 +45,7 @@ class BillingController extends Controller
 
     public function billing(Request $request): Response|RedirectResponse
     {
-        if ($request->user()->currentTeam->subscribed('default')) {
+        if ($request->user()?->currentTeam->subscribed('default')) {
             return redirect()->route('subscription-settings');
         }
 
