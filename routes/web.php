@@ -90,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('chart-ai')->group(function () {
         Route::get('/', ChartAIController::class)->name('chart-ai');
     });
-}
+});
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/checkout.php';
