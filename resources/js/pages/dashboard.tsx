@@ -6,8 +6,10 @@ import StatsCard from '@/components/stats-card';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Deferred, Head } from '@inertiajs/react';
+import { Deferred, Head, router } from '@inertiajs/react';
 import { BarChart3, FileText, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard({ projects, statistics, activityLogs, folders, roles }) {
+export default function Dashboard({ projects, statistics, activityLogs, folders, roles, flash }) {
     const stats = [
         {
             name: 'Total Projects',
@@ -43,6 +45,17 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
         //     icon: TrendingUp,
         // },
     ];
+
+    const [hasShownToast, setHasShownToast] = useState(false);
+
+    useEffect(() => {
+        if (flash?.success && !hasShownToast) {
+            toast.success('Invitation Accepted', {
+                description: 'You’ve successfully joined the team. You can now collaborate with your teammates.',
+            });
+            setHasShownToast(true);
+        }
+    }, [flash?.success, hasShownToast]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
