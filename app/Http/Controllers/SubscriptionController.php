@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SubscriptionStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,9 @@ class SubscriptionController extends Controller
     public function cancelSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()->currentTeamLatestSubscription();
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
 
-            if ($subscription && $subscription->cancel()) {
+            if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::NON_RENEWING->value && $subscription->cancel()) {
                 return back()->with('success', 'Subscription cancelled successfully.');
             }
 
@@ -25,13 +26,13 @@ class SubscriptionController extends Controller
     public function switchToFreePlan(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()->currentTeamLatestSubscription();
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
 
-            if ($subscription && $subscription->cancelNow()) {
-                return back()->with('success', 'Subscription cancelled successfully.');
+            if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::CANCELLED->value && $subscription->cancelNow()) {
+                return back()->with('success', 'Switched to free plan successfully.');
             }
 
-            return back()->withErrors(['error' => 'Something went wrong while cancelling the subscription.']);
+            return back()->withErrors(['error' => 'Something went wrong while switching the plan.']);
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
         }
@@ -40,7 +41,7 @@ class SubscriptionController extends Controller
     public function resumeSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()->currentTeamLatestSubscription();
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
             if ($subscription && $subscription->resumeCancelScheduled()) {
                 return back()->with('success', 'Subscription resumed successfully.');
             }
