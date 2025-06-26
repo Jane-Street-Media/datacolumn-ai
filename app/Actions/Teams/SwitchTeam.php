@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Actions\Teams;
+
 use App\Models\User;
 
-class SwitchUserCurrentTeam
+class SwitchTeam
 {
     public static function handle(User $user, int $teamId): User
     {
