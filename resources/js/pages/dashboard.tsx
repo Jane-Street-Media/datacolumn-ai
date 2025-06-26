@@ -8,6 +8,8 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
 import { BarChart3, FileText, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard({ projects, statistics, activityLogs, folders, roles }) {
+export default function Dashboard({ projects, statistics, activityLogs, folders, roles, flash }) {
     const stats = [
         {
             name: 'Total Projects',
@@ -43,7 +45,19 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
         //     icon: TrendingUp,
         // },
     ];
+    const [message] = useState(flash?.success || flash?.error || null);
+    const [hasShown, setHasShown] = useState(false);
 
+    useEffect(() => {
+        if (message && !hasShown) {
+            if (flash.success) {
+                toast.success(flash.success);
+            } else if (flash.error) {
+                toast.error(flash.error);
+            }
+            setHasShown(true);
+        }
+    }, [message, hasShown, flash]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
