@@ -96,7 +96,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('chart-ai')->group(function () {
         Route::get('/', ChartAIController::class)->name('chart-ai');
-        Route::get('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
+        Route::post('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
     });
 });
 

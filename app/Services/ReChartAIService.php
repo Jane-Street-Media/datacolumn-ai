@@ -103,6 +103,7 @@ The returned object must include:
   • title: a human-readable chart title
   • xAxis & yAxis: the data keys to map on each axis
   • data: an array of objects, each containing at least the xAxis and yAxis fields
+  • series: an array of objects, each with a `dataKey` field for the series values
   • colors: an ordered list of color strings (hex codes or CSS names) for the series
 DESC,
                 'parameters' => [
@@ -132,6 +133,24 @@ DESC,
                             'type' => 'string',
                             'description' => 'Field name in each data object to use for the Y-axis values.',
                             'examples' => ['salary', 'revenue']
+                        ],
+                        'series' => [
+                            'type' => 'array',
+                            'description' => 'Field name in each data object to use for the series values.',
+                            'items' => [
+                                'type' => 'object',
+                                'additionalProperties' => true
+                            ],
+                            'default' => [],
+                            'minItems' => 1,
+                            'examples' => [
+                                [
+                                    'dataKey' => 'salary',
+                                ],
+                                [
+                                    'dataKey' =>  'revenue',
+                                ]
+                            ]
                         ],
                         'data' => [
                             'type' => 'array',
@@ -164,7 +183,7 @@ DESC',
                             'examples' => ['#8884d8', '#82ca9d', '#ffc658']
                         ],
                     ],
-                    'required' => ['chartType', 'title', 'data'],
+                    'required' => ['chartType', 'title', 'data', 'series'],
                     'additionalProperties' => false
                 ]
             ],
@@ -310,7 +329,7 @@ DESIGN PRINCIPLES:
                 'title' => $args['title'],
                 'xAxis' => $args['xAxis'],
                 'yAxis' => $args['yAxis'],
-                'data' => $args['data'],
+                'series' => $args['series'],
                 'colors' => $this->ensureColorCount($args['colors'], count($args['data'])),
                 'showGrid' => $args['showGrid'] ?? true,
                 'showLegend' => $args['showLegend'] ?? true,

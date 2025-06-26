@@ -18,6 +18,7 @@ import { useChartExport } from '@/hooks/use-chart-export';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
+import axios from 'axios';
 
 interface Message {
     id: string;
@@ -53,7 +54,7 @@ export const Assistant: React.FC = () => {
             ]
         }
     ]);
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState('create a bar chart with some sample data');
     const [isTyping, setIsTyping] = useState(false);
     const [showEmbedModal, setShowEmbedModal] = useState(false);
     const [selectedChart, setSelectedChart] = useState<{ config: ChartConfig; data: any[] } | null>(null);
@@ -102,16 +103,12 @@ export const Assistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            // const response = await backendAIService.sendMessage(text, {
-            //     data: null,
-            //     previousMessages: messages.slice(-5).map(m => ({
-            //         role: m.type === 'user' ? 'user' : 'assistant',
-            //         content: m.content,
-            //         timestamp: m.timestamp
-            //     }))
-            // });
 
-            const response = getFallbackResponse(text)
+            const response = (await axios.post(route('chart-ai.conversation'), {
+               message: text,
+           })).data as AIResponse;
+
+            // const response = getFallbackResponse(text)
 
             const aiMessage: Message = {
                 id: (Date.now() + 1).toString(),

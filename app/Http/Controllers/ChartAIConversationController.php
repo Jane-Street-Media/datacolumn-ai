@@ -25,15 +25,15 @@ class ChartAIConversationController extends Controller
             ['previousMessages' => $history, 'data' => $data]
         );
 
-        dd($response);
         // Save history + pass back only the last exchange
         session(['chart_ai_history' => $history]);
 
         return response()->json([
             'reply' => $response['content'] ?? '',
             'chartConfig' => $response['chartConfig'] ?? null,
+            'generatedData' => $response['generatedData'] ?? null,
             'dataInsights' => $response['dataInsights'] ?? null,
-            'chartRec' => $response['chartRecommendation'] ?? null,
+            'chartRecommendation' => $response['chartRecommendation'] ?? null,
             'suggestions' => $response['suggestions'] ?? []
         ]);
     }
