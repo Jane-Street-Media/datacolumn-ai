@@ -1,7 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
-import { LogOut, Monitor, Moon, Settings, Sun } from 'lucide-react';
+import { Monitor, Moon, Settings, Sun } from 'lucide-react';
 import { useAppearanceContext } from '@/contexts/appearance-context';
 import {
     DropdownMenu,
@@ -10,12 +10,11 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
-import { UserMenuContent } from '@/components/user-menu-content';
-import { UserInfo } from '@/components/user-info';
+import { Badge } from '@/components/ui/badge';
 
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
@@ -120,7 +119,12 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                                         className="w-full justify-start"
                                         onClick={() => handleSwitchUserTeam(team.id)}
                                     >
-                                        {team.name}
+                                        <span>{team.name}</span>
+                                        {auth.user.current_team_id === team.id &&
+                                            <Badge className="ml-auto">
+                                                active
+                                            </Badge>
+                                        }
                                     </Button>
                                 </DropdownMenuItem>
                             ))}
