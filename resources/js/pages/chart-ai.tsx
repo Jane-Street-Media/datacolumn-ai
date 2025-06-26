@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ProjectCard from '@/components/projects/project-card';
+import { Assistant } from '@/components/chart-ai/assistant';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,7 +36,7 @@ export default function Projects() {
                         <PageHeaderDescription>Create charts from descriptions, analyze data, and get expert guidance.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                <Badge variant="outline" className="text-lg flex items-center gap-1 border-l-gradient-from border-t-gradient-from border-b-gradient-to border-r-gradient-to text-white">
+                                <Badge className="text-lg flex items-center gap-1 border-l-gradient-from border-t-gradient-from border-b-gradient-to border-r-gradient-to text-white bg-gradient-to-r from-gradient-from to-gradient-to">
                                     <Zap size="20"/>
                                     AI Ready
                                 </Badge>
@@ -70,11 +71,8 @@ export default function Projects() {
                 </div>
                 <Card className="h-fit">
                     <CardContent>
-                        inbox body
+                        <Assistant />
                     </CardContent>
-                    <CardFooter>
-                        input
-                    </CardFooter>
                 </Card>
             </div>
         </AppLayout>

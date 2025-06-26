@@ -88,7 +88,9 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
       return [];
     }
 
-    return data.map(item => ({
+      console.log(data);
+      console.log(config);
+      return data.map(item => ({
       ...item,
     }));
   }, [data, config.xAxis, config.yAxis]);
