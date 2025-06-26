@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Fodlers;
+namespace App\Http\Requests\Folders;
 
 use App\Http\Requests\BaseTeamRequest;
 use Illuminate\Contracts\Validation\ValidationRule;

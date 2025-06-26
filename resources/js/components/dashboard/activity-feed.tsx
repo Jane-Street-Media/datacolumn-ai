@@ -23,7 +23,7 @@ export default function ActivityFeed({ activityLogs }) {
             <CardHeader>
                 <CardTitle>Activity Feed</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="h-96 overflow-y-scroll">
                 <div className="space-y-4">
                     {activityLogs.map((log, index) => {
                         const Icon = Icons[log.icon_name]; // dynamically resolve from string

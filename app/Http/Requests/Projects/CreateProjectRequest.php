@@ -27,7 +27,7 @@ class CreateProjectRequest extends BaseTeamRequest
             'name' => ['required', 'string'],
             'description' => ['nullable', 'string'],
             'folder_id' => [
-                'required',
+                'nullable',
                 Rule::exists('folders', 'id')->where(function ($query) {
                     $query->where('team_id', $this->team_id);
                 }),

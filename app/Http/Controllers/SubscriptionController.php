@@ -2,42 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SubscriptionStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
-    public function pauseSubscription(Request $request): RedirectResponse
+    public function cancelSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->subscription('default');
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
 
-            if ($subscription && $subscription->pause()) {
-                return back()->with('success', 'Subscription paused successfully.');
+            if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::NON_RENEWING->value && $subscription->cancel()) {
+                return back()->with('success', 'Subscription cancelled successfully.');
             }
 
-            return back()->with('error', 'Something went wrong while pausing the subscription.');
+            return back()->withErrors(['error' => 'Something went wrong while cancelling the subscription.']);
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred: '.$e->getMessage());
+            return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
+        }
+    }
+
+    public function switchToFreePlan(Request $request): RedirectResponse
+    {
+        try {
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
+
+            if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::CANCELLED->value && $subscription->cancelNow()) {
+                return back()->with('success', 'Switched to free plan successfully.');
+            }
+
+            return back()->withErrors(['error' => 'Something went wrong while switching the plan.']);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
         }
     }
 
     public function resumeSubscription(Request $request): RedirectResponse
     {
         try {
-            $subscription = $request->user()?->subscription('default');
-            if ($subscription && $subscription->resume()) {
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
+            if ($subscription && $subscription->resumeCancelScheduled()) {
                 return back()->with('success', 'Subscription resumed successfully.');
             }
 
-            return back()->with('error', 'Something went wrong while resuming the subscription.');
+            return back()->withErrors(['error' => 'Something went wrong while resuming the subscription.']);
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred: '.$e->getMessage());
+            return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
         }
     }
 
     public function downloadInvoices(Request $request, string $invoiceId)
     {
-        return $request->user()?->downloadInvoice($invoiceId);
+        return $request->user()->currentTeam->downloadInvoice($invoiceId);
     }
 }

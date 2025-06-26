@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { Search, X } from 'lucide-react';
+import { Search, UserPlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -62,7 +62,15 @@ export default function Projects({ folders, projects }) {
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
                                 <FolderDialog />
-                                <ProjectDialog folders={folders} />
+                                <ProjectDialog
+                                    folders={folders}
+                                    trigger={
+                                        <Button variant="ghost" className="border">
+                                            <UserPlus className="mr-2 h-4 w-4" />
+                                            <span>New Project</span>
+                                        </Button>
+                                    }
+                                />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>
@@ -89,7 +97,12 @@ export default function Projects({ folders, projects }) {
 
                                 <Select
                                     value={filters.folder?.toString() || ''}
-                                    onValueChange={(value) => setFilters((prev) => ({ ...prev, folder: Number(value) }))}
+                                    onValueChange={(value) =>
+                                        setFilters((prev) => ({
+                                            ...prev,
+                                            folder: Number(value),
+                                        }))
+                                    }
                                 >
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select a folder" />

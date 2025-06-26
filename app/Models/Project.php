@@ -40,4 +40,9 @@ class Project extends TeamBootModel
     {
         return $this->belongsTo(User::class);
     }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
 }
