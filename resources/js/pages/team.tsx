@@ -11,6 +11,7 @@ import { Deferred, Head, router } from '@inertiajs/react';
 import { CrownIcon, MailIcon, Search, ShieldIcon, Users, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import TeamInvitationCard from '@/components/Teams/team-invitation-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ roles, statistics, teamUsers }) {
+export default function Team({ roles, statistics, teamUsers ,teamInvitations}) {
     const stats = [
         {
             name: 'Total Members',
@@ -70,16 +71,6 @@ export default function Team({ roles, statistics, teamUsers }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
-    const clearFilters = () => {
-        setFilters({ search: null,});
-        router.reload({
-            only: ['teamUsers'],
-            data: {
-                search: '',
-            },
-        });
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Teams" />
@@ -104,6 +95,8 @@ export default function Team({ roles, statistics, teamUsers }) {
 
                 <Card>
                     <CardHeader>
+                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <h1 className="text-xl font-semibold">Team Users</h1>
                         <div className="grid">
                             <div className="col-span-4 flex items-center justify-end gap-4">
                                 <div className="relative flex max-w-2xl items-center">
@@ -119,17 +112,26 @@ export default function Team({ roles, statistics, teamUsers }) {
                                             }))
                                         }
                                     />
-                                    <Button variant="destructive" onClick={() => clearFilters()}>
-                                        <X />
-                                        Clear
-                                    </Button>
                                 </div>
                             </div>
+                        </div>
                         </div>
                         <Separator className="my-2" />
                     </CardHeader>
                     <CardContent>
-                        {teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)}{' '}
+                        {teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <h1 className="text-xl font-semibold">Team Invitations</h1>
+                        </div>
+                        <Separator className="my-2" />
+                    </CardHeader>
+                    <CardContent>
+                        {teamInvitations?.map((invitation, index) => <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />)}
                     </CardContent>
                 </Card>
             </div>

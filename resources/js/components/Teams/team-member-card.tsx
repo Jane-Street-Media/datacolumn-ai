@@ -20,6 +20,7 @@ import { LoaderCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function TeamMember({ user, roles }) {
+
     const { data, setData, patch } = useForm({
         role: user.roles[0].name ?? '',
     });
@@ -72,7 +73,7 @@ export default function TeamMember({ user, roles }) {
                         </Avatar>
                         <div
                             className={`absolute -right-1 -bottom-1 h-4 w-4 rounded-full border-2 border-white dark:border-gray-800 ${
-                                'active' === 'active' ? 'bg-green-500' : 'pending' === 'pending' ? 'bg-yellow-500' : 'bg-gray-400'
+                               user ? 'bg-green-500' : 'pending' === 'pending' ? 'bg-yellow-500' : 'bg-gray-400'
                             }`}
                         />
                     </div>
@@ -84,27 +85,29 @@ export default function TeamMember({ user, roles }) {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                        <Select value={data.role} onValueChange={handleSwitchRole}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Change role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {roles?.map((role) => (
-                                        <SelectItem key={role.id} value={String(role.name)}>
-                                            {role.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                        <Badge>{'active'}</Badge>
-                    </div>
+
+                        <div className="text-right" >
+                            <Select value={data.role} onValueChange={handleSwitchRole}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Change role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {roles?.map((role) => (
+                                            <SelectItem key={role.id} value={String(role.name)}>
+                                                {role.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            <Badge className={'mt-2'}>{'active'}</Badge>
+                        </div>
+
 
                     <div className="text-muted-foreground text-right text-sm">
-                        <p>Joined {format(new Date(user.created_at), 'MMM d, yyyy')}</p>
-                        <p className="text-xs">Last active {format(new Date(), 'MMM d, h:mm a')}</p>
+                        <p>Joined: {format(new Date(user.created_at), 'MMM d, yyyy')}</p>
+                        <p className="text-xs">Last active: {format(new Date(), 'MMM d, h:mm a')}</p>
                     </div>
 
                     <AlertDialog>

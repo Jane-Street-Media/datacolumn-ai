@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Team;
 
 use App\Actions\Common\CreateTeam;
 use App\Actions\Teams\DeleteTeam;
+use App\Actions\Teams\GetTeamInvitations;
 use App\Actions\Teams\GetTeamUsers;
 use App\Actions\Teams\Stats\GetTeamStats;
 use App\Actions\Teams\UpdateTeam;
@@ -26,8 +27,9 @@ class TeamController extends Controller
 
         return Inertia::render('team', [
             'statistics' => GetTeamStats::handle(),
-            'roles' => Inertia::defer(fn() => Role::all()),
-            'teamUsers' => Inertia::defer(fn() => GetTeamUsers::handle(Auth::user() , $request->validated())),
+            'roles' => Inertia::defer(fn () => Role::all()),
+            'teamUsers' => Inertia::defer(fn () => GetTeamUsers::handle(Auth::user(), $request->validated())),
+            'teamInvitations' => Inertia::defer(fn () => GetTeamInvitations::handle()),
         ]);
     }
 
