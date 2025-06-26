@@ -65,39 +65,39 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
         });
     });
-});
 
-Route::prefix('folder')->group(function () {
-    Route::post('/', [FolderController::class, 'store'])->name('folder.store');
-});
+    Route::prefix('folder')->group(function () {
+        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
+    });
 
-Route::prefix('team')->group(function () {
-    Route::get('/', [TeamController::class, 'index'])->name('teams.store');
-    Route::post('/', [TeamController::class, 'store'])->name('teams.store');
-    Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
-    Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::prefix('team')->group(function () {
+        Route::get('/', [TeamController::class, 'index'])->name('teams.store');
+        Route::post('/', [TeamController::class, 'store'])->name('teams.store');
+        Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
+        Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
 
-    // Team Member Management
-    Route::post('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
-    Route::post('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
-    Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
-});
+        // Team Member Management
+        Route::post('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
+        Route::post('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
+        Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
+    });
 
-// Team Invitations
-Route::prefix('team-invitation')->group(function () {
-    Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
-    Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
-});
+    // Team Invitations
+    Route::prefix('team-invitation')->group(function () {
+        Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
+        Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
+    });
 
-Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
+    Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
 
-Route::prefix('chart-ai')->group(function () {
-    Route::get('/', ChartAIController::class)->name('chart-ai');
-});
+    Route::prefix('chart-ai')->group(function () {
+        Route::get('/', ChartAIController::class)->name('chart-ai');
+    });
 
-Route::prefix('chart-ai')->group(function () {
-    Route::get('/', ChartAIController::class)->name('chart-ai');
-    Route::get('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
+    Route::prefix('chart-ai')->group(function () {
+        Route::get('/', ChartAIController::class)->name('chart-ai');
+        Route::get('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
+    });
 });
 
 Route::get('chart/embed/{uuid}', function ($uuid) {
