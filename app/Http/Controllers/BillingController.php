@@ -26,7 +26,6 @@ class BillingController extends Controller
                 'yearly_price' => max($yearlyPrice, 0),
                 'monthly_chargebee_id' => optional($monthly)->chargebee_id,
                 'yearly_chargebee_id' => optional($yearly)->chargebee_id,
-                'features' => ['Feature A', 'Feature B', 'Feature C'],
                 'details' => $group->first()->details,
                 'limitations' => $group->first()->limitations,
                 'cta' => $group->first()->cta,
