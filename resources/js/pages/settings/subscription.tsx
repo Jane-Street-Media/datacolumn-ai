@@ -4,8 +4,7 @@ import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
 import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { isBefore } from 'date-fns';
-import { Loader2 } from 'lucide-react';
+import { Check, CreditCard, Loader2 } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -23,7 +22,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const [cancelSubscriptionModalOpen, setCancelSubscriptionModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const canResumeSubscription = useMemo(() => (subscription?.chargebee_status === 'non_renewing'), [subscription]);
+    const canResumeSubscription = useMemo(() => subscription?.chargebee_status === 'non_renewing', [subscription]);
     const CancelSubscriptionButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
@@ -41,10 +40,10 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                         setIsLoading(true);
                     },
                     onSuccess: (response) => {
-                            toast.success(response.props.flash.success);
+                        toast.success(response.props.flash.success);
                     },
                     onError: (errors) => {
-                        if(errors.error){
+                        if (errors.error) {
                             toast.error(errors.error);
                         }
                     },
@@ -105,10 +104,10 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                     setLoading(true);
                 },
                 onSuccess: (response) => {
-                        toast.success(response.props.flash.success);
+                    toast.success(response.props.flash.success);
                 },
                 onError: (errors) => {
-                    if(errors.error){
+                    if (errors.error) {
                         toast.error(errors.error);
                     }
                 },
@@ -143,19 +142,13 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                     ) : (
                         <div className="mx-auto max-w-4xl">
                             <div
-                                className="border-opacity-30 dark:border-opacity-50 overflow-hidden rounded-xl bg-card"
+                                className="border-opacity-30 dark:border-opacity-50 bg-card overflow-hidden rounded-xl"
                                 onMouseEnter={() => setHoveredPlan('current')}
                                 onMouseLeave={() => setHoveredPlan(null)}
                             >
-                                <div
-                                    className={`flex items-center justify-between p-6 transition-all duration-300`}
-                                >
+                                <div className={`flex items-center justify-between p-6 transition-all duration-300`}>
                                     <div>
-                                        <h2
-                                            className="text-lg font-semibold text-foreground"
-                                        >
-                                            {subscription.plan.display_name}
-                                        </h2>
+                                        <h2 className="text-foreground text-lg font-semibold">{subscription.plan.display_name}</h2>
                                         <p
                                             className={`text-sm font-medium ${
                                                 subscription.chargebee_status?.toLowerCase() === 'in_trial'
@@ -182,47 +175,43 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
 
                                 <div className="p-6">
                                     <div className="mb-6 grid grid-cols-3 gap-4">
-                                        <div className="rounded-lg p-3 border border-primary">
-                                            <p className="text-sm text-foreground">Card Number</p>
-                                            <p className="mt-1 text-sm text-secondary-foreground">
+                                        <div className="border-primary rounded-lg border p-3">
+                                            <p className="text-foreground text-sm">Card Number</p>
+                                            <p className="text-secondary-foreground mt-1 text-sm">
                                                 {`**** **** **** ${auth?.user.pm_last_four || '****'}`}
                                             </p>
                                         </div>
-                                        <div className="rounded-lg p-3 border border-primary">
-                                            <p className="text-sm text-foreground">Billing Cycle</p>
-                                            <p className="text-sm text-secondary-foreground">
+                                        <div className="border-primary rounded-lg border p-3">
+                                            <p className="text-foreground text-sm">Billing Cycle</p>
+                                            <p className="text-secondary-foreground text-sm">
                                                 {subscription.chargebee_price?.match(/Monthly/i) ? 'Monthly' : 'Yearly'}
                                             </p>
                                         </div>
-                                        <div className="rounded-lg p-3 border border-primary">
-                                            <p className="text-sm text-foreground">Currency</p>
-                                            <p className="text-sm text-secondary-foreground">{subscription.plan.currency}</p>
+                                        <div className="border-primary rounded-lg border p-3">
+                                            <p className="text-foreground text-sm">Currency</p>
+                                            <p className="text-secondary-foreground text-sm">{subscription.plan.currency}</p>
                                         </div>
                                     </div>
 
-                                    <div className="mb-6 rounded-lg bg-card">
-                                        <h3 className="text-md mb-3 font-semibold text-foreground">Subscription Items</h3>
+                                    <div className="bg-card mb-6 rounded-lg">
+                                        <h3 className="text-md text-foreground mb-3 font-semibold">Subscription Items</h3>
                                         <div className="overflow-x-auto">
                                             <table className="w-full border-collapse">
                                                 <thead>
                                                     <tr className="bg-secondary">
-                                                        <th className="border text-center text-foreground p-2">
-                                                            Product
-                                                        </th>
-                                                        <th className="border text-center text-foreground p-2">
-                                                            Quantity
-                                                        </th>
+                                                        <th className="text-foreground border p-2 text-center">Product</th>
+                                                        <th className="text-foreground border p-2 text-center">Quantity</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                        <tr className="border-t">
-                                                            <td className="border border-gray-200 p-2 text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
-                                                                {subscription.plan.display_name}
-                                                            </td>
-                                                            <td className="border border-gray-200 p-2 text-center text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
-                                                                {subscription.plan.quantity}
-                                                            </td>
-                                                        </tr>
+                                                    <tr className="border-t">
+                                                        <td className="border border-gray-200 p-2 text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
+                                                            {subscription.plan.display_name}
+                                                        </td>
+                                                        <td className="border border-gray-200 p-2 text-center text-zinc-600 dark:border-gray-700 dark:text-zinc-300">
+                                                            {subscription.plan.quantity}
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -231,30 +220,25 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                     <div className="mb-6 rounded-lg bg-gray-50 p-4 dark:bg-zinc-700">
                                         <h3 className="text-md mb-3 font-semibold text-zinc-900 dark:text-zinc-50">Features Included</h3>
                                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                            <div className="flex items-center">
-                                                <svg className="mr-2 h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <span className="text-zinc-700 dark:text-zinc-300">Unlimited Projects</span>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <svg className="mr-2 h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <span className="text-zinc-700 dark:text-zinc-300">Premium Support</span>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <svg className="mr-2 h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <span className="text-zinc-700 dark:text-zinc-300">Advanced Analytics</span>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <svg className="mr-2 h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <span className="text-zinc-700 dark:text-zinc-300">Custom Integrations</span>
-                                            </div>
+                                            {subscription.plan.details &&
+                                                subscription.plan.details.map((detail) => {
+                                                    return (
+                                                        <div className="flex items-center">
+                                                            <Check className={`mr-2 h-5 w-5 text-green-500`} />
+                                                            <span className="text-zinc-700 dark:text-zinc-300">{detail}</span>
+                                                        </div>
+                                                    );
+                                                })}
+
+                                            {subscription.plan.features &&
+                                                subscription.plan.features.map((feature) => {
+                                                    return (
+                                                        <div className="flex items-center">
+                                                            <Check className={`mr-2 h-5 w-5 text-green-500`} />
+                                                            <span className="text-zinc-700 dark:text-zinc-300">{feature}</span>
+                                                        </div>
+                                                    );
+                                                })}
                                         </div>
                                     </div>
                                 </div>
@@ -263,46 +247,18 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                     <button
                                         onClick={handleUpdatePaymentMethod}
                                         disabled={isUpdating}
-                                        className={`flex-1 cursor-pointer rounded-lg bg-[#012A38] px-4 py-3 text-center font-medium text-white transition-all hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50`}
+                                        className={`hover:bg-primary flex-1 cursor-pointer rounded-lg bg-[#012A38] px-4 py-3 text-center font-medium text-white transition-all disabled:cursor-not-allowed disabled:opacity-50`}
                                     >
                                         {isUpdating ? (
                                             <span className="flex items-center justify-center">
-                                                <svg
-                                                    className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <circle
-                                                        className="opacity-25"
-                                                        cx="12"
-                                                        cy="12"
-                                                        r="10"
-                                                        stroke="currentColor"
-                                                        strokeWidth="4"
-                                                    ></circle>
-                                                    <path
-                                                        className="opacity-75"
-                                                        fill="currentColor"
-                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                    ></path>
-                                                </svg>
-                                                Updating...
+                                                <>
+                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    Updating...
+                                                </>
                                             </span>
                                         ) : (
                                             <span className="flex items-center justify-center">
-                                                <svg
-                                                    className="mr-2 h-5 w-5"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
+                                                <CreditCard className="mr-2 h-5 w-5"/>
                                                 Update Payment Method
                                             </span>
                                         )}
