@@ -22,7 +22,7 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function cancelSubscriptionNow(Request $request): RedirectResponse
+    public function switchToFreePlan(Request $request): RedirectResponse
     {
         try {
             $subscription = $request->user()->currentTeamLatestSubscription();

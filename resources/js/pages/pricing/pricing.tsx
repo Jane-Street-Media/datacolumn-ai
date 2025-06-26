@@ -15,14 +15,14 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     const yearlyRef = useRef(null);
     const [switchFreePlanModalOpen, setswitchFreePlanModalOpen] = useState(false);
 
-    const CancelSubscriptionButton = () => {
+    const SwitchFreePlanButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (loading) {
                 e.preventDefault();
                 return;
             }
             router.patch(
-                route('subscription.cancelNow'),
+                route('subscription.switchToFreePlan'),
                 {},
                 {
                     showProgress: false,
@@ -54,7 +54,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                 aria-disabled={loading}
                 onClick={handleClick}
             >
-                Cancel now
+                Switch now
             </Button>
         ) : (
             <>
@@ -371,7 +371,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             >
                                                 Keep Subscription
                                             </button>
-                                            <CancelSubscriptionButton />
+                                            <SwitchFreePlanButton />
                                         </div>
                                     </div>
                                 </div>
