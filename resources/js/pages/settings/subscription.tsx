@@ -229,16 +229,6 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                         </div>
                                                     );
                                                 })}
-
-                                            {subscription.plan.features &&
-                                                subscription.plan.features.map((feature) => {
-                                                    return (
-                                                        <div className="flex items-center">
-                                                            <Check className={`mr-2 h-5 w-5 text-green-500`} />
-                                                            <span className="text-zinc-700 dark:text-zinc-300">{feature}</span>
-                                                        </div>
-                                                    );
-                                                })}
                                         </div>
                                     </div>
                                 </div>

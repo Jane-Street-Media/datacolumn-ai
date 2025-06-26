@@ -197,21 +197,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     <p className="text-secondary-foreground mt-2">{`${plan.description ?? ''}`}</p>
                                 </div>
 
-                                <div className="bg-card mt-auto p-6">
-                                    <ul className="space-y-3">
-                                        {plan.features &&
-                                            plan.features.map((feature, i) => (
-                                                <li key={i} className="flex items-start">
-                                                    <Check
-                                                        className={`mt-0.5 mr-2 h-5 w-5 flex-shrink-0 ${
-                                                            hoveredCard === index ? 'text-primary' : 'text-foreground'
-                                                        }`}
-                                                    />
-                                                    <span className="text-foreground">{feature}</span>
-                                                </li>
-                                            ))}
-                                    </ul>
-
+                                <div className="bg-card p-6">
                                     <ul className="space-y-3 pt-4">
                                         {plan.details &&
                                             plan.details.map((detail, i) => (
@@ -246,13 +232,10 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                     Free Trial
                                                 </span>
                                             ) : (
-                                                <button
+                                                <Button
                                                     onClick={(e) => handleCheckoutClick(e, planId, plan)}
-                                                    className={`block w-full rounded-lg px-4 py-3 text-center font-medium transition-all ${
-                                                        plan.default
-                                                            ? 'bg-primary'
-                                                            : 'from-gradient-from to-gradient-to hover:bg-gradient-to bg-gradient-to-r'
-                                                    } ${loading ? 'cursor-not-allowed' : ''}`}
+                                                    variant="gradient"
+                                                    className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4`}
                                                 >
                                                     {isLoading ? (
                                                         <span className="flex items-center justify-center">
@@ -266,7 +249,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                     ) : (
                                                         'Get Started'
                                                     )}
-                                                </button>
+                                                </Button>
                                             )
                                         ) : subscription.chargebee_price !== planId ? (
                                             plan.name.toLowerCase() === 'free' ? (
@@ -277,7 +260,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 <Button
                                                     onClick={(e) => handleSwapSubscription(e, planId, plan)}
                                                     variant="gradient"
-                                                    className={`${loading ? 'cursor-not-allowed' : ''}`}
+                                                    className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4`}
                                                 >
                                                     {isLoading ? (
                                                         <span className="flex items-center justify-center">
