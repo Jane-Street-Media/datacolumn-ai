@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 export default function TeamMember({ user, roles }) {
 
     const { data, setData, patch } = useForm({
-        role: user.roles[0].name ?? '',
+        role: user.roles[0]?.name,
     });
 
     const handleSwitchRole = (value) => {
