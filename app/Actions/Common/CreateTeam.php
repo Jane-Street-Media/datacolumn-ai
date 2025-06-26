@@ -6,6 +6,7 @@ use App\Data\Team\CreateTeamData;
 use App\Enums\ActivityEvents;
 use App\Models\Team;
 use App\Models\User;
+
 use function Illuminate\Support\defer;
 
 class CreateTeam

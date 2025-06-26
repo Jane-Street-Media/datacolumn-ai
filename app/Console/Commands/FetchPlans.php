@@ -83,7 +83,7 @@ class FetchPlans extends Command
                                 'Custom embed domain',
                                 'Advanced customization',
                                 'SVG/PNG exports',
-                                'Email support'
+                                'Email support',
                             ],
                             'cta' => 'Start Pro Trial',
                             'popular' => true,
@@ -100,7 +100,7 @@ class FetchPlans extends Command
                                 'Priority support',
                                 'Team collaboration',
                                 'Brand customization',
-                                'Usage analytics'
+                                'Usage analytics',
                             ],
                             'cta' => 'Start Team Trial',
                             'popular' => false,

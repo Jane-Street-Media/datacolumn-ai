@@ -16,7 +16,7 @@ class CheckoutController extends Controller
         if (SubscriptionLockHelper::isLocked($request->user()->id)) {
             return redirect()->back()->withErrors(['error' => 'You already have a subscription in progress. Please wait a few minutes or refresh the page.']);
         }
-        if ($request->user()->currentTeam->subscribed()){
+        if ($request->user()->currentTeam->subscribed()) {
             return redirect()->back()->withErrors(['error' => 'You are already subscribed to a plan.']);
         }
         SubscriptionLockHelper::lock($request->user()->id, 2);

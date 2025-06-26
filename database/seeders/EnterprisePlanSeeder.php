@@ -26,7 +26,7 @@ class EnterprisePlanSeeder extends Seeder
                     'Full white-labeling',
                     'Custom chart types',
                     'Dedicated support',
-                    'Advanced security'
+                    'Advanced security',
                 ],
                 'cta' => 'Contact Sales',
                 'popular' => false,
@@ -48,7 +48,7 @@ class EnterprisePlanSeeder extends Seeder
                     'Full white-labeling',
                     'Custom chart types',
                     'Dedicated support',
-                    'Advanced security'
+                    'Advanced security',
                 ],
                 'cta' => 'Contact Sales',
                 'popular' => false,

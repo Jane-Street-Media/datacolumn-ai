@@ -30,7 +30,7 @@ class BillingController extends Controller
                 'details' => $group->first()->details,
                 'limitations' => $group->first()->limitations,
                 'cta' => $group->first()->cta,
-                'popular'  => $group->first()->popular,
+                'popular' => $group->first()->popular,
                 'default' => false,
                 'currency' => $monthly?->currency ?? $yearly?->currency,
             ], fn ($value) => ! is_null($value));
