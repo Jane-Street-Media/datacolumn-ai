@@ -7,6 +7,8 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { Check, CreditCard, Loader2, XCircle } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -56,14 +58,14 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         };
 
         return !isLoading ? (
-            <button
+            <Button
                 type={`button`}
                 className={`rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 ${isLoading ? 'cursor-wait bg-red-400' : ''}`}
                 aria-disabled={isLoading}
                 onClick={handleClick}
             >
                 Cancel now
-            </button>
+            </Button>
         ) : (
             <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

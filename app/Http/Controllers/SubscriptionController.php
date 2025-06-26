@@ -22,6 +22,21 @@ class SubscriptionController extends Controller
         }
     }
 
+    public function cancelSubscriptionNow(Request $request): RedirectResponse
+    {
+        try {
+            $subscription = $request->user()->currentTeamLatestSubscription();
+
+            if ($subscription && $subscription->cancelNow()) {
+                return back()->with('success', 'Subscription cancelled successfully.');
+            }
+
+            return back()->withErrors(['error' => 'Something went wrong while cancelling the subscription.']);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'An error occurred: '.$e->getMessage()]);
+        }
+    }
+
     public function resumeSubscription(Request $request): RedirectResponse
     {
         try {
