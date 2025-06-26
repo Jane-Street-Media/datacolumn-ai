@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Teams;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-class CurrentTeamUpdateRequest extends FormRequest
+class SwitchTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

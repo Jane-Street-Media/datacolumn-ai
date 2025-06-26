@@ -20,7 +20,7 @@ export function NavFooter({
         team_id: auth.user.current_team_id,
     });
 
-    const handleTeamChange = (value) => {
+    const handleSwitchTeam = (value) => {
         setData(data.team_id = value)
         patch(route('current-team.update'), {
             only:['teams','flash'],
@@ -34,7 +34,7 @@ export function NavFooter({
     return (
         <>
             <Label htmlFor="folder">Switch Team</Label>
-            <Select value={String(data.team_id)} onValueChange={handleTeamChange}>
+            <Select value={String(data.team_id)} onValueChange={handleSwitchTeam}>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select a Team" />
                 </SelectTrigger>

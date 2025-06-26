@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Actions\Teams;
+use App\Models\User;
+
+class SwitchUserCurrentTeam
+{
+    public static function handle(User $user, int $teamId): User
+    {
+        $user->update([
+            'current_team_id' => $teamId,
+        ]);
+
+        return $user;
+    }
+}
