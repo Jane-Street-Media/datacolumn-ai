@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
         Route::prefix('{project}/charts')->group(function () {
+            Route::get('/', [ProjectChartsController::class, 'index'])->name('projects.charts.index');
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
         });
     });
