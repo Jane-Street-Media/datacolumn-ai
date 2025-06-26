@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import { useEffect, useRef, useState } from 'react';
+import { Check, Hourglass, Loader2, OctagonX } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
@@ -12,6 +13,56 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     const markerRef = useRef(null);
     const monthlyRef = useRef(null);
     const yearlyRef = useRef(null);
+    const [switchFreePlanModalOpen, setswitchFreePlanModalOpen] = useState(false);
+
+    const SwitchFreePlanButton = () => {
+        const handleClick = (e: React.MouseEvent) => {
+            if (loading) {
+                e.preventDefault();
+                return;
+            }
+            router.patch(
+                route('subscription.switchToFreePlan'),
+                {},
+                {
+                    showProgress: false,
+                    preserveScroll: true,
+                    only: ['subscription', 'flash'],
+                    onStart: () => {
+                        setLoading(true);
+                    },
+                    onSuccess: (response) => {
+                        toast.success(response.props.flash.success);
+                    },
+                    onError: (errors) => {
+                        if (errors.error) {
+                            toast.error(errors.error);
+                        }
+                    },
+                    onFinish: () => {
+                        setswitchFreePlanModalOpen(false);
+                        setLoading(false);
+                    },
+                },
+            );
+        };
+
+        return !loading ? (
+            <Button
+                type={`button`}
+                className={`rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 ${loading ? 'cursor-wait bg-red-400' : ''}`}
+                aria-disabled={loading}
+                onClick={handleClick}
+            >
+                Switch now
+            </Button>
+        ) : (
+            <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+            </>
+        );
+    };
 
     useEffect(() => {
         if (monthlyRef.current && markerRef.current) {
@@ -37,7 +88,20 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     const handleMouseLeave = () => {
         setHoveredCard(null);
     };
-    const handleCheckoutClick = (e, planId) => {
+
+    const comingSoonToast = () => {
+        return (
+            toast('Contact Support', {
+                description: () => 'Coming Soon!',
+                icon: <Hourglass className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+            })
+        )
+    }
+    const handleCheckoutClick = (e, planId, plan) => {
+        if (plan.name.toLowerCase() === 'enterprise') {
+            comingSoonToast()
+            return;
+        }
         if (loading) {
             e.preventDefault();
             return;
@@ -54,10 +118,10 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                     setLoadingPlanId(planId);
                 },
                 onSuccess: (response) => {
-                        toast.success(response.props.flash.success);
+                    toast.success(response.props.flash.success);
                 },
                 onError: (errors) => {
-                    if(errors.error){
+                    if (errors.error) {
                         toast.error(errors.error);
                     }
                 },
@@ -66,9 +130,19 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         );
     };
 
-    const handleSwapSubscription = (e, planId) => {
+    const handleSwapSubscription = (e, planId, plan) => {
         if (loading) {
             e.preventDefault();
+            return;
+        }
+
+        if (plan.name.toLowerCase() === 'enterprise') {
+            comingSoonToast()
+            return;
+        }
+
+        if(plan.name.toLowerCase() === 'free'){
+            setswitchFreePlanModalOpen(true)
             return;
         }
         router.patch(
@@ -82,10 +156,10 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                     setLoadingPlanId(planId);
                 },
                 onSuccess: (response) => {
-                        toast.success(response.props.flash.success);
+                    toast.success(response.props.flash.success);
                 },
                 onError: (errors) => {
-                    if(errors.error){
+                    if (errors.error) {
                         toast.error(errors.error);
                     }
                 },
@@ -103,7 +177,6 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         }
         return false;
     });
-
     return (
         <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
@@ -135,7 +208,9 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                 toggleRepositionMarker(yearlyRef.current);
                             }
                         }}
-                        className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium text-[#012A38] transition-colors dark:text-white ${
+                            billing === 'Yearly' ? 'text-white' : 'text-[#012A38] dark:text-white'
+                        } ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     >
                         Yearly
                     </div>
@@ -163,8 +238,17 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     hoveredCard === index ? 'border-primary' : plan.default && hoveredCard === null ? 'border-primary' : 'border-card'
                                 }`}
                             >
+                                {plan.popular ? (
+                                    <div className="absolute top-0 right-0 h-16 w-16">
+                                        <div className="absolute top-[32px] right-[-34px] w-[170px] rotate-45 transform text-white bg-gradient-to-r from-gradient-from to-gradient-to text-center">
+                                            Popular
+                                        </div>
+                                    </div>
+                                ) : (<></>)}
                                 <div className="px-6 pt-6">
-                                    <span className={`inline-block rounded-full px-4 py-1 text-sm font-medium text-white`}>{plan.name}</span>
+                                    <span className={`text-foreground inline-block rounded-full px-4 py-1 text-sm font-medium dark:text-white`}>
+                                        {plan.name}
+                                    </span>
                                 </div>
                                 <div className="mt-4 px-6">
                                     <div className="flex items-baseline">
@@ -176,100 +260,78 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             /{billing === 'Monthly' ? 'mo' : 'yr'}
                                         </span>
                                     </div>
-                                    <p className="text-secondary-foreground mt-2">Plan description goes here.</p>
+                                    <p className="text-secondary-foreground mt-2">{`${plan.description ?? ''}`}</p>
                                 </div>
 
-                                <div className="bg-card mt-auto p-6">
-                                    <ul className="space-y-3">
-                                        {plan.features &&
-                                            plan.features.map((feature, i) => (
+                                <div className="bg-card p-6">
+                                    <ul className="space-y-3 pt-4">
+                                        {plan.details &&
+                                            plan.details.map((detail, i) => (
                                                 <li key={i} className="flex items-start">
-                                                    <svg
+                                                    <Check
                                                         className={`mt-0.5 mr-2 h-5 w-5 flex-shrink-0 ${
                                                             hoveredCard === index ? 'text-primary' : 'text-foreground'
                                                         }`}
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                    <span className="text-foreground">{feature}</span>
+                                                    />
+                                                    <span className="text-foreground">{detail}</span>
+                                                </li>
+                                            ))}
+                                    </ul>
+
+                                    <ul className="space-y-3 pt-4">
+                                        {plan.limitations &&
+                                            plan.limitations.map((limitation, i) => (
+                                                <li key={i} className="flex items-start">
+                                                    <OctagonX
+                                                        className={`mt-0.5 mr-2 h-5 w-5 flex-shrink-0 ${
+                                                            hoveredCard === index ? 'text-primary' : 'text-foreground'
+                                                        }`}
+                                                    />
+                                                    <span className="text-foreground">{limitation}</span>
                                                 </li>
                                             ))}
                                     </ul>
                                     <div className="mt-6">
-                                        {!isSubscribed || subscription.chargebee_status === 'cancelled' ? (
-                                            <button
-                                                onClick={(e) => handleCheckoutClick(e, planId)}
-                                                className={`block w-full rounded-lg px-4 py-3 text-center font-medium transition-all ${
-                                                    plan.default
-                                                        ? 'bg-primary'
-                                                        : 'from-gradient-from to-gradient-to hover:bg-gradient-to bg-gradient-to-r'
-                                                } ${loading ? 'cursor-not-allowed' : ''}`}
-                                            >
-                                                {isLoading ? (
-                                                    <span className="flex items-center justify-center">
-                                                        <svg
-                                                            className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <circle
-                                                                className="opacity-25"
-                                                                cx="12"
-                                                                cy="12"
-                                                                r="10"
-                                                                stroke="currentColor"
-                                                                strokeWidth="4"
-                                                            ></circle>
-                                                            <path
-                                                                className="opacity-75"
-                                                                fill="currentColor"
-                                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                            ></path>
-                                                        </svg>
-                                                        Processing...
-                                                    </span>
-                                                ) : (
-                                                    'Get Started'
-                                                )}
-                                            </button>
+                                        {!isSubscribed ? (
+                                            plan.name.toLowerCase() === 'free' ? (
+                                                <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
+                                                    Current Plan
+                                                </span>
+                                            ) : (
+                                                <Button
+                                                    onClick={(e) => handleCheckoutClick(e, planId, plan)}
+                                                    variant="gradient"
+                                                    className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4`}
+                                                >
+                                                    {isLoading ? (
+                                                        <span className="flex items-center justify-center">
+                                                            <>
+                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                Processing...
+                                                            </>
+                                                        </span>
+                                                    ) : plan.cta ? (
+                                                        plan.cta
+                                                    ) : (
+                                                        'Get Started'
+                                                    )}
+                                                </Button>
+                                            )
                                         ) : subscription.chargebee_price !== planId ? (
                                             <Button
-                                                onClick={(e) => handleSwapSubscription(e, planId)}
+                                                onClick={(e) => handleSwapSubscription(e, planId, plan)}
                                                 variant="gradient"
-                                                className={`${loading ? 'cursor-not-allowed' : ''}`}
+                                                className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4`}
                                             >
                                                 {isLoading ? (
                                                     <span className="flex items-center justify-center">
-                                                        <svg
-                                                            className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <circle
-                                                                className="opacity-25"
-                                                                cx="12"
-                                                                cy="12"
-                                                                r="10"
-                                                                stroke="currentColor"
-                                                                strokeWidth="4"
-                                                            ></circle>
-                                                            <path
-                                                                className="opacity-75"
-                                                                fill="currentColor"
-                                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                            ></path>
-                                                        </svg>
-                                                        Processing...
+                                                        <>
+                                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                            Processing...
+                                                        </>
                                                     </span>
+                                                ) : plan.name.toLowerCase() === 'enterprise' ? (
+                                                    (plan.cta ?? 'Contact Sales')
                                                 ) : (
                                                     'Swap Subscription'
                                                 )}
@@ -286,6 +348,34 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     <div className="absolute top-0 right-0 h-1 w-full"></div>
                                 ) : null}
                             </div>
+                            {switchFreePlanModalOpen && (
+                                <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+                                    <div className="w-full max-w-md rounded-lg bg-white p-6 dark:bg-zinc-800">
+                                        <h3 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Switch to Free Plan</h3>
+                                        <p className="mb-6 text-zinc-600 dark:text-zinc-300">
+                                            Are you sure you want to switch to the Free Plan? Your current subscription will be cancelled, and you'll
+                                            lose access to premium features at the end of your billing cycle.
+                                        </p>
+                                        <div className="flex justify-end space-x-4">
+                                            <button
+                                                onClick={(e) => {
+                                                    if (loading) {
+                                                        e.preventDefault();
+                                                        return;
+                                                    } else {
+                                                        setswitchFreePlanModalOpen(false);
+                                                    }
+                                                }}
+                                                aria-disabled={loading}
+                                                className={`${loading ? 'cursor-wait bg-red-400' : ''} cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700`}
+                                            >
+                                                Keep Subscription
+                                            </button>
+                                            <SwitchFreePlanButton />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     );
                 })}

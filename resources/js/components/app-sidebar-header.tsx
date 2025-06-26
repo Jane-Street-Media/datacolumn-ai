@@ -1,18 +1,21 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
-import { Monitor, Moon, Settings, Sun } from 'lucide-react';
+import { LogOut, Monitor, Moon, Settings, Sun } from 'lucide-react';
 import { useAppearanceContext } from '@/contexts/appearance-context';
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuGroup,
-    DropdownMenuItem,
+    DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
-import { Link } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
+import { toast } from 'sonner';
+import { UserMenuContent } from '@/components/user-menu-content';
+import { UserInfo } from '@/components/user-info';
 
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
@@ -30,6 +33,25 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     const CurrentThemeIcon = getCurrentThemeIcon();
 
     const getInitials = useInitials();
+
+    const { auth } = usePage().props;
+    const teams = auth.user.teams;
+
+    const { data, setData, patch} = useForm({
+        team_id: auth.user.current_team_id,
+    });
+
+    const handleSwitchUserTeam = (value) => {
+        setData({ team_id: value });
+        patch(route('current-team.update'), {
+            only:['teams','flash'],
+            onSuccess: (response) => {
+                toast.success(response.props.flash.success, {
+                    description: 'You\'re now operating with your selected team.',
+                });
+            },
+        });
+    };
 
     return (
         <header className="border-sidebar-border/50 flex h-16 shrink-0 items-center border-b px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
@@ -85,18 +107,23 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" align="end">
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem asChild>
-                                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch>
-                                        Settings
-                                    </Link>
+                            <DropdownMenuLabel className="p-0 font-normal">
+                                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                    Your Teams
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {teams?.map((team) => (
+                                <DropdownMenuItem key={team.id} asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                        onClick={() => handleSwitchUserTeam(team.id)}
+                                    >
+                                        {team.name}
+                                    </Button>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch>
-                                        Settings
-                                    </Link>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
+                            ))}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

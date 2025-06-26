@@ -1,11 +1,7 @@
 import { Icon } from '@/components/icon';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { useForm, usePage } from '@inertiajs/react';
 import { type ComponentPropsWithoutRef } from 'react';
-import { toast } from 'sonner';
 
 export function NavFooter({
     items,
@@ -14,40 +10,8 @@ export function NavFooter({
 }: ComponentPropsWithoutRef<typeof SidebarGroup> & {
     items: NavItem[];
 }) {
-    const { auth } = usePage().props;
-    const teams = auth.user.teams;
-    const { data, setData, patch} = useForm({
-        team_id: auth.user.current_team_id,
-    });
-
-    const handleSwitchUserTeam = (value) => {
-        setData(data.team_id = value)
-        patch(route('current-team.update'), {
-            only:['teams','flash'],
-            onSuccess: (response) => {
-                toast.success(response.props.flash.success, {
-                    description: 'You\'re now operating with your selected team.',
-                });
-            },
-        });
-    };
     return (
         <>
-            <Label htmlFor="folder">Switch Team</Label>
-            <Select value={String(data.team_id)} onValueChange={handleSwitchUserTeam}>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a Team" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        {teams?.map((team) => (
-                            <SelectItem key={team.id} value={String(team.id)}>
-                                {team.name}
-                            </SelectItem>
-                        ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
             <SidebarGroup {...props} className={`group-data-[collapsible=icon]:p-0 ${className || ''}`}>
                 <SidebarGroupContent>
                     <SidebarMenu>

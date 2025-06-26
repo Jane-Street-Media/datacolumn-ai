@@ -15,6 +15,11 @@ use Chargebee\Cashier\Http\Middleware\AuthenticateWebhook;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/forget-cache', function () {
+    \App\Helpers\SubscriptionLockHelper::unlock(\Illuminate\Support\Facades\Auth::user()->id);
+    dd('cache forgot');
+});
+
 Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('home');
@@ -55,13 +60,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/{project}', [ProjectsController::class, 'update'])->name('project.update');
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
-    });
-    Route::prefix('folder')->group(function () {
-        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
-
         Route::prefix('{project}/charts')->group(function () {
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
         });
+    });
+
+    Route::prefix('folder')->group(function () {
+        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
     });
 
     Route::prefix('team')->group(function () {
