@@ -15,15 +15,32 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { BarChart3, Calendar, Delete, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
+import {
+    AreaChart, BarChart,
+    BarChart3,
+    Calendar,
+    Delete,
+    Edit,
+    LineChart,
+    LoaderCircle,
+    MoreHorizontal,
+    Users
+} from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Badge } from '@/components/ui/badge';
 
 const MotionCard = motion(Card);
+const icons = {
+    area: AreaChart,
+    bar: BarChart,
+    line: LineChart
+}
+
 export default function ChartCard({ index = 1, chart }) {
     const { delete: destroy, reset, processing } = useForm();
+    const ChartIcon = icons[chart.type]
 
     const deleteChart: FormEventHandler = (e) => {
         e.preventDefault();
@@ -98,7 +115,7 @@ export default function ChartCard({ index = 1, chart }) {
                 <div className="space-y-2">
                     <h3 className="text-foreground text-lg font-medium">{chart.title}</h3>
                     <p className="text-secondary-foreground line-clamp-3 text-sm">{chart.description}</p>
-                    <Badge>{`${chart.type}`}</Badge>
+                    <Badge className="uppercase">{`${chart.type}`}</Badge>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                     <div className="text-secondary-foreground flex items-center text-sm">
@@ -106,7 +123,7 @@ export default function ChartCard({ index = 1, chart }) {
                         <span className="ml-1">{chart.created_at ? format(new Date(chart.created_at), 'dd MMM, yyyy') : ''}</span>
                     </div>
                     <div className="text-secondary-foreground flex items-center text-sm">
-                        <BarChart3 className="h-4 w-4" />
+                        {ChartIcon ? <ChartIcon/> : <BarChart3/>}
                     </div>
                 </div>
             </CardContent>
