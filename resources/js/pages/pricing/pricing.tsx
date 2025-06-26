@@ -235,6 +235,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     hoveredCard === index ? 'border-primary' : plan.default && hoveredCard === null ? 'border-primary' : 'border-card'
                                 }`}
                             >
+                                {plan.popular ? (
+                                    <div className="absolute top-0 right-0 h-16 w-16">
+                                        <div className="absolute top-[32px] right-[-34px] w-[170px] rotate-45 transform text-white bg-gradient-to-r from-gradient-from to-gradient-to text-center">
+                                            Popular
+                                        </div>
+                                    </div>
+                                ) : (<></>)}
                                 <div className="px-6 pt-6">
                                     <span className={`text-foreground inline-block rounded-full px-4 py-1 text-sm font-medium dark:text-white`}>
                                         {plan.name}
@@ -342,7 +349,10 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                 <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
                                     <div className="w-full max-w-md rounded-lg bg-white p-6 dark:bg-zinc-800">
                                         <h3 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Switch to Free Plan</h3>
-                                        <p className="mb-6 text-zinc-600 dark:text-zinc-300">Are you sure you want to switch to the Free Plan? Your current subscription will be cancelled, and you'll lose access to premium features at the end of your billing cycle.</p>
+                                        <p className="mb-6 text-zinc-600 dark:text-zinc-300">
+                                            Are you sure you want to switch to the Free Plan? Your current subscription will be cancelled, and you'll
+                                            lose access to premium features at the end of your billing cycle.
+                                        </p>
                                         <div className="flex justify-end space-x-4">
                                             <button
                                                 onClick={(e) => {
