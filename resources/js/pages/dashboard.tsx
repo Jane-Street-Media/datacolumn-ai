@@ -51,13 +51,10 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
     useEffect(() => {
         if (message && !hasShown) {
             if (flash.success) {
-                toast.success(flash.success,{
-                    description: 'You’ve successfully joined the team. You can now collaborate with your teammates.',
-                })
+                toast.success(flash.success)
             } else if (flash.error) {
                 toast.error(flash.error)
             }
-
             setHasShown(true)
         }
     }, [message, hasShown, flash])
