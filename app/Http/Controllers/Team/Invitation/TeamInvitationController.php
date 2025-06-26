@@ -17,7 +17,7 @@ class TeamInvitationController extends Controller
         $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
         AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
 
-        return redirect(route('dashboard'))->with('success', 'Invitation accepetd successfully.');
+        return redirect(route('dashboard'))->with('success', 'Invitation accepted successfully.');
     }
 
     public function destroy(TeamInvitation $teamInvitation): RedirectResponse

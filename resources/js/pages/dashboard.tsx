@@ -6,7 +6,7 @@ import StatsCard from '@/components/stats-card';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Deferred, Head, router } from '@inertiajs/react';
+import { Deferred, Head, router, usePage } from '@inertiajs/react';
 import { BarChart3, FileText, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -45,18 +45,22 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
         //     icon: TrendingUp,
         // },
     ];
-
-    const [hasShownToast, setHasShownToast] = useState(false);
+    const [message, setMessage] = useState(flash?.success || flash?.error || null)
+    const [hasShown, setHasShown] = useState(false)
 
     useEffect(() => {
-        if (flash?.success && !hasShownToast) {
-            toast.success('Invitation Accepted', {
-                description: 'You’ve successfully joined the team. You can now collaborate with your teammates.',
-            });
-            setHasShownToast(true);
-        }
-    }, [flash?.success, hasShownToast]);
+        if (message && !hasShown) {
+            if (flash.success) {
+                toast.success(flash.success,{
+                    description: 'You’ve successfully joined the team. You can now collaborate with your teammates.',
+                })
+            } else if (flash.error) {
+                toast.error(flash.error)
+            }
+            setHasShown(true)
 
+        }
+    }, [message, hasShown, flash])
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
