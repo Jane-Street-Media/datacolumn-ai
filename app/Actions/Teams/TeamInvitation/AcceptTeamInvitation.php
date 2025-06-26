@@ -19,7 +19,7 @@ class AcceptTeamInvitation
         UpdateUserCurrentTeam::handle($user, CurrentTeamUpdateData::from([
             'team_id' => $teamInvitation->team->id,
         ]));
-        defer(fn() => activity()
+        defer(fn () => activity()
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)
             ->log(":causer.name accepted the invitation to join the team {$teamInvitation->team->name}.")

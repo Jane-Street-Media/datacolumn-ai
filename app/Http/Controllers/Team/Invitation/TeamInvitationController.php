@@ -7,7 +7,6 @@ use App\Actions\Teams\TeamInvitation\DeleteTeamInvitation;
 use App\Http\Controllers\Controller;
 use App\Models\Scopes\TeamScope;
 use App\Models\TeamInvitation;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,6 +16,7 @@ class TeamInvitationController extends Controller
     {
         $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
         AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
+
         return redirect(route('dashboard'))->with('success', 'Invitation accepetd successfully.');
     }
 

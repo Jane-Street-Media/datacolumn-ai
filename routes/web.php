@@ -48,7 +48,6 @@ Route::middleware([])->group(function () {
     })->name('something-went-wrong');
 });
 
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('projects')->group(function () {
         Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
@@ -79,7 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/current-team/update', [CurrentTeamUpdateController::class, 'update'])->name('current-team.update');
 
-// Team Invitations
+    // Team Invitations
     Route::prefix('team-invitation')->group(function () {
         Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
         Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
@@ -91,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', ChartAIController::class)->name('chart-ai');
     });
 });
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
-require __DIR__ . '/checkout.php';
-require __DIR__ . '/subscription.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
+require __DIR__.'/checkout.php';
+require __DIR__.'/subscription.php';
