@@ -28,7 +28,7 @@ class TeamMemberUpdateRequest extends BaseTeamRequest
     public function rules(): array
     {
         return [
-            'role' => ['required', 'integer', 'exists:roles,id'],
+            'role' => ['required', 'exists:roles,name'],
         ];
     }
 

@@ -11,7 +11,7 @@ class AcceptTeamInvitation
 {
     public static function handle(User $user, TeamInvitation $teamInvitation): TeamInvitation
     {
-        $teamInvitation->team->users()->attach($user->id);
+         $teamInvitation->team->users()->attach($user->id);
         setPermissionsTeamId($teamInvitation->team->id);
         $user->assignRole($teamInvitation->role);
         $teamInvitation->delete();

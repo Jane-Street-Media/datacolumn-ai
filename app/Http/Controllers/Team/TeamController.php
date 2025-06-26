@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Team;
 
 use App\Actions\Common\CreateTeam;
 use App\Actions\Teams\DeleteTeam;
+use App\Actions\Teams\GetTeamUsers;
 use App\Actions\Teams\Stats\GetTeamStats;
 use App\Actions\Teams\UpdateTeam;
 use App\Data\Team\CreateTeamData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teams\TeamRequest;
 use App\Http\Requests\Teams\TeamUpdateRequest;
+use App\Http\Requests\TeamUserFilterRequest;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +21,13 @@ use Spatie\Permission\Models\Role;
 
 class TeamController extends Controller
 {
-    public function index(): Response
+    public function index(TeamUserFilterRequest $request): Response
     {
+
         return Inertia::render('team', [
             'statistics' => GetTeamStats::handle(),
-            'roles' => Inertia::defer(fn () => Role::all()),
+            'roles' => Inertia::defer(fn() => Role::all()),
+            'teamUsers' => Inertia::defer(fn() => GetTeamUsers::handle(Auth::user() , $request->validated())),
         ]);
     }
 

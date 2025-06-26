@@ -58,9 +58,10 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                 }
             },
             onSuccess: (response) => {
+                console.log(response , "this is response")
                 reset('name', 'description', 'folder_id');
                 setOpen(false);
-                toast(response.props.flash.success, {
+                toast.success(response.props.flash.success, {
                     description: isEdit ? '🛠️ Your changes are live and ready to shine.' : '🚀 Time to bring your ideas to life!',
                 });
             },
