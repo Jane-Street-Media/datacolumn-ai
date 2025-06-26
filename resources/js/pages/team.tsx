@@ -1,5 +1,7 @@
 import InviteMemberDialog from '@/components/InviteMemberDialog';
+import TeamInvitationCard from '@/components/Teams/team-invitation-card';
 import TeamMemberCard from '@/components/Teams/team-member-card';
+import { LoadingSkeleton } from '@/components/loading-skeleton';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -8,10 +10,8 @@ import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { CrownIcon, MailIcon, Search, ShieldIcon, Users, X } from 'lucide-react';
+import { CrownIcon, MailIcon, Search, ShieldIcon, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import TeamInvitationCard from '@/components/Teams/team-invitation-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ roles, statistics, teamUsers ,teamInvitations}) {
+export default function Team({ roles, statistics, teamUsers, teamInvitations }) {
     const stats = [
         {
             name: 'Total Members',
@@ -100,30 +100,42 @@ export default function Team({ roles, statistics, teamUsers ,teamInvitations}) {
                     <CardHeader>
                         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                             <h1 className="text-xl font-semibold">Team Users</h1>
-                        <div className="grid">
-                            <div className="col-span-4 flex items-center justify-end gap-4">
-                                <div className="relative flex max-w-2xl items-center">
-                                    <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
-                                    <Input
-                                        placeholder="Your search..."
-                                        className="pl-8"
-                                        value={filters.search}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({
-                                                ...prev,
-                                                search: e.target.value,
-                                            }))
-                                        }
-                                    />
+                            <div className="grid">
+                                <div className="col-span-4 flex items-center justify-end gap-4">
+                                    <div className="relative flex max-w-2xl items-center">
+                                        <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
+                                        <Input
+                                            placeholder="Your search..."
+                                            className="pl-8"
+                                            value={filters.search}
+                                            onChange={(e) =>
+                                                setFilters((prev) => ({
+                                                    ...prev,
+                                                    search: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
                         <Separator className="my-2" />
                     </CardHeader>
-                    <CardContent>
-                        {teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)}
-                    </CardContent>
+
+                    <Deferred
+                        data="teamUsers"
+                        fallback={
+                            <Card>
+                                <CardContent>
+                                    <LoadingSkeleton />
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        <CardContent>
+                            {teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)}
+                        </CardContent>
+                    </Deferred>
                 </Card>
 
                 <Card>
@@ -133,9 +145,23 @@ export default function Team({ roles, statistics, teamUsers ,teamInvitations}) {
                         </div>
                         <Separator className="my-2" />
                     </CardHeader>
-                    <CardContent>
-                        {teamInvitations?.map((invitation, index) => <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />)}
-                    </CardContent>
+
+                    <Deferred
+                        data="teamInvitations"
+                        fallback={
+                            <Card>
+                                <CardContent>
+                                    <LoadingSkeleton />
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        <CardContent>
+                            {teamInvitations?.map((invitation, index) => (
+                                <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />
+                            ))}
+                        </CardContent>
+                    </Deferred>
                 </Card>
             </div>
         </AppLayout>
