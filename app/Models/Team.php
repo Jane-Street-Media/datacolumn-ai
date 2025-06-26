@@ -44,6 +44,7 @@ class Team extends Model
         if ($this->subscribed()) {
             $subscription = $this->subscriptions()->first();
             $subscription->setRelation('plan', Plan::where('chargebee_id', $subscription->chargebee_price)->first());
+
             return $subscription;
         }
 
