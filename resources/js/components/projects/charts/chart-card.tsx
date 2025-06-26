@@ -1,4 +1,3 @@
-import ProjectDialog from '@/components/projects/project-dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,39 +12,55 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { BarChart3, Calendar, Delete, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
+import {
+    AreaChart, BarChart,
+    BarChart3,
+    Calendar,
+    Delete,
+    Edit,
+    LineChart,
+    LoaderCircle,
+    MoreHorizontal,
+    Users
+} from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
+import ProjectDialog from '@/components/projects/project-dialog';
+import { Badge } from '@/components/ui/badge';
 
 const MotionCard = motion(Card);
-export default function ProjectCard({ index = 1, project, folders }) {
-    const { delete: destroy, reset, processing } = useForm();
+const icons = {
+    area: AreaChart,
+    bar: BarChart,
+    line: LineChart
+}
 
-    const deleteProject: FormEventHandler = (e) => {
+export default function ChartCard({ index = 1, chart }) {
+    const { delete: destroy, reset, processing } = useForm();
+    const ChartIcon = icons[chart.type]
+
+    const deleteChart: FormEventHandler = (e) => {
         e.preventDefault();
-        destroy(route('project.delete', project.id), {
+        destroy(route('chart.delete', chart.id), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
                 reset('name', 'description'); // Resets form fields if needed
                 toast(response.props.flash.success, {
-                    description: '🚀 Your project has been deleted successfully.',
+                    description: '🚀 Your chart has been deleted successfully.',
                 });
             },
         });
     };
-    const showProject = (projectId) => {
-        return router.visit(route('projects.charts.index', projectId))
-    }
 
     return (
-        <MotionCard onClick={() => showProject(project.id)} className={`cursor-pointer hover:border-primary`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
-                        <BarChart3 className="h-5 w-5" />
+                        {ChartIcon ? <ChartIcon/> : <BarChart3/>}
                     </div>
                 </CardTitle>
                 <CardAction>
@@ -55,16 +70,16 @@ export default function ProjectCard({ index = 1, project, folders }) {
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className="flex flex-col space-y-2">
-                                <ProjectDialog
-                                    folders={folders}
-                                    project={project}
-                                    trigger={
-                                        <Button variant="ghost" className="justify-start">
-                                            <Edit />
-                                            <span>Edit</span>
-                                        </Button>
-                                    }
-                                />{' '}
+                                {/*<ProjectDialog*/}
+                                {/*    folders={folders}*/}
+                                {/*    project={project}*/}
+                                {/*    trigger={*/}
+                                {/*        <Button variant="ghost" className="justify-start">*/}
+                                {/*            <Edit />*/}
+                                {/*            <span>Edit</span>*/}
+                                {/*        </Button>*/}
+                                {/*    }*/}
+                                {/*/>{' '}*/}
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button
@@ -84,7 +99,7 @@ export default function ProjectCard({ index = 1, project, folders }) {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={deleteProject} disabled={processing}>
+                                            <AlertDialogAction onClick={deleteChart} disabled={processing}>
                                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                                 Continue
                                             </AlertDialogAction>
@@ -98,35 +113,22 @@ export default function ProjectCard({ index = 1, project, folders }) {
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
-                    <h3 className="text-foreground text-lg font-medium">{project.name}</h3>
-                    <p className="text-secondary-foreground line-clamp-3 text-sm">{project.description}</p>
+                    <h3 className="text-foreground text-lg font-medium">{chart.title}</h3>
+                    <p className="text-secondary-foreground line-clamp-3 text-sm">{chart.description}</p>
+                    <Badge className="uppercase">{`${chart.type}`}</Badge>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                     <div className="text-secondary-foreground flex items-center text-sm">
                         <Calendar className="h-4 w-4" />
-                        <span className="ml-1">{project.created_at ? format(new Date(project.created_at), 'dd MMM, yyyy') : ''}</span>
+                        <span className="ml-1">{chart.created_at ? format(new Date(chart.created_at), 'dd MMM, yyyy') : ''}</span>
                     </div>
                     <div className="text-secondary-foreground flex items-center text-sm">
-                        <BarChart3 className="h-4 w-4" />
-                        <span className="ml-1">{project.charts_count} Charts</span>
+                        {ChartIcon ? <ChartIcon/> : <BarChart3/>}
                     </div>
                 </div>
             </CardContent>
             <CardFooter className="flex items-center justify-between">
-                <div
-                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                        'published' === 'published'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                    }`}
-                >
-                    {'published'}
-                </div>
 
-                <div className="text-secondary-foreground flex items-center text-sm">
-                    <Users className="h-4 w-4" />
-                    <span className="ml-1">2</span>
-                </div>
             </CardFooter>
         </MotionCard>
     );

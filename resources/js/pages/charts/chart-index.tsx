@@ -1,7 +1,7 @@
 import { LoadingSkeleton } from '@/components/loading-skeleton';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import FolderDialog from '@/components/projects/folder-dialog';
-import ProjectCard from '@/components/projects/project-card';
+import ChartCard from '@/components/projects/charts/chart-card';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,26 +15,22 @@ import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Projects',
-        href: '/projects',
+        title: 'Charts',
+        href: '#',
     },
 ];
 
-export default function Projects({ folders, projects }) {
+export default function ChartIndex({ charts }) {
     const [filters, setFilters] = useState({
         search: '',
-        folder: '',
     });
 
     useEffect(() => {
         const debounce = setTimeout(() => {
-            const trimmedSearch = filters.search.trim();
-            if (trimmedSearch === '' && filters.search !== '') return;
             router.reload({
-                only: ['projects'],
+                only: ['charts'],
                 data: {
                     search: filters.search,
-                    folder: filters.folder,
                 },
             });
         }, 300);
@@ -42,37 +38,26 @@ export default function Projects({ folders, projects }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
-    const clearFilters = () => {
-        setFilters({ search: null, folder: null });
-        router.reload({
-            only: ['projects'],
-            data: {
-                search: '',
-                folder: '',
-            },
-        });
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <PageHeader>
                     <PageHeaderHead>
-                        <PageHeaderTitle>Projects</PageHeaderTitle>
+                        <PageHeaderTitle>Charts</PageHeaderTitle>
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                <FolderDialog />
-                                <ProjectDialog
-                                    folders={folders}
-                                    trigger={
-                                        <Button variant="ghost" className="border">
-                                            <UserPlus className="mr-2 h-4 w-4" />
-                                            <span>New Project</span>
-                                        </Button>
-                                    }
-                                />
+                                {/*<FolderDialog />*/}
+                                {/*<ProjectDialog*/}
+                                {/*    folders={folders}*/}
+                                {/*    trigger={*/}
+                                {/*        <Button variant="ghost" className="border">*/}
+                                {/*            <UserPlus className="mr-2 h-4 w-4" />*/}
+                                {/*            <span>New Project</span>*/}
+                                {/*        </Button>*/}
+                                {/*    }*/}
+                                {/*/>*/}
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>
@@ -88,50 +73,23 @@ export default function Projects({ folders, projects }) {
                                         placeholder="Your search..."
                                         className="pl-8"
                                         value={filters.search}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({
+                                        onChange={(e) => setFilters((prev) => ({
                                                 ...prev,
-                                                search: e.target.value,
+                                                search: e.target.value.trim(),
                                             }))
                                         }
                                     />
                                 </div>
-
-                                <Select
-                                    value={filters.folder?.toString() || ''}
-                                    onValueChange={(value) =>
-                                        setFilters((prev) => ({
-                                            ...prev,
-                                            folder: Number(value),
-                                        }))
-                                    }
-                                >
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select a folder" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            {folders?.map((folder) => (
-                                                <SelectItem key={folder.id} value={String(folder.id)}>
-                                                    {folder.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
                             </div>
                             <div className="flex items-center justify-end gap-4">
-                                <Button variant="destructive" onClick={() => clearFilters()}>
-                                    <X />
-                                    Clear
-                                </Button>
+
                             </div>
                         </div>
                     </CardContent>
                 </Card>
                 <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <Deferred
-                        data="projects"
+                        data="charts"
                         fallback={
                             <Card>
                                 <CardContent>
@@ -140,7 +98,7 @@ export default function Projects({ folders, projects }) {
                             </Card>
                         }
                     >
-                        {projects?.map((project, index) => <ProjectCard key={project.id} index={index} project={project} folders={folders} />)}{' '}
+                        {charts?.map((chart, index) => <ChartCard key={chart.id} index={index} chart={chart} />)}{' '}
                     </Deferred>
                 </div>
             </div>

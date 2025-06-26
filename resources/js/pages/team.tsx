@@ -1,20 +1,17 @@
 import InviteMemberDialog from '@/components/InviteMemberDialog';
+import TeamInvitationCard from '@/components/Teams/team-invitation-card';
+import TeamMemberCard from '@/components/Teams/team-member-card';
+import { LoadingSkeleton } from '@/components/loading-skeleton';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import StatsCard from '@/components/stats-card';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Deferred, Head } from '@inertiajs/react';
-import { CrownIcon, MailIcon, Search, ShieldIcon, Trash2, Users, X } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { useInitials } from '@/hooks/use-initials';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Deferred, Head, router } from '@inertiajs/react';
+import { CrownIcon, MailIcon, Search, ShieldIcon, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,10 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Team({ roles, statistics }) {
-
-    const getInitials = useInitials();
-
+export default function Team({ roles, statistics, teamUsers, teamInvitations }) {
     const stats = [
         {
             name: 'Total Members',
@@ -60,6 +54,26 @@ export default function Team({ roles, statistics }) {
         // },
     ];
 
+    const [filters, setFilters] = useState({
+        search: '',
+    });
+
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            const trimmedSearch = filters.search.trim();
+            if (trimmedSearch === '' && filters.search !== '') return;
+
+            router.reload({
+                only: ['teamUsers'],
+                data: {
+                    search: filters.search,
+                },
+            });
+        }, 300);
+
+        return () => clearTimeout(debounce);
+    }, [filters]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Teams" />
@@ -84,68 +98,70 @@ export default function Team({ roles, statistics }) {
 
                 <Card>
                     <CardHeader>
-                        <div className="grid">
-                            <div className="col-span-4 flex items-center justify-end gap-4">
-                                <div className="relative flex max-w-2xl items-center">
-                                    <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
-                                    <Input placeholder="Your search..." className="pl-8" />
+                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <h1 className="text-xl font-semibold">Team Users</h1>
+                            <div className="grid">
+                                <div className="col-span-4 flex items-center justify-end gap-4">
+                                    <div className="relative flex max-w-2xl items-center">
+                                        <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
+                                        <Input
+                                            placeholder="Your search..."
+                                            className="pl-8"
+                                            value={filters.search}
+                                            onChange={(e) =>
+                                                setFilters((prev) => ({
+                                                    ...prev,
+                                                    search: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <Separator className="my-2" />
                     </CardHeader>
-                    <CardContent>
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: 0.1 }}
-                            className="flex items-center justify-between rounded-xl border p-4"
-                        >
-                            <div className="flex items-center space-x-4">
-                                <div className="relative">
-                                    <Avatar className="h-12 w-12">
-                                        <AvatarImage src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" />
-                                        <AvatarFallback>{getInitials('user name')}</AvatarFallback>
-                                    </Avatar>
-                                    <div
-                                        className={`absolute -right-1 -bottom-1 h-4 w-4 rounded-full border-2 border-white dark:border-gray-800 ${
-                                            'active' === 'active' ? 'bg-green-500' : 'pending' === 'pending' ? 'bg-yellow-500' : 'bg-gray-400'
-                                        }`}
-                                    />
-                                </div>
 
-                                <div>
-                                    <h3 className="text-foreground font-medium">{'Aamish'}</h3>
-                                    <p className="text-secondary-foreground text-sm">{'aamishirfan2662@gmail.com'}</p>
-                                </div>
-                            </div>
+                    <Deferred
+                        data="teamUsers"
+                        fallback={
+                            <Card>
+                                <CardContent>
+                                    <LoadingSkeleton />
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        <CardContent>
+                            {teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)}
+                        </CardContent>
+                    </Deferred>
+                </Card>
 
-                            <div className="flex items-center space-x-4">
-                                <div className="text-right">
-                                    <Select>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Change role" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value={'editor'}>editor</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <Badge>{'active'}</Badge>
-                                </div>
+                <Card>
+                    <CardHeader>
+                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <h1 className="text-xl font-semibold">Team Invitations</h1>
+                        </div>
+                        <Separator className="my-2" />
+                    </CardHeader>
 
-                                <div className="text-muted-foreground text-right text-sm">
-                                    <p>Joined {format(new Date('2024-12-12'), 'MMM d, yyyy')}</p>
-                                    <p className="text-xs">Last active {format(new Date('2024-12-12'), 'MMM d, h:mm a')}</p>
-                                </div>
-
-                                <Button variant="ghost">
-                                    <Trash2 className="text-destructive h-4 w-4" />
-                                </Button>
-                            </div>
-                        </motion.div>
-                    </CardContent>
+                    <Deferred
+                        data="teamInvitations"
+                        fallback={
+                            <Card>
+                                <CardContent>
+                                    <LoadingSkeleton />
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        <CardContent>
+                            {teamInvitations?.map((invitation, index) => (
+                                <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />
+                            ))}
+                        </CardContent>
+                    </Deferred>
                 </Card>
             </div>
         </AppLayout>

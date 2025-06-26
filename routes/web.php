@@ -62,6 +62,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
         Route::prefix('{project}/charts')->group(function () {
+            Route::get('/', [ProjectChartsController::class, 'index'])->name('projects.charts.index');
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
         });
     });
@@ -77,8 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
 
         // Team Member Management
-        Route::post('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
-        Route::post('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
+        Route::patch('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
+        Route::delete('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
         Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
     });
 

@@ -16,8 +16,8 @@ class ChartFactory extends Factory
      */
     public function definition(): array
     {
-        $type = $this->faker->randomElement(['line', 'bar', 'area', 'pie', 'radar', 'scatter']);
-        $colors = ['#fc59a3', '#87c830', '#ffd400'];
+        $type = $this->faker->randomElement(['line', 'bar', 'area']);
+        $colors = ['#8884d8', '#82ca9d', '#ffc658'];
 
         return [
             'uuid' => $this->faker->uuid(),
