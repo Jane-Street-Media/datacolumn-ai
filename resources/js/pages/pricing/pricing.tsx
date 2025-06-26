@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import { Check, OctagonX } from 'lucide-react';
+import { Check, Hourglass, OctagonX } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -38,7 +38,14 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     const handleMouseLeave = () => {
         setHoveredCard(null);
     };
-    const handleCheckoutClick = (e, planId) => {
+    const handleCheckoutClick = (e, planId, plan) => {
+        if (plan.name.toLowerCase() === 'enterprise') {
+            toast('Contact Support', {
+                description: () => 'Coming Soon!',
+                icon: <Hourglass className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />,
+            });
+            return;
+        }
         if (loading) {
             e.preventDefault();
             return;
@@ -67,7 +74,14 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         );
     };
 
-    const handleSwapSubscription = (e, planId) => {
+    const handleSwapSubscription = (e, planId, plan) => {
+        if (plan.name.toLowerCase() === 'enterprise') {
+            toast('Contact Support', {
+                description: () => 'Coming Soon!',
+                icon: <Hourglass className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />,
+            });
+            return;
+        }
         if (loading) {
             e.preventDefault();
             return;
@@ -233,7 +247,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 </span>
                                             ) : (
                                                 <button
-                                                    onClick={(e) => handleCheckoutClick(e, planId)}
+                                                    onClick={(e) => handleCheckoutClick(e, planId, plan)}
                                                     className={`block w-full rounded-lg px-4 py-3 text-center font-medium transition-all ${
                                                         plan.default
                                                             ? 'bg-primary'
@@ -272,39 +286,47 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 </button>
                                             )
                                         ) : subscription.chargebee_price !== planId ? (
-                                            <Button
-                                                onClick={(e) => handleSwapSubscription(e, planId)}
-                                                variant="gradient"
-                                                className={`${loading ? 'cursor-not-allowed' : ''}`}
-                                            >
-                                                {isLoading ? (
-                                                    <span className="flex items-center justify-center">
-                                                        <svg
-                                                            className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <circle
-                                                                className="opacity-25"
-                                                                cx="12"
-                                                                cy="12"
-                                                                r="10"
-                                                                stroke="currentColor"
-                                                                strokeWidth="4"
-                                                            ></circle>
-                                                            <path
-                                                                className="opacity-75"
-                                                                fill="currentColor"
-                                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                            ></path>
-                                                        </svg>
-                                                        Processing...
-                                                    </span>
-                                                ) : (
-                                                    'Swap Subscription'
-                                                )}
-                                            </Button>
+                                            plan.name.toLowerCase() === 'free' ? (
+                                                <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
+                                                    Free Trial
+                                                </span>
+                                            ) : (
+                                                <Button
+                                                    onClick={(e) => handleSwapSubscription(e, planId, plan)}
+                                                    variant="gradient"
+                                                    className={`${loading ? 'cursor-not-allowed' : ''}`}
+                                                >
+                                                    {isLoading ? (
+                                                        <span className="flex items-center justify-center">
+                                                            <svg
+                                                                className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                                ></path>
+                                                            </svg>
+                                                            Processing...
+                                                        </span>
+                                                    ) : plan.name.toLowerCase() === 'enterprise' ? (
+                                                        (plan.cta ?? 'Contact Sales')
+                                                    ) : (
+                                                        'Swap Subscription'
+                                                    )}
+                                                </Button>
+                                            )
                                         ) : (
                                             <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
                                                 Current Plan
