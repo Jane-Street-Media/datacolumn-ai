@@ -60,13 +60,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/{project}', [ProjectsController::class, 'update'])->name('project.update');
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('project.delete');
 
-    });
-    Route::prefix('folder')->group(function () {
-        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
-
         Route::prefix('{project}/charts')->group(function () {
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
         });
+    });
+
+    Route::prefix('folder')->group(function () {
+        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
     });
 
     Route::prefix('team')->group(function () {
