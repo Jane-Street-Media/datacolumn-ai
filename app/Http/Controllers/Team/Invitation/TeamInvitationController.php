@@ -16,12 +16,7 @@ class TeamInvitationController extends Controller
     public function store(int $teamInvitationId): RedirectResponse
     {
         $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
-        $user = User::where('email', $teamInvitation->email)->first();
-        if (! $user) {
-            return redirect()->route('register');
-        }
         AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
-
         return redirect(route('dashboard'));
     }
 
