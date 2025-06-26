@@ -60,7 +60,7 @@ export default function ChartCard({ index = 1, chart }) {
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
-                        <BarChart3 className="h-5 w-5" />
+                        {ChartIcon ? <ChartIcon/> : <BarChart3/>}
                     </div>
                 </CardTitle>
                 <CardAction>
