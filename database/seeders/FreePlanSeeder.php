@@ -24,6 +24,14 @@ class FreePlanSeeder extends Seeder
                     'Branded embeds',
                     'Community support',
                 ],
+                'features' => [
+                    'no_of_charts' => 3,
+                    'basic_customization' => true,
+                    'branded_embeds' => true,
+                    'community_support' => true,
+                    'watermark' => true,
+                    'basic_export_options' => true,
+                ],
                 'limitations' => [
                     'Limited chart types',
                     'DataColumn watermark',
@@ -36,17 +44,25 @@ class FreePlanSeeder extends Seeder
 
         // Free Yearly
         $planQuery->updateOrCreate(
-            ['chargebee_id' => 'free-yearly', 'frequency' => 'month'],
+            ['chargebee_id' => 'free-yearly', 'frequency' => 'year'],
             [
                 'display_name' => 'Free',
                 'price' => 0,
                 'chargebee_product' => 'free',
                 'description' => 'Perfect for trying out DataColumn',
                 'details' => [
-                    '3 charts per month',
+                    '3 charts per year',
                     'Basic customization',
                     'Branded embeds',
                     'Community support',
+                ],
+                'features' => [
+                    'no_of_charts' => 3,
+                    'basic_customization' => true,
+                    'branded_embeds' => true,
+                    'community_support' => true,
+                    'watermark' => true,
+                    'basic_export_options' => true,
                 ],
                 'limitations' => [
                     'Limited chart types',
