@@ -9,6 +9,6 @@ class ChartAIController extends Controller
 {
     public function __invoke(): Response
     {
-        return Inertia::render('chart-ai');
+        return Inertia::render('ChartAI');
     }
 }
