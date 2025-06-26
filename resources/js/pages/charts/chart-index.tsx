@@ -38,16 +38,6 @@ export default function ChartIndex({ charts }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
-    const clearFilters = () => {
-        setFilters({ search: '' });
-        router.reload({
-            only: ['charts'],
-            data: {
-                search: '',
-            },
-        });
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -92,10 +82,7 @@ export default function ChartIndex({ charts }) {
                                 </div>
                             </div>
                             <div className="flex items-center justify-end gap-4">
-                                <Button variant="destructive" onClick={() => clearFilters()}>
-                                    <X />
-                                    Clear
-                                </Button>
+
                             </div>
                         </div>
                     </CardContent>
