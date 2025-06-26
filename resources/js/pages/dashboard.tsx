@@ -45,7 +45,7 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
         //     icon: TrendingUp,
         // },
     ];
-    const [message, setMessage] = useState(flash?.success || flash?.error || null)
+    const [message] = useState(flash?.success || flash?.error || null)
     const [hasShown, setHasShown] = useState(false)
 
     useEffect(() => {
@@ -57,8 +57,8 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
             } else if (flash.error) {
                 toast.error(flash.error)
             }
-            setHasShown(true)
 
+            setHasShown(true)
         }
     }, [message, hasShown, flash])
     return (
