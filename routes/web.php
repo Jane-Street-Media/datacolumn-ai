@@ -83,6 +83,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
     });
 
+    Route::patch('/current-team/switch', [SwitchUserTeamController::class, 'update'])->name('current-team.update');
+
     // Team Invitations
     Route::prefix('team-invitation')->group(function () {
         Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
