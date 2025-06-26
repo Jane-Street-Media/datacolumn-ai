@@ -37,6 +37,7 @@ export default function InviteMemberDialog({ roles, trigger }: InviteMemberDialo
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('team.member.store', user.current_team_id), {
+            only: ['roles', 'flash' , 'teamInvitations'],
             onError: (err) => {
                 if (err.package_restriction){
                     toast.error(err.package_restriction, {

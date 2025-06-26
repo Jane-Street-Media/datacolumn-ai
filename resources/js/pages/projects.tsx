@@ -28,6 +28,8 @@ export default function Projects({ folders, projects }) {
 
     useEffect(() => {
         const debounce = setTimeout(() => {
+            const trimmedSearch = filters.search.trim();
+            if (trimmedSearch === '' && filters.search !== '') return;
             router.reload({
                 only: ['projects'],
                 data: {
@@ -89,7 +91,7 @@ export default function Projects({ folders, projects }) {
                                         onChange={(e) =>
                                             setFilters((prev) => ({
                                                 ...prev,
-                                                search: e.target.value.trim(),
+                                                search: e.target.value,
                                             }))
                                         }
                                     />
