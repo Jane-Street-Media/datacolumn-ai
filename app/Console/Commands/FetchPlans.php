@@ -86,8 +86,8 @@ class FetchPlans extends Command
                                 'Email support',
                             ],
                             'features' => [
-                                'unlimited_charts' => true,
-                                'unlimited_exports' => true,
+                                'no_of_charts' => -1,
+                                'no_of_exports' => -1,
                                 'watermark' => false,
                                 'priority_rendering' => true,
                                 'chart_presets' => true,

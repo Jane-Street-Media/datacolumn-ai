@@ -29,7 +29,7 @@ class EnterprisePlanSeeder extends Seeder
                     'Advanced security',
                 ],
                 'features' => [
-                    'unlimited_seats' => true,
+                    'no_of_seats' => -1,
                     'api_integrations' => true,
                     'sla' => true,
                     'full_white_labeling' => true,
@@ -60,7 +60,7 @@ class EnterprisePlanSeeder extends Seeder
                     'Advanced security',
                 ],
                 'features' => [
-                    'unlimited_seats' => true,
+                    'no_of_seats' => -1,
                     'api_integrations' => true,
                     'sla' => true,
                     'full_white_labeling' => true,
