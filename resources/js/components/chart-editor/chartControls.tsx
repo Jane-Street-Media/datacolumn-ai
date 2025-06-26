@@ -201,7 +201,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, onConfigCha
             <CardHeader>
                 <CardTitle>Chart Configuration</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 h-full max-h-[calc(100vh-300px)] lg:max-h-[calc(100vh-200px)] overflow-y-auto overscroll-contain">
                 {/* Chart Type */}
                 <div>
                     <h4 className="mb-3 text-sm font-medium">Chart Type</h4>

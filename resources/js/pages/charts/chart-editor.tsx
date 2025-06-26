@@ -199,7 +199,7 @@ export default function ChartEditor() {
                                             </ChartContainer>
                                         </div>
                                         <div className="order-1 lg:order-2 flex-1 lg:flex-none">
-                                            <div className="h-full max-h-[calc(100vh-300px)] lg:max-h-[calc(100vh-200px)] overflow-y-auto overscroll-contain">
+                                            <div className="h-full">
                                                 <ChartControls
                                                     config={config}
                                                     onConfigChange={handleConfigChange}
