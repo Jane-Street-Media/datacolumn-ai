@@ -60,6 +60,9 @@ export default function Team({ roles, statistics, teamUsers ,teamInvitations}) {
 
     useEffect(() => {
         const debounce = setTimeout(() => {
+            const trimmedSearch = filters.search.trim();
+            if (trimmedSearch === '' && filters.search !== '') return;
+
             router.reload({
                 only: ['teamUsers'],
                 data: {
@@ -108,7 +111,7 @@ export default function Team({ roles, statistics, teamUsers ,teamInvitations}) {
                                         onChange={(e) =>
                                             setFilters((prev) => ({
                                                 ...prev,
-                                                search: e.target.value.trim(),
+                                                search: e.target.value,
                                             }))
                                         }
                                     />
