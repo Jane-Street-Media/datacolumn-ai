@@ -2,7 +2,7 @@
 
 namespace App\Actions\Teams\TeamInvitation;
 
-use App\Actions\Teams\SwitchTeam;
+use App\Actions\Teams\SwitchUserTeam;
 use App\Enums\ActivityEvents;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -15,7 +15,7 @@ class AcceptTeamInvitation
         setPermissionsTeamId($teamInvitation->team->id);
         $user->assignRole($teamInvitation->role);
         $teamInvitation->delete();
-        SwitchTeam::handle($user, $teamInvitation->team->id);
+        SwitchUserTeam::handle($user, $teamInvitation->team->id);
         defer(fn () => activity()
             ->performedOn($teamInvitation)
             ->event(ActivityEvents::TEAM_INVITATION_SENT->value)

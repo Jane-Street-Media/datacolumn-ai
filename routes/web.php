@@ -7,7 +7,7 @@ use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
-use App\Http\Controllers\Team\SwitchTeamController;
+use App\Http\Controllers\Team\SwitchUserTeamController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
 use Chargebee\Cashier\Http\Controllers\WebhookController;
@@ -76,7 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
     });
 
-    Route::patch('/current-team/update', [SwitchTeamController::class, 'update'])->name('current-team.update');
+    Route::patch('/current-team/update', [SwitchUserTeamController::class, 'update'])->name('current-team.update');
 
     // Team Invitations
     Route::prefix('team-invitation')->group(function () {

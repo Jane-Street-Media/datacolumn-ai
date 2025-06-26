@@ -4,7 +4,7 @@ namespace App\Actions\Teams;
 
 use App\Models\User;
 
-class SwitchTeam
+class SwitchUserTeam
 {
     public static function handle(User $user, int $teamId): User
     {
