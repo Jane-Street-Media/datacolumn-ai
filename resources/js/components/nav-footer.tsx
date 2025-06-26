@@ -25,7 +25,7 @@ export function NavFooter({
         patch(route('current-team.update'), {
             only:['teams','flash'],
             onSuccess: (response) => {
-                toast(response.props.flash.success, {
+                toast.success(response.props.flash.success, {
                     description: 'You\'re now operating with your selected team.',
                 });
             },
