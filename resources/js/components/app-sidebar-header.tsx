@@ -44,7 +44,6 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     const handleSwitchUserTeam = (value) => {
         setData({ team_id: value });
         patch(route('current-team.update'), {
-            only:['teams','flash'],
             onSuccess: (response) => {
                 toast.success(response.props.flash.success, {
                     description: 'You\'re now operating with your selected team.',

@@ -44,12 +44,13 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                 : 'Start organizing your work — give your project a name and optional description.',
         [isEdit],
     );
+    const buttonText = useMemo(() => (isEdit ? 'Update Project.' : 'Create Project.'), [isEdit]);
 
     const action = isEdit ? patch : post;
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         action(formRoute, {
-            only:['projects'],
+            only: ['projects', 'flash'],
             onError: (err) => {
                 if (err.package_restriction) {
                     toast.error(err.package_restriction, {
@@ -58,7 +59,7 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                 }
             },
             onSuccess: (response) => {
-                console.log(response , "this is response")
+                console.log(response, 'this is response');
                 reset('name', 'description', 'folder_id');
                 setOpen(false);
                 toast.success(response.props.flash.success, {
@@ -136,7 +137,7 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                         </DialogClose>
                         <Button type="submit" tabIndex={5} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Create Project
+                            { buttonText }
                         </Button>
                     </DialogFooter>
                 </form>
