@@ -190,7 +190,7 @@ interface ChartControlsProps {
     onConfigChange: (config: CustomChartConfig) => void;
 }
 
-export const ChartControls: React.FC<ChartControlsProps> = ({config, onConfigChange}) => {
+export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, onConfigChange}) => {
 
     const updateConfig = useCallback((updates: Partial<CustomChartConfig>) => {
         onConfigChange({ ...config, ...updates });

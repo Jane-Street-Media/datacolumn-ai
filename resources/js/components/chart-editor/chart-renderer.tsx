@@ -84,7 +84,9 @@ const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, 
 export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) => {
   // Memoize the processed data to avoid unnecessary recalculations
   const chartData = useMemo(() => {
-    if (!data.length || !config.xAxis) {
+      console.log(data);
+      console.log(config);
+      if (!data.length || !config.xAxis) {
       return [];
     }
 
@@ -153,7 +155,10 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
     }
 
       console.log('config');
+      console.log(xAxisProps);
+      console.log(yAxisProps);
       console.log(config);
+      console.log(config.series);
       switch (config.type) {
       case 'bar':
         return (
@@ -164,24 +169,24 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
                 <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
                 {config.showLegend && <Legend />}
                 {}
-                {config.series.map((data) => (
-                    <Bar key={data.dataKey} {...data} />
-                ))}
+                {config.series ? config.series.map((data) => <Bar key={data.dataKey} {...data} />) : (<Bar dataKey={config.yAxis} />)}
             </BarChart>
         );
 
       case 'line':
         return (
-          <LineChart {...commonProps}>
-              {config.showGrid && <CartesianGrid {...config.grid} />}
-            <XAxis dataKey={config.xAxis} {...xAxisProps} />
-            <YAxis {...yAxisProps} />
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
-              {config.series.map((data) => (
-                  <Line key={data.dataKey} {...data} />
-              ))}
-          </LineChart>
+            <LineChart {...commonProps}>
+                {config.showGrid && <CartesianGrid {...config.grid} />}
+                <XAxis dataKey={config.xAxis} {...xAxisProps} />
+                <YAxis {...yAxisProps} />
+                <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
+                {config.showLegend && <Legend />}
+                {config.series ? (
+                    config.series.map((data) => <Line key={data.dataKey} {...data} />)
+                ) : (
+                    <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} />
+                )}
+            </LineChart>
         );
 
       case 'area':
@@ -191,10 +196,19 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
             <XAxis dataKey={config.xAxis} {...xAxisProps} />
             <YAxis {...yAxisProps} />
             <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
-              {config.series.map((data) => (
-                  <Area key={data.dataKey} {...data} />
-              ))}
+              {config.showLegend && <Legend />}
+              {config.series ? (
+                  config.series.map((data) => (
+                      <Area key={data.dataKey} {...data} />
+                  ))) : (
+                  <Area
+                      type="monotone"
+                      dataKey={config.yAxis}
+                      stroke={config.colors[0]}
+                      fill={config.colors[0]}
+                      fillOpacity={0.6}
+                  />
+              )}
           </AreaChart>
         );
 
