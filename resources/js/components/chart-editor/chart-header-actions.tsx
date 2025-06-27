@@ -1,7 +1,7 @@
 import {Button} from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
-import { Code, FileImage, Import, Save, Share2, Sun, Upload } from 'lucide-react';
+import { Code, FileImage, Import, Save, Share2, Sun, Upload, Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { toast } from 'sonner';
 import { useDataImport } from '@/hooks/use-data-import';
@@ -15,8 +15,7 @@ import {
 import { useChartExport } from '@/hooks/use-chart-export';
 import EmbedDialog from '@/components/chart-editor/embed-dialog';
 
-
-export function ChartHeaderActions({ config, data, columns, onImportSuccess } ) {
+export function ChartHeaderActions({ config, data, columns, onImportSuccess, onSave, loading } ) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { importCSV, isImporting } = useDataImport();
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +36,8 @@ export function ChartHeaderActions({ config, data, columns, onImportSuccess } ) 
         }
     };
 
+    const handleSaveButton = (e) => onSave(e);
+
     const { exportChart, exportChartAsSVG, exportData } = useChartExport();
 
     const handleExportChart = async (format: 'png' | 'svg' = 'png') => {
@@ -52,7 +53,6 @@ export function ChartHeaderActions({ config, data, columns, onImportSuccess } ) 
             toast.error(`Failed to export chart as ${format.toUpperCase()}.`);
         }
     };
-
 
     return (
         <Card>
@@ -97,9 +97,13 @@ export function ChartHeaderActions({ config, data, columns, onImportSuccess } ) 
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
-                                <Button variant={'ghost'} className="border">
-                                    <Save />
-                                    <span className={'hidden lg:block'}>Save</span>
+                                <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)} disabled={loading}>
+                                    {loading ? (
+                                        <Loader2 className="w-4 h-4 animate-spin"/>
+                                    ) : (
+                                        <Save />
+                                    )}
+                                    <span>Save</span>
                                 </Button>
                                 <EmbedDialog config={config} data={data} columns={columns} />
                             </div>

@@ -1,40 +1,36 @@
-import AppLayout from '@/layouts/app-layout';
-import {type BreadcrumbItem} from '@/types';
-import { Head } from '@inertiajs/react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-    Card,
-    CardContent,
-} from "@/components/ui/card"
-import {
-    ChartConfig,
-} from "@/components/ui/chart"
-import { useRef, useState } from 'react';
-import { ChartControls } from '@/components/chart-editor/chartControls';
-import { CustomChartConfig } from '@/pages/charts/types';
 import { ChartHeaderActions } from '@/components/chart-editor/chart-header-actions';
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
+import { ChartControls } from '@/components/chart-editor/chartControls';
 import { DataTable } from '@/components/chart-editor/data-table';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChartConfig } from '@/components/ui/chart';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AppLayout from '@/layouts/app-layout';
+import { CustomChartConfig } from '@/pages/charts/types';
+import { type BreadcrumbItem } from '@/types';
+import { Head, router, useForm } from '@inertiajs/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
-export const description = "An area chart with axes"
+export const description = 'An area chart with axes';
 const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-]
+    { month: 'January', desktop: 186, mobile: 80 },
+    { month: 'February', desktop: 305, mobile: 200 },
+    { month: 'March', desktop: 237, mobile: 120 },
+    { month: 'April', desktop: 73, mobile: 190 },
+    { month: 'May', desktop: 209, mobile: 130 },
+    { month: 'June', desktop: 214, mobile: 140 },
+];
 const chartConfig = {
     desktop: {
-        label: "Desktop",
+        label: 'Desktop',
         color: 'green',
     },
     mobile: {
-        label: "Mobile",
+        label: 'Mobile',
         color: 'yellow',
     },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -55,7 +51,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function ChartEditor() {
+export default function ChartEditor({ chart }) {
     const xAxisConfig = useRef({
         allowDuplicatedCategory: true,
         allowDecimals: false,
@@ -67,7 +63,7 @@ export default function ChartEditor() {
         padding: { left: 0, right: 0 },
         allowDataOverflow: false,
         reversed: false,
-        dataKey: "month",
+        dataKey: 'month',
         label: 'Ullo ka patthasaxs',
         tickLine: true,
         axisLine: true,
@@ -81,7 +77,7 @@ export default function ChartEditor() {
         width: 50,
         height: 1,
         mirror: false,
-        type: "number",
+        type: 'number',
         padding: { top: 20, bottom: 20 },
         allowDataOverflow: true,
         reversed: false,
@@ -93,67 +89,56 @@ export default function ChartEditor() {
     });
 
     const [config, setConfig] = useState<CustomChartConfig>({
-        type: 'bar',
-        title: '',
-        titleAlignment: 'center',
-        titleColor: '#111827',
-        titleWeight: 'bold',
-        subtitle: '',
-        subtitleColor: '#6b7280',
-        xAxis: 'month',
-        yAxis: 'sales',
-        xAxisLabel: '',
-        yAxisLabel: '',
-        tooltipFormat: 'default',
-        tooltipCustomFormat: '',
-        colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-        showGrid: true,
-        showLegend: true,
-        showXAxis: true,
-        showYAxis: true,
-        width: 800,
-        height: 600,
-        paddingOption: 'default',
-        customPaddingValue: 20,
-        theme: 'light',
-        backgroundColor: 'default'
+        type: chart.config.type ?? 'bar',
+        title: chart.config.title ?? '',
+        titleAlignment: chart.config.titleAlignment ?? 'center',
+        titleColor: chart.config.titleColor ?? '#111827',
+        titleWeight: chart.config.titleWeight ?? 'bold',
+        subtitle: chart.config.subtitle ?? '',
+        subtitleColor: chart.config.subtitleColor ?? '#6b7280',
+        xAxis: chart.config.xAxis ?? '',
+        yAxis: chart.config.yAxis ?? '',
+        series: chart.config.series ?? [],
+        grid: chart.config.grid ?? [],
+        tooltip: chart.config.tooltip ?? [],
+        xAxisLabel: chart.config.xAxisLabel ?? '',
+        yAxisLabel: chart.config.yAxisLabel ?? '',
+        tooltipFormat: chart.config.tooltipFormat ?? 'default',
+        tooltipCustomFormat: chart.config.tooltipCustomFormat ?? '',
+        colors: chart.config.colors ?? ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+        showGrid: chart.config.showGrid ?? true,
+        showLegend: chart.config.showLegend ?? true,
+        showXAxis: chart.config.showXAxis ?? true,
+        showYAxis: chart.config.showYAxis ?? true,
+        width: chart.config.width ?? 800,
+        height: chart.config.height ?? 600,
+        paddingOption: chart.config.paddingOption ?? 'default',
+        customPaddingValue: chart.config.customPaddingValue ?? 20,
+        theme: chart.config.theme ?? 'light',
+        backgroundColor: chart.config.backgroundColor ?? 'default',
     });
 
     const handleConfigChange = (newConfig: CustomChartConfig) => {
         setConfig(newConfig);
-
-        console.log('config');
-        console.log(config);
     };
 
     interface DataPoint {
         [key: string]: string | number;
     }
 
-    const [data, setData] = useState<DataPoint[]>([
-        { month: 'Jan', sales: 4000, profit: 2400 },
-        { month: 'Feb', sales: 3000, profit: 1398 },
-        { month: 'Mar', sales: 2000, profit: 9800 },
-        { month: 'Apr', sales: 2780, profit: 3908 },
-        { month: 'May', sales: 1890, profit: 4800 },
-        { month: 'Jun', sales: 2390, profit: 3800 },
-    ]);
+    const [data, setData] = useState<DataPoint[]>(chart.data);
     // setData(sampleData);
-    const [columns, setColumns] = useState<string[]>([
-        'month',
-        'sales',
-        'profit'
-    ]);
+    const [columns, setColumns] = useState<string[]>(Object.keys(chart.data[0]));
 
     const onImportSuccess = (result) => {
         setData(result.data);
         setColumns(result.columns);
-        setConfig(prev => ({
+        setConfig((prev) => ({
             ...prev,
             xAxis: result.columns[0] || '',
             yAxis: result.columns[1] || '',
         }));
-    }
+    };
 
     const handleDataChange = (newData: DataPoint[]) => {
         setData(newData);
@@ -161,17 +146,39 @@ export default function ChartEditor() {
 
     const handleAddRow = () => {
         const newRow: DataPoint = {};
-        columns.forEach(col => {
+        columns.forEach((col) => {
             newRow[col] = '';
         });
         setData([...data, newRow]);
+    };
+
+    const [updating, setUpdating] = useState(false)
+    const updateChart = (e) => {
+        setUpdating(true)
+        e.preventDefault();
+        router.patch(route('projects.charts.update', { project: chart.project_id, chart: chart.id }), {
+            data: data,
+            config: config
+        }, {
+            onSuccess: (response) => {
+                toast.success(response.props.flash.success)
+            },
+            onError: (errors) => {
+                if(errors.error){
+                    toast.error(errors.error)
+                }else {
+                    console.log(errors);
+                }
+            },
+            onFinish: () => setUpdating(false)
+        })
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions config={config} data={data} columns={columns} onImportSuccess={(result) => onImportSuccess(result)} />
+                <ChartHeaderActions config={config} data={data} columns={columns} onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating}/>
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>
@@ -196,12 +203,7 @@ export default function ChartEditor() {
                                 </div>
                             </TabsContent>
                             <TabsContent value="data">
-                                <DataTable
-                                    data={data}
-                                    columns={columns}
-                                    onDataChange={handleDataChange}
-                                    onAddRow={handleAddRow}
-                                />
+                                <DataTable data={data} columns={columns} onDataChange={handleDataChange} onAddRow={handleAddRow} />
                             </TabsContent>
                             <TabsContent value="preview">
                                 <ChartRenderer data={data} config={config} />

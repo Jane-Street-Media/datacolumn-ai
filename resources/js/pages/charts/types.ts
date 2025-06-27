@@ -13,6 +13,9 @@ export interface CustomChartConfig {
     tooltipFormat: 'default' | 'currency' | 'percentage' | 'decimal' | 'custom';
     tooltipCustomFormat?: string;
     colors: string[];
+    series: object[];
+    grid: object;
+    tooltip: string[];
     showGrid: boolean;
     showLegend: boolean;
     showXAxis: boolean;
