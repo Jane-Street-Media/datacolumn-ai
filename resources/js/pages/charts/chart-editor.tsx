@@ -1,39 +1,20 @@
 import AppLayout from '@/layouts/app-layout';
 import {type BreadcrumbItem} from '@/types';
 import { Head } from '@inertiajs/react';
-import { Upload, Save, Share2, Import } from 'lucide-react';
-import * as React from 'react';
-import {
-    PageHeader,
-    PageHeaderAction,
-    PageHeaderDescription,
-    PageHeaderHead,
-    PageHeaderTitle
-} from '@/components/page-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from '@/components/ui/button';
-import ProjectCard from '@/components/projects/project-card';
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
 import {
     ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useRef, useState } from 'react';
 import { ChartControls } from '@/components/chart-editor/chartControls';
 import { CustomChartConfig } from '@/pages/charts/types';
 import { ChartHeaderActions } from '@/components/chart-editor/chart-header-actions';
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
+import { DataTable } from '@/components/chart-editor/data-table';
 
 export const description = "An area chart with axes"
 const chartData = [
@@ -119,8 +100,8 @@ export default function ChartEditor() {
         titleWeight: 'bold',
         subtitle: '',
         subtitleColor: '#6b7280',
-        xAxis: '',
-        yAxis: '',
+        xAxis: 'month',
+        yAxis: 'sales',
         xAxisLabel: '',
         yAxisLabel: '',
         tooltipFormat: 'default',
@@ -149,23 +130,48 @@ export default function ChartEditor() {
         [key: string]: string | number;
     }
 
-    const [data, setData] = useState<DataPoint[]>([]);
-    const sampleData = [
+    const [data, setData] = useState<DataPoint[]>([
         { month: 'Jan', sales: 4000, profit: 2400 },
         { month: 'Feb', sales: 3000, profit: 1398 },
         { month: 'Mar', sales: 2000, profit: 9800 },
         { month: 'Apr', sales: 2780, profit: 3908 },
         { month: 'May', sales: 1890, profit: 4800 },
         { month: 'Jun', sales: 2390, profit: 3800 },
-    ];
+    ]);
+    // setData(sampleData);
+    const [columns, setColumns] = useState<string[]>([
+        'month',
+        'sales',
+        'profit'
+    ]);
 
-    setData(sampleData);
+    const onImportSuccess = (result) => {
+        setData(result.data);
+        setColumns(result.columns);
+        setConfig(prev => ({
+            ...prev,
+            xAxis: result.columns[0] || '',
+            yAxis: result.columns[1] || '',
+        }));
+    }
+
+    const handleDataChange = (newData: DataPoint[]) => {
+        setData(newData);
+    };
+
+    const handleAddRow = () => {
+        const newRow: DataPoint = {};
+        columns.forEach(col => {
+            newRow[col] = '';
+        });
+        setData([...data, newRow]);
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions />
+                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>
@@ -177,23 +183,29 @@ export default function ChartEditor() {
                         <CardContent>
                             <TabsContent value="design">
                                 <div className="flex-1 overflow-hidden">
-                                    <div className="h-full flex flex-col lg:grid lg:grid-cols-3 lg:gap-6 p-4 sm:p-6">
-                                        <div className="lg:col-span-2 order-2 lg:order-1 mb-6 lg:mb-0">
+                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid lg:grid-cols-3 lg:gap-6">
+                                        <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0">
                                             <ChartRenderer data={data} config={config} />
                                         </div>
-                                        <div className="order-1 lg:order-2 flex-1 lg:flex-none">
+                                        <div className="order-1 flex-1 lg:order-2 lg:flex-none">
                                             <div className="h-full">
-                                                <ChartControls
-                                                    config={config}
-                                                    onConfigChange={handleConfigChange}
-                                                />
+                                                <ChartControls config={config} columns={columns} onConfigChange={handleConfigChange} />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </TabsContent>
-                            <TabsContent value="data">data</TabsContent>
-                            <TabsContent value="preview">preview</TabsContent>
+                            <TabsContent value="data">
+                                <DataTable
+                                    data={data}
+                                    columns={columns}
+                                    onDataChange={handleDataChange}
+                                    onAddRow={handleAddRow}
+                                />
+                            </TabsContent>
+                            <TabsContent value="preview">
+                                <ChartRenderer data={data} config={config} />
+                            </TabsContent>
                         </CardContent>
                     </Card>
                 </Tabs>
