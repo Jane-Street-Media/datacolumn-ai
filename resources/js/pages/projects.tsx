@@ -4,14 +4,16 @@ import FolderDialog from '@/components/projects/folder-dialog';
 import ProjectCard from '@/components/projects/project-card';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { Search, UserPlus, X } from 'lucide-react';
+import { BarChart3, FolderOpen, Plus, Search, UserPlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -140,7 +142,20 @@ export default function Projects({ folders, projects }) {
                             </Card>
                         }
                     >
-                        {projects?.map((project, index) => <ProjectCard key={project.id} index={index} project={project} folders={folders} />)}{' '}
+                        {projects?.length ? (
+                            projects?.map((project, index) => <ProjectCard key={project.id} index={index} project={project} folders={folders} />)
+                        ) : (
+                            <Card className="col-span-3">
+                                <CardHeader>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="py-8 text-center">
+                                        <FolderOpen className="mx-auto mb-4 h-12 w-12" />
+                                        <p className="text-secondary-foreground mb-4">No projects yet</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
                     </Deferred>
                 </div>
             </div>
