@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('{project}/charts')->group(function () {
             Route::get('/', [ProjectChartsController::class, 'index'])->name('projects.charts.index');
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
+            Route::patch('/{chart}', [ProjectChartsController::class, 'update'])->name('projects.charts.update');
         });
     });
 

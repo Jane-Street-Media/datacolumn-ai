@@ -27,7 +27,8 @@ class ChartFactory extends Factory
                 'type' => $type,
                 'width' => $this->faker->numberBetween(400, 800),
                 'height' => $this->faker->numberBetween(300, 600),
-                'xAxis' => ['dataKey' => 'month'],
+                'xAxis' => 'month',
+                'yAxis' => '',
                 'series' => [
                     ['type' => $type, 'dataKey' => 'Apples', 'fill' => '#fc59a3', 'stroke' => '#fc59a3'],
                     ['type' => $type, 'dataKey' => 'Oranges', 'fill' => '#87c830', 'stroke' => '#87c830'],

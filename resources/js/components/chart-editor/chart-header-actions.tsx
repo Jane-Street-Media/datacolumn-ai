@@ -8,7 +8,7 @@ import { useDataImport } from '@/hooks/use-data-import';
 import { useRef } from 'react';
 
 
-export function ChartHeaderActions({ onImportSuccess } ) {
+export function ChartHeaderActions({ onImportSuccess, onSave } ) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { importCSV, isImporting } = useDataImport();
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +28,8 @@ export function ChartHeaderActions({ onImportSuccess } ) {
             toast.error('Failed to import data. Please check your CSV file.');
         }
     };
+
+    const handleSaveButton = (e) => onSave(e);
 
     return (
         <Card>
@@ -54,7 +56,7 @@ export function ChartHeaderActions({ onImportSuccess } ) {
                                     <Upload />
                                     <span>Export</span>
                                 </Button>
-                                <Button variant={'ghost'} className="border">
+                                <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)}>
                                     <Save />
                                     <span>Save</span>
                                 </Button>

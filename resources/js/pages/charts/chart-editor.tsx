@@ -1,40 +1,36 @@
-import AppLayout from '@/layouts/app-layout';
-import {type BreadcrumbItem} from '@/types';
-import { Head } from '@inertiajs/react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-    Card,
-    CardContent,
-} from "@/components/ui/card"
-import {
-    ChartConfig,
-} from "@/components/ui/chart"
-import { useRef, useState } from 'react';
-import { ChartControls } from '@/components/chart-editor/chartControls';
-import { CustomChartConfig } from '@/pages/charts/types';
 import { ChartHeaderActions } from '@/components/chart-editor/chart-header-actions';
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
+import { ChartControls } from '@/components/chart-editor/chartControls';
 import { DataTable } from '@/components/chart-editor/data-table';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChartConfig } from '@/components/ui/chart';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AppLayout from '@/layouts/app-layout';
+import { CustomChartConfig } from '@/pages/charts/types';
+import { type BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
-export const description = "An area chart with axes"
+export const description = 'An area chart with axes';
 const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-]
+    { month: 'January', desktop: 186, mobile: 80 },
+    { month: 'February', desktop: 305, mobile: 200 },
+    { month: 'March', desktop: 237, mobile: 120 },
+    { month: 'April', desktop: 73, mobile: 190 },
+    { month: 'May', desktop: 209, mobile: 130 },
+    { month: 'June', desktop: 214, mobile: 140 },
+];
 const chartConfig = {
     desktop: {
-        label: "Desktop",
+        label: 'Desktop',
         color: 'green',
     },
     mobile: {
-        label: "Mobile",
+        label: 'Mobile',
         color: 'yellow',
     },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -93,15 +89,15 @@ export default function ChartEditor({ chart }) {
     });
 
     const [config, setConfig] = useState<CustomChartConfig>({
-        type: chart.type ?? 'bar',
-        title: chart.title ?? '',
+        type: chart.config.type ?? 'bar',
+        title: chart.config.title ?? '',
         titleAlignment: chart.config.titleAlignment ?? 'center',
         titleColor: chart.config.titleColor ?? '#111827',
-        titleWeight: chart.config.titleWeight ??'bold',
+        titleWeight: chart.config.titleWeight ?? 'bold',
         subtitle: chart.config.subtitle ?? '',
         subtitleColor: chart.config.subtitleColor ?? '#6b7280',
-        xAxis: chart.config.xAxis.dataKey ?? '',
-        yAxis: chart.config.yAxis?.dataKey ?? '',
+        xAxis: chart.config.xAxis ?? '',
+        yAxis: chart.config.yAxis ?? '',
         series: chart.config.series ?? [],
         grid: chart.config.grid ?? [],
         tooltip: chart.config.tooltip ?? [],
@@ -124,9 +120,6 @@ export default function ChartEditor({ chart }) {
 
     const handleConfigChange = (newConfig: CustomChartConfig) => {
         setConfig(newConfig);
-
-        console.log('config');
-        console.log(config);
     };
 
     interface DataPoint {
@@ -159,11 +152,42 @@ export default function ChartEditor({ chart }) {
         setData([...data, newRow]);
     };
 
+    const {
+        data: chartData,
+        setData: setChartData,
+        patch,
+        processing,
+    } = useForm({
+        type: '',
+        title: '',
+        data: [],
+        config: [],
+    });
+    const updateChart = (e) => {
+        e.preventDefault();
+        setChartData((chartData.data = data));
+        setChartData((chartData.config = config));
+
+        patch(route('projects.charts.update', {
+            project: chart.project_id,
+            chart: chart.id
+        }), {
+            onSuccess: (response) => {
+                toast.success(response.props.flash.success)
+            },
+            onError: (errors) => {
+                if(errors.error){
+                    toast.error(errors.error)
+                }
+            }
+        })
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} />
+                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>

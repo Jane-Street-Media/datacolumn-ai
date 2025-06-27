@@ -41,7 +41,11 @@ interface ChartRendererProps {
 const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, string> & { config: ChartConfig }) => {
   if (!active || !payload || payload.length === 0) return null;
 
-  const formatValue = (value: number) => {
+  const formatValue = (value: number | string) => {
+      if (typeof value === 'string'){
+          value = Number(value)
+      }
+
     switch (config.tooltipFormat) {
       case 'currency':
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
@@ -165,7 +169,7 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
             <BarChart {...commonProps}>
                 {config.showGrid && <CartesianGrid {...config.grid} />}
                 <XAxis dataKey={config.xAxis} {...xAxisProps} />
-                <YAxis {...yAxisProps} />
+                <YAxis {...yAxisProps} />entry
                 <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
                 {config.showLegend && <Legend />}
                 {}
