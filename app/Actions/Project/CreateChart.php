@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Project;
 
 use App\Data\ChartData;
-use App\Data\CreateProjectData;
 use App\Models\Chart;
 use App\Models\Project;
 

@@ -2,8 +2,6 @@
 
 namespace App\Actions\Project;
 
-use App\Actions\CreateChart;
-use App\Actions\CreateDataset;
 use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Data\ChartData;
 use App\Data\CreateProjectData;
