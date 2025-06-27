@@ -26,7 +26,7 @@ class TeamController extends Controller
     {
 
         return Inertia::render('team', [
-            'statistics' => GetTeamStats::handle(),
+            'statistics' => Inertia::defer(fn () => GetTeamStats::handle()),
             'roles' => Inertia::defer(fn () => Role::all()),
             'teamUsers' => Inertia::defer(fn () => GetTeamUsers::handle(Auth::user(), $request->validated())),
             'teamInvitations' => Inertia::defer(fn () => GetTeamInvitations::handle()),
