@@ -105,6 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('chart/embed/{uuid}', function ($uuid) {
     $chart = \App\Models\Chart::where('uuid', $uuid)->firstOrFail();
+
     return Inertia::render('charts/chart-embed', [
         'config' => $chart->config,
         'data' => $chart->data,

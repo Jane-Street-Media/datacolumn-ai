@@ -21,7 +21,7 @@ class ReChartAIService
     public function sendMessage(string $message, array $context = []): array
     {
         // 1) If no API key, go straight to fallback
-        if (!$this->apiKey) {
+        if (! $this->apiKey) {
             return $this->getIntelligentFallbackResponse($message, $context);
         }
 
@@ -73,6 +73,7 @@ class ReChartAIService
             if ($messageResponse->functionCall) {
                 $fn = $messageResponse->functionCall;
                 $parsed = json_decode($fn->arguments, true);
+
                 return $this->handleFunctionCall($fn->name, $parsed, $messageResponse->content ?? '');
             }
 
@@ -80,7 +81,8 @@ class ReChartAIService
             return $this->parseAIResponse($choice->content ?? '', $message, $context);
         } catch (\Throwable $e) {
             dd($e);
-            \Log::error('AI service error: ' . $e->getMessage());
+            \Log::error('AI service error: '.$e->getMessage());
+
             return $this->getIntelligentFallbackResponse($message, $context);
         }
     }
@@ -96,7 +98,7 @@ class ReChartAIService
             // 1) create_chart: build a complete Recharts configuration
             [
                 'name' => 'create_chart',
-                'description' => <<<DESC
+                'description' => <<<'DESC'
 Generate a fully-formed Recharts configuration object based on the user's natural-language request. If they dont provide data, use data from your knowledge base.
 The returned object must include:
   • chartType: which Recharts component to render (e.g. 'bar', 'line', 'pie', etc.)
@@ -114,32 +116,32 @@ DESC,
                             'enum' => [
                                 'bar', 'line', 'area', 'pie',
                                 'scatter', 'radar', 'radialBar',
-                                'funnel', 'treemap', 'composed'
+                                'funnel', 'treemap', 'composed',
                             ],
                             'description' => 'The Recharts component to use when rendering the chart.',
-                            'examples' => ['bar', 'pie']
+                            'examples' => ['bar', 'pie'],
                         ],
                         'title' => [
                             'type' => 'string',
                             'description' => 'Text to display above the chart as its title.',
-                            'examples' => ['Top 10 Programming Languages by Salary']
+                            'examples' => ['Top 10 Programming Languages by Salary'],
                         ],
                         'xAxis' => [
                             'type' => 'string',
                             'description' => 'Field name in each data object to use for the X-axis values.',
-                            'examples' => ['language', 'month']
+                            'examples' => ['language', 'month'],
                         ],
                         'yAxis' => [
                             'type' => 'string',
                             'description' => 'Field name in each data object to use for the Y-axis values.',
-                            'examples' => ['salary', 'revenue']
+                            'examples' => ['salary', 'revenue'],
                         ],
                         'series' => [
                             'type' => 'array',
                             'description' => 'Field name in each data object to use for the series values.',
                             'items' => [
                                 'type' => 'object',
-                                'additionalProperties' => true
+                                'additionalProperties' => true,
                             ],
                             'default' => [],
                             'minItems' => 1,
@@ -148,29 +150,29 @@ DESC,
                                     'dataKey' => 'salary',
                                 ],
                                 [
-                                    'dataKey' =>  'revenue',
-                                ]
-                            ]
+                                    'dataKey' => 'revenue',
+                                ],
+                            ],
                         ],
                         'data' => [
                             'type' => 'array',
                             'description' => 'An array of data objects, each one containing at least the keys specified in xAxis and yAxis.',
                             'items' => [
                                 'type' => 'object',
-                                'additionalProperties' => true
+                                'additionalProperties' => true,
                             ],
                             'default' => [],      // hints that an empty array is OK
                             'minItems' => 1,       // forces at least one item when possible
                             'examples' => [
                                 [
                                     'language' => 'JavaScript',
-                                    'salary' => 120000
+                                    'salary' => 120000,
                                 ],
                                 [
                                     'language' => 'Python',
-                                    'salary' => 115000
-                                ]
-                            ]
+                                    'salary' => 115000,
+                                ],
+                            ],
                         ],
                         'colors' => [
                             'type' => 'array',
@@ -180,18 +182,18 @@ A list of color strings (hex or CSS names).
 If you can’t determine the length, wait for data to be formed and then generate colors.
 DESC',
                             'items' => ['type' => 'string'],
-                            'examples' => ['#8884d8', '#82ca9d', '#ffc658']
+                            'examples' => ['#8884d8', '#82ca9d', '#ffc658'],
                         ],
                     ],
                     'required' => ['chartType', 'title', 'data', 'series'],
-                    'additionalProperties' => false
-                ]
+                    'additionalProperties' => false,
+                ],
             ],
 
             // 2) chart_not_feasible: explain why chart generation failed
             [
                 'name' => 'chart_not_feasible',
-                'description' => <<<DESC
+                'description' => <<<'DESC'
 Return when the user's request cannot be fulfilled as a valid Recharts configuration.
 Provide a single field:
   • reason: a concise, human-readable explanation of why generating the chart is not possible.
@@ -202,27 +204,28 @@ DESC,
                         'reason' => [
                             'type' => 'string',
                             'description' => 'Short explanation for why chart creation failed (e.g. unsupported data structure).',
-                            'examples' => ['Data contains nested objects not supported by Recharts.']
-                        ]
+                            'examples' => ['Data contains nested objects not supported by Recharts.'],
+                        ],
                     ],
                     'required' => ['reason'],
-                    'additionalProperties' => false
-                ]
+                    'additionalProperties' => false,
+                ],
             ],
         ];
     }
-
 
     /** Routes the function call to your handlers */
     protected function handleFunctionCall(string $name, array $args, string $aiContent): array
     {
         if ($name === 'create_chart') {
             $result = $this->createSampleChart($args['chartType'], $args);
+
             return array_merge($result, ['content' => $aiContent]);
         }
 
         if ($name === 'analyze_data') {
             $result = $this->analyzeUploadedData($args['data'] ?? []);
+
             return array_merge($result, ['content' => $aiContent]);
         }
 
@@ -235,7 +238,7 @@ DESC,
     {
         return [
             'content' => "I can't reach the AI service right now, but let me know how I can help!",
-            'suggestions' => ['Try again later', 'Create a sample chart', 'Help with chart types']
+            'suggestions' => ['Try again later', 'Create a sample chart', 'Help with chart types'],
         ];
     }
 
@@ -289,12 +292,12 @@ DESIGN PRINCIPLES:
 - When analyzing data, use the analyze_data function.
 - Always prioritize truthful data representation and journalistic integrity.';
 
-        if (!empty($context['data'])) {
+        if (! empty($context['data'])) {
             $sample = json_encode(array_slice($context['data'], 0, 5));
             $prompt .= "\nCURRENT DATA CONTEXT: {$sample}…";
         }
 
-        if (!empty($context['chartType'])) {
+        if (! empty($context['chartType'])) {
             $prompt .= "\nCURRENT CHART TYPE: {$context['chartType']}";
         }
 
@@ -311,7 +314,7 @@ DESIGN PRINCIPLES:
         // Keep generating until we hit the required count
         while (count($colors) < $requiredCount) {
             $new = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
-            if (!in_array($new, $colors, true)) {
+            if (! in_array($new, $colors, true)) {
                 $colors[] = $new;
             }
         }
@@ -341,8 +344,8 @@ DESIGN PRINCIPLES:
                 'Customize the chart colors',
                 'Change the chart title',
                 'Add your own data',
-                'Export for publication'
-            ]
+                'Export for publication',
+            ],
         ];
     }
 
@@ -353,14 +356,15 @@ DESIGN PRINCIPLES:
             return [
                 'content' => 'No data available for analysis.',
                 'dataInsights' => ['patterns' => [], 'outliers' => [], 'recommendations' => []],
-                'chartRecommendation' => ['type' => 'bar', 'reasoning' => 'Upload data to analyze.']
+                'chartRecommendation' => ['type' => 'bar', 'reasoning' => 'Upload data to analyze.'],
             ];
         }
+
         // … replicate your TS logic for insights, recommendations, suggestedChartTypes …
         return [
-            'dataInsights' => ['patterns' => [],/*…*/],
-            'recommendations' => [/*…*/],
-            'chartRecommendation' => ['type' => 'line', 'reasoning' => '…']
+            'dataInsights' => ['patterns' => []/* … */],
+            'recommendations' => [/* … */],
+            'chartRecommendation' => ['type' => 'line', 'reasoning' => '…'],
         ];
     }
 

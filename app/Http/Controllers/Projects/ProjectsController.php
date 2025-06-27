@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Projects;
 
+use App\Actions\CreateChart;
+use App\Actions\CreateDataset;
 use App\Actions\Folder\GetFolders;
 use App\Actions\Project\CreateProject;
 use App\Actions\Project\DeleteProject;
 use App\Actions\Project\GetProjects;
 use App\Actions\Project\UpdateProject;
+use App\Data\ChartData;
+use App\Data\CreateProjectData;
+use App\Data\DatasetData;
+use App\Enums\DatasetSource;
 use App\Exceptions\PackageLimitExceededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Projects\CreateProjectRequest;
@@ -28,10 +34,32 @@ class ProjectsController extends Controller
         ]);
     }
 
-    public function store(CreateProjectRequest $request): RedirectResponse
+    public function store(CreateProjectRequest $request)
     {
         try {
-            CreateProject::handle(Auth::user(), $request->validated());
+            $data = $request->validated();
+            $user = Auth::user();
+            $project = CreateProject::handle(Auth::user(), $data);
+            if (isset($data['chart'])) {
+                CreateChart::handle($project, CreateProjectData::from([
+                    'chart' => ChartData::from([
+                        ...$data['chart'],
+                        'user_id' => $user->id,
+                        'team_id' => $user->current_team_id,
+                    ]),
+                ]));
+            }
+
+            if (isset($data['dataset'])) {
+                CreateDataset::handle($project, CreateProjectData::from([
+                    'dataset' => DatasetData::from([
+                        ...$data['dataset'],
+                        'user_id' => $user->id,
+                        'team_id' => $user->current_team_id,
+                        'source' => DatasetSource::AI_ASSISTANT,
+                    ]),
+                ]));
+            }
 
             return back()->with('success', 'Project Created Successfully');
         } catch (PackageLimitExceededException $exception) {

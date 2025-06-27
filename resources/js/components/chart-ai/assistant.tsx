@@ -1,25 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import {
-    Bot,
-    Send,
-    BarChart3,
-    Zap,
-    Loader2,
-    Code,
-    Download,
-    FileImage,
-    Edit
-} from 'lucide-react';
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
+import { motion } from 'framer-motion';
+import { BarChart3, Bot, Code, Download, Edit, FileImage, Loader2, Send, Zap } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 // import { EmbedCodeModal } from '../components/EmbedCodeModal';
-import { ChartConfig } from '@/types';
-import { useChartExport } from '@/hooks/use-chart-export';
-import { toast } from 'sonner';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useInitials } from '@/hooks/use-initials';
-import axios from 'axios';
 import { Button } from '@/components/ui/button';
+import { useChartExport } from '@/hooks/use-chart-export';
+import { useInitials } from '@/hooks/use-initials';
+import { ChartConfig } from '@/types';
+import { router } from '@inertiajs/react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 interface Message {
     id: string;
@@ -45,15 +36,16 @@ export const Assistant: React.FC = () => {
         {
             id: '1',
             type: 'assistant',
-            content: "Hello! I'm your AI assistant for data visualization. I can help you create charts from descriptions, analyze data patterns, and provide professional guidance. Try saying something like 'Create a bar chart showing monthly sales data' or upload a CSV file for analysis!",
+            content:
+                "Hello! I'm your AI assistant for data visualization. I can help you create charts from descriptions, analyze data patterns, and provide professional guidance. Try saying something like 'Create a bar chart showing monthly sales data' or upload a CSV file for analysis!",
             timestamp: new Date(),
             suggestions: [
-                "Create a line chart showing website traffic over time",
-                "Make a pie chart of market share by company",
-                "Analyze my CSV data for insights",
-                "Show me best practices for accessible charts"
-            ]
-        }
+                'Create a line chart showing website traffic over time',
+                'Make a pie chart of market share by company',
+                'Analyze my CSV data for insights',
+                'Show me best practices for accessible charts',
+            ],
+        },
     ]);
     const [inputValue, setInputValue] = useState('create a bar chart with some sample data');
     const [isTyping, setIsTyping] = useState(false);
@@ -73,19 +65,19 @@ export const Assistant: React.FC = () => {
     }, [messages]);
 
     interface AIResponse {
-        content: string
-        suggestions?: string[]
+        content: string;
+        suggestions?: string[];
         chartRecommendation?: {
-            type: 'bar' | 'line' | 'area' | 'pie' | 'scatter' | 'radar' | 'radialBar' | 'funnel' | 'treemap' | 'composed'
-            reasoning: string
-        }
+            type: 'bar' | 'line' | 'area' | 'pie' | 'scatter' | 'radar' | 'radialBar' | 'funnel' | 'treemap' | 'composed';
+            reasoning: string;
+        };
         dataInsights?: {
-            patterns: string[]
-            outliers: string[]
-            recommendations: string[]
-        }
-        chartConfig?: any
-        generatedData?: any[]
+            patterns: string[];
+            outliers: string[];
+            recommendations: string[];
+        };
+        chartConfig?: any;
+        generatedData?: any[];
     }
 
     const handleSendMessage = async (messageText?: string) => {
@@ -96,18 +88,19 @@ export const Assistant: React.FC = () => {
             id: Date.now().toString(),
             type: 'user',
             content: text,
-            timestamp: new Date()
+            timestamp: new Date(),
         };
 
-        setMessages(prev => [...prev, userMessage]);
+        setMessages((prev) => [...prev, userMessage]);
         setInputValue('');
         setIsTyping(true);
 
         try {
-
-            const response = (await axios.post(route('chart-ai.conversation'), {
-               message: text,
-           })).data as AIResponse;
+            const response = (
+                await axios.post(route('chart-ai.conversation'), {
+                    message: text,
+                })
+            ).data as AIResponse;
 
             // const response = getFallbackResponse(text)
 
@@ -120,18 +113,18 @@ export const Assistant: React.FC = () => {
                 chartRecommendation: response.chartRecommendation,
                 dataInsights: response.dataInsights,
                 chartConfig: response.chartConfig,
-                generatedData: response.generatedData
+                generatedData: response.generatedData,
             };
 
             console.log('aiMessageaiMessageaiMessage');
             console.log(aiMessage);
 
-            setMessages(prev => [...prev, aiMessage]);
+            setMessages((prev) => [...prev, aiMessage]);
 
             // If a chart was generated, show success message
             if (response.chartConfig) {
                 toast('Successful', {
-                    description: 'Chart created successfully! You can customize it further or export it.'
+                    description: 'Chart created successfully! You can customize it further or export it.',
                 });
             }
         } catch (error) {
@@ -142,221 +135,197 @@ export const Assistant: React.FC = () => {
         }
     };
 
-    const getFallbackResponse = (message: string, context?: any): AIResponse =>  {
-        const lowerMessage = message.toLowerCase()
+    const getFallbackResponse = (message: string, context?: any): AIResponse => {
+        const lowerMessage = message.toLowerCase();
 
         // Chart creation from descriptions
         if (lowerMessage.includes('create') || lowerMessage.includes('make') || lowerMessage.includes('build')) {
             if (lowerMessage.includes('bar') || lowerMessage.includes('column')) {
-                return createSampleChart('bar', message)
+                return createSampleChart('bar', message);
             }
             if (lowerMessage.includes('line') || lowerMessage.includes('trend')) {
-                return createSampleChart('line', message)
+                return createSampleChart('line', message);
             }
             if (lowerMessage.includes('area') || lowerMessage.includes('area')) {
-                return createSampleChart('area', message)
+                return createSampleChart('area', message);
             }
             if (lowerMessage.includes('pie') || lowerMessage.includes('donut')) {
-                return createSampleChart('pie', message)
+                return createSampleChart('pie', message);
             }
             if (lowerMessage.includes('scatter') || lowerMessage.includes('correlation')) {
-                return createSampleChart('scatter', message)
+                return createSampleChart('scatter', message);
             }
             if (lowerMessage.includes('area') || lowerMessage.includes('filled')) {
-                return createSampleChart('area', message)
+                return createSampleChart('area', message);
             }
             if (lowerMessage.includes('radar') || lowerMessage.includes('spider')) {
-                return createSampleChart('radar', message)
+                return createSampleChart('radar', message);
             }
             if (lowerMessage.includes('radial') || lowerMessage.includes('circular')) {
-                return createSampleChart('radialBar', message)
+                return createSampleChart('radialBar', message);
             }
             if (lowerMessage.includes('funnel') || lowerMessage.includes('conversion')) {
-                return createSampleChart('funnel', message)
+                return createSampleChart('funnel', message);
             }
             if (lowerMessage.includes('treemap') || lowerMessage.includes('hierarchy')) {
-                return createSampleChart('treemap', message)
+                return createSampleChart('treemap', message);
             }
             if (lowerMessage.includes('composed') || lowerMessage.includes('combined') || lowerMessage.includes('mixed')) {
-                return createSampleChart('composed', message)
+                return createSampleChart('composed', message);
             }
 
             // Default to bar chart for general creation requests
-            return createSampleChart('bar', message)
+            return createSampleChart('bar', message);
         }
 
         // Default response
         return {
-            content: "I'm here to help you create effective data visualizations! I can create charts from descriptions and professional guidance. What would you like to work on?",
+            content:
+                "I'm here to help you create effective data visualizations! I can create charts from descriptions and professional guidance. What would you like to work on?",
             suggestions: [
-                "Create a bar chart showing quarterly sales",
-                "Make a line chart of website traffic",
-                "Build a area chart for monthly expenses",
-            ]
-        }
-    }
+                'Create a bar chart showing quarterly sales',
+                'Make a line chart of website traffic',
+                'Build a area chart for monthly expenses',
+            ],
+        };
+    };
 
     const createSampleChart = (type: string, message: string): AIResponse => {
         const chartConfigs = {
             bar: {
-                title: "Quarterly Sales Performance",
+                title: 'Quarterly Sales Performance',
                 data: [
-                    { quarter: "Q1 2024", sales: 45000, target: 40000 },
-                    { quarter: "Q2 2024", sales: 52000, target: 48000 },
-                    { quarter: "Q3 2024", sales: 61000, target: 55000 },
-                    { quarter: "Q4 2024", sales: 58000, target: 60000 }
+                    { quarter: 'Q1 2024', sales: 45000, target: 40000 },
+                    { quarter: 'Q2 2024', sales: 52000, target: 48000 },
+                    { quarter: 'Q3 2024', sales: 61000, target: 55000 },
+                    { quarter: 'Q4 2024', sales: 58000, target: 60000 },
                 ],
-                xAxis: "quarter",
-                yAxis: "sales",
-                series: [
-                    { dataKey: "sales" },
-                    { dataKey: "target" }
-                ]
+                xAxis: 'quarter',
+                yAxis: 'sales',
+                series: [{ dataKey: 'sales' }, { dataKey: 'target' }],
             },
             line: {
-                title: "Website Traffic Over Time",
+                title: 'Website Traffic Over Time',
                 data: [
-                    { month: "Jan", visitors: 12500, pageviews: 45000 },
-                    { month: "Feb", visitors: 13200, pageviews: 48000 },
-                    { month: "Mar", visitors: 15800, pageviews: 52000 },
-                    { month: "Apr", visitors: 14600, pageviews: 49000 },
-                    { month: "May", visitors: 16900, pageviews: 58000 },
-                    { month: "Jun", visitors: 18200, pageviews: 62000 }
+                    { month: 'Jan', visitors: 12500, pageviews: 45000 },
+                    { month: 'Feb', visitors: 13200, pageviews: 48000 },
+                    { month: 'Mar', visitors: 15800, pageviews: 52000 },
+                    { month: 'Apr', visitors: 14600, pageviews: 49000 },
+                    { month: 'May', visitors: 16900, pageviews: 58000 },
+                    { month: 'Jun', visitors: 18200, pageviews: 62000 },
                 ],
-                xAxis: "month",
-                yAxis: "visitors",
-                series: [
-                    { dataKey: "visitors" },
-                    { dataKey: "pageviews" }
-                ]
+                xAxis: 'month',
+                yAxis: 'visitors',
+                series: [{ dataKey: 'visitors' }, { dataKey: 'pageviews' }],
             },
             pie: {
-                title: "Market Share by Company",
+                title: 'Market Share by Company',
                 data: [
-                    { company: "Company A", share: 35 },
-                    { company: "Company B", share: 28 },
-                    { company: "Company C", share: 22 },
-                    { company: "Company D", share: 15 }
+                    { company: 'Company A', share: 35 },
+                    { company: 'Company B', share: 28 },
+                    { company: 'Company C', share: 22 },
+                    { company: 'Company D', share: 15 },
                 ],
-                xAxis: "company",
-                yAxis: "share",
-                series: [
-                    { dataKey: "share" }
-                ]
+                xAxis: 'company',
+                yAxis: 'share',
+                series: [{ dataKey: 'share' }],
             },
             area: {
-                title: "Revenue Growth",
+                title: 'Revenue Growth',
                 data: [
-                    { year: "2020", revenue: 120000 },
-                    { year: "2021", revenue: 145000 },
-                    { year: "2022", revenue: 168000 },
-                    { year: "2023", revenue: 195000 },
-                    { year: "2024", revenue: 220000 }
+                    { year: '2020', revenue: 120000 },
+                    { year: '2021', revenue: 145000 },
+                    { year: '2022', revenue: 168000 },
+                    { year: '2023', revenue: 195000 },
+                    { year: '2024', revenue: 220000 },
                 ],
-                xAxis: "year",
-                yAxis: "revenue",
-                series: [
-                    { dataKey: "revenue" }
-                ]
+                xAxis: 'year',
+                yAxis: 'revenue',
+                series: [{ dataKey: 'revenue' }],
             },
             scatter: {
-                title: "Price vs. Sales Correlation",
+                title: 'Price vs. Sales Correlation',
                 data: [
                     { price: 25, sales: 450 },
                     { price: 30, sales: 380 },
                     { price: 35, sales: 320 },
                     { price: 40, sales: 280 },
                     { price: 45, sales: 240 },
-                    { price: 50, sales: 200 }
+                    { price: 50, sales: 200 },
                 ],
-                xAxis: "price",
-                yAxis: "sales",
-                series: [
-                    { dataKey: "sales" }
-                ]
+                xAxis: 'price',
+                yAxis: 'sales',
+                series: [{ dataKey: 'sales' }],
             },
             radar: {
-                title: "Product Feature Comparison",
+                title: 'Product Feature Comparison',
                 data: [
-                    { feature: "Quality",    productA: 85, productB: 90, productC: 78 },
-                    { feature: "Price",      productA: 65, productB: 50, productC: 95 },
-                    { feature: "Durability", productA: 90, productB: 85, productC: 70 },
-                    { feature: "Design",     productA: 75, productB: 95, productC: 80 },
-                    { feature: "Support",    productA: 80, productB: 75, productC: 65 }
+                    { feature: 'Quality', productA: 85, productB: 90, productC: 78 },
+                    { feature: 'Price', productA: 65, productB: 50, productC: 95 },
+                    { feature: 'Durability', productA: 90, productB: 85, productC: 70 },
+                    { feature: 'Design', productA: 75, productB: 95, productC: 80 },
+                    { feature: 'Support', productA: 80, productB: 75, productC: 65 },
                 ],
-                xAxis: "feature",
-                yAxis: "productA",
-                series: [
-                    { dataKey: "productA" },
-                    { dataKey: "productB" },
-                    { dataKey: "productC" }
-                ]
+                xAxis: 'feature',
+                yAxis: 'productA',
+                series: [{ dataKey: 'productA' }, { dataKey: 'productB' }, { dataKey: 'productC' }],
             },
             radialBar: {
-                title: "Goal Completion Rates",
+                title: 'Goal Completion Rates',
                 data: [
-                    { name: "Sales",       value: 85 },
-                    { name: "Marketing",   value: 72 },
-                    { name: "Development", value: 90 },
-                    { name: "Support",     value: 68 }
+                    { name: 'Sales', value: 85 },
+                    { name: 'Marketing', value: 72 },
+                    { name: 'Development', value: 90 },
+                    { name: 'Support', value: 68 },
                 ],
-                xAxis: "name",
-                yAxis: "value",
-                series: [
-                    { dataKey: "value" }
-                ]
+                xAxis: 'name',
+                yAxis: 'value',
+                series: [{ dataKey: 'value' }],
             },
             funnel: {
-                title: "Sales Conversion Funnel",
+                title: 'Sales Conversion Funnel',
                 data: [
-                    { stage: "Visitors",  value: 5000 },
-                    { stage: "Leads",     value: 3500 },
-                    { stage: "Qualified", value: 2200 },
-                    { stage: "Proposals", value: 1200 },
-                    { stage: "Closed",    value: 600 }
+                    { stage: 'Visitors', value: 5000 },
+                    { stage: 'Leads', value: 3500 },
+                    { stage: 'Qualified', value: 2200 },
+                    { stage: 'Proposals', value: 1200 },
+                    { stage: 'Closed', value: 600 },
                 ],
-                xAxis: "stage",
-                yAxis: "value",
-                series: [
-                    { dataKey: "value" }
-                ]
+                xAxis: 'stage',
+                yAxis: 'value',
+                series: [{ dataKey: 'value' }],
             },
             treemap: {
-                title: "Budget Allocation by Department",
+                title: 'Budget Allocation by Department',
                 data: [
-                    { department: "Marketing",  budget: 250000 },
-                    { department: "R&D",        budget: 350000 },
-                    { department: "Operations", budget: 200000 },
-                    { department: "Sales",      budget: 300000 },
-                    { department: "IT",         budget: 180000 },
-                    { department: "HR",         budget: 120000 }
+                    { department: 'Marketing', budget: 250000 },
+                    { department: 'R&D', budget: 350000 },
+                    { department: 'Operations', budget: 200000 },
+                    { department: 'Sales', budget: 300000 },
+                    { department: 'IT', budget: 180000 },
+                    { department: 'HR', budget: 120000 },
                 ],
-                xAxis: "department",
-                yAxis: "budget",
-                series: [
-                    { dataKey: "budget" }
-                ]
+                xAxis: 'department',
+                yAxis: 'budget',
+                series: [{ dataKey: 'budget' }],
             },
             composed: {
-                title: "Sales Performance vs Target",
+                title: 'Sales Performance vs Target',
                 data: [
-                    { month: "Jan", sales: 45000, target: 40000 },
-                    { month: "Feb", sales: 52000, target: 48000 },
-                    { month: "Mar", sales: 61000, target: 55000 },
-                    { month: "Apr", sales: 58000, target: 60000 },
-                    { month: "May", sales: 64000, target: 62000 },
-                    { month: "Jun", sales: 68000, target: 65000 }
+                    { month: 'Jan', sales: 45000, target: 40000 },
+                    { month: 'Feb', sales: 52000, target: 48000 },
+                    { month: 'Mar', sales: 61000, target: 55000 },
+                    { month: 'Apr', sales: 58000, target: 60000 },
+                    { month: 'May', sales: 64000, target: 62000 },
+                    { month: 'Jun', sales: 68000, target: 65000 },
                 ],
-                xAxis: "month",
-                yAxis: "sales",
-                series: [
-                    { dataKey: "sales" },
-                    { dataKey: "target" }
-                ]
-            }
+                xAxis: 'month',
+                yAxis: 'sales',
+                series: [{ dataKey: 'sales' }, { dataKey: 'target' }],
+            },
         };
 
-        const config = chartConfigs[type as keyof typeof chartConfigs]
+        const config = chartConfigs[type as keyof typeof chartConfigs];
 
         return {
             content: `I've created a ${type} chart for you! This visualization demonstrates how ${type} charts can effectively display your data. You can customize the colors, labels, and styling to match your needs.`,
@@ -370,18 +339,12 @@ export const Assistant: React.FC = () => {
                 showGrid: true,
                 showLegend: true,
                 width: 800,
-                height: 400
+                height: 400,
             },
             generatedData: config.data,
-            suggestions: [
-                'Customize the chart colors',
-                'Change the chart title',
-                'Add your own data',
-                'Export for publication'
-            ]
-        }
-    }
-
+            suggestions: ['Customize the chart colors', 'Change the chart title', 'Add your own data', 'Export for publication'],
+        };
+    };
 
     const handleSuggestionClick = (suggestion: string) => {
         setInputValue(suggestion);
@@ -408,46 +371,35 @@ export const Assistant: React.FC = () => {
     };
 
     const handleEditInProject = async (config: ChartConfig, data: any[]) => {
-        // In development mode, we don't need to check for user authentication
-        try {
-            // Create a new project with the chart data
-            const newProject = await createProject({
-                name: config.title || 'AI Generated Chart',
-                description: 'Created from AI Assistant',
-                createdBy: user?.id || 'dev-user-id',
-                collaborators: [user?.id || 'dev-user-id'],
-                charts: [{
-                    id: Date.now().toString(),
-                    name: config.title || 'AI Generated Chart',
-                    type: config.type,
-                    config: config,
-                    data: data,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                }],
-                datasets: [{
-                    id: Date.now().toString(),
-                    name: `${config.title || 'AI Generated'} Data`,
-                    data: data,
-                    columns: Object.keys(data[0] || {}),
-                    source: 'ai',
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                }],
-                tags: ['ai-generated'],
-                status: 'draft' as const
-            });
+        const payload = {
+            name: config.title,
+            description: 'Created from AI Assistant.',
+            chart: {
+                title: config.title,
+                type: config.type,
+                description: 'Created from AI Assistant.',
+                config: config,
+                data: data,
+            },
+            dataset: {
+                name: config.title,
+                data: data,
+                columns: Object.keys(data[0]),
+            },
+        };
 
-            toast.success('Project created! Redirecting to editor...');
-
-            // Navigate to the new project
-            if (newProject && newProject.id) {
-                // navigate(`/projects/${newProject.id}`);
-            }
-        } catch (error) {
-            console.error('Error creating project:', error);
-            toast.error('Failed to create project. Please try again.');
-        }
+        router.post(route('project.store'), payload, {
+            only: ['flash'],
+            onSuccess: () => {
+                toast.success('🎉 Project Deployed!', {
+                    id: 'create-project',
+                    description: `Project "${config.title}" has been successfully set up with its chart and dataset. Dive into your insights now. 📊`
+                });
+            },
+            onError: (errors) => {
+                console.error('Validation failed:', errors);
+            },
+        });
     };
 
     const getInitials = useInitials();
@@ -470,7 +422,7 @@ export const Assistant: React.FC = () => {
                                     {message.type === 'user' ? (
                                         <AvatarFallback className="bg-primary text-foreground rounded-lg">{getInitials('aamish')}</AvatarFallback>
                                     ) : (
-                                        <AvatarFallback className="text-foreground rounded-lg bg-gradient-to-r bg-gradient-from bg-gradient-to">
+                                        <AvatarFallback className="text-foreground bg-gradient-from bg-gradient-to rounded-lg bg-gradient-to-r">
                                             <Bot className="h-4 w-4" />
                                         </AvatarFallback>
                                     )}
@@ -490,9 +442,7 @@ export const Assistant: React.FC = () => {
                                 <div className={`min-w-0 flex-1 ${message.type === 'user' ? 'text-right' : ''}`}>
                                     <div
                                         className={`inline-block rounded-2xl p-4 ${
-                                            message.type === 'user'
-                                                ? 'bg-primary text-white'
-                                                : 'bg-secondary dark:bg-card text-foreground'
+                                            message.type === 'user' ? 'bg-primary text-white' : 'bg-secondary dark:bg-card text-foreground'
                                         }`}
                                     >
                                         <p className="text-sm leading-relaxed whitespace-pre-line">{message.content}</p>
@@ -577,7 +527,10 @@ export const Assistant: React.FC = () => {
                                     )}
 
                                     <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {message.timestamp.toLocaleTimeString([], {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })}
                                     </p>
                                 </div>
                             </div>

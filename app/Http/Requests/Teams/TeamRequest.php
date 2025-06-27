@@ -22,6 +22,8 @@ class TeamRequest extends FormRequest
      */
     public function rules(): array
     {
+        dd($this->all());
+
         return [
             'name' => ['required', 'string'],
         ];
