@@ -46,7 +46,7 @@ class Project extends TeamBootModel
         return $this->belongsTo(Team::class);
     }
 
-    public function dataSets(): HasMany
+    public function datasets(): HasMany
     {
         return $this->hasMany(Dataset::class);
     }

@@ -10,6 +10,6 @@ class CreateDataset
 {
     public static function handle(Project $project, CreateProjectData $data): Dataset
     {
-        return $project->dataSets()->create($data->dataset->toArray());
+        return $project->datasets()->create($data->dataset->toArray());
     }
 }
