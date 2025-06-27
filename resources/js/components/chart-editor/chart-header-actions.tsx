@@ -13,9 +13,10 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useChartExport } from '@/hooks/use-chart-export';
+import EmbedDialog from '@/components/chart-editor/embed-dialog';
 
 
-export function ChartHeaderActions({ config, onImportSuccess } ) {
+export function ChartHeaderActions({ config, data, columns, onImportSuccess } ) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { importCSV, isImporting } = useDataImport();
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,10 +101,7 @@ export function ChartHeaderActions({ config, onImportSuccess } ) {
                                     <Save />
                                     <span>Save</span>
                                 </Button>
-                                <Button variant={'ghost'} className="border">
-                                    <Share2 />
-                                    <span>Share</span>
-                                </Button>
+                                <EmbedDialog config={config} data={data} columns={columns} />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>
