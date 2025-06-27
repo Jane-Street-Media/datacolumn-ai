@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { Activity, CrownIcon, Mail, MailIcon, Search, ShieldIcon, Users } from 'lucide-react';
+import { CrownIcon, Mail, MailIcon, Search, ShieldIcon, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,26 +24,26 @@ export default function Team({ roles, statistics, teamUsers, teamInvitations }) 
     const stats = [
         {
             name: 'Total Members',
-            value: statistics?.totalMembersStats?.value,
-            change: statistics?.totalMembersStats?.percentage_change,
+            value: statistics.totalMembersStats?.value,
+            change: statistics.totalMembersStats?.percentage_change,
             icon: Users,
         },
         {
             name: 'Active Members',
-            value: statistics?.activeMembersStats?.value,
-            change: statistics?.activeMembersStats?.percentage_change,
+            value: statistics.activeMembersStats?.value,
+            change: statistics.activeMembersStats?.percentage_change,
             icon: ShieldIcon,
         },
         {
             name: 'Admins',
-            value: statistics?.adminStats?.value,
-            change: statistics?.adminStats?.percentage_change,
+            value: statistics.adminStats?.value,
+            change: statistics.adminStats?.percentage_change,
             icon: CrownIcon,
         },
         {
             name: 'Pending',
-            value: statistics?.pendingMemberStats?.value,
-            change: statistics?.pendingMemberStats?.percentage_change,
+            value: statistics.pendingMemberStats?.value,
+            change: statistics.pendingMemberStats?.percentage_change,
             icon: MailIcon,
         },
         // {
@@ -92,18 +92,7 @@ export default function Team({ roles, statistics, teamUsers, teamInvitations }) 
 
                 <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
-                        <Deferred
-                            data="statistics"
-                            fallback={
-                                <Card>
-                                    <CardContent>
-                                        <LoadingSkeleton />
-                                    </CardContent>
-                                </Card>
-                            }
-                        >
-                            <StatsCard displayChange={false} key={index} stat={stat} index={index} />
-                        </Deferred>
+                        <StatsCard displayChange={false} key={index} stat={stat} index={index} />
                     ))}
                 </div>
 

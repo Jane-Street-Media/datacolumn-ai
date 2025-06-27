@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
-import { BarChart3, FileText, Users } from 'lucide-react';
+import { BarChart3, FileText, Loader2, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -22,20 +22,20 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
     const stats = [
         {
             name: 'Total Projects',
-            value: statistics?.projectStats?.value,
-            change: statistics?.projectStats?.percentage_change,
+            value: statistics.projectStats?.value,
+            change: statistics.projectStats?.percentage_change,
             icon: FileText,
         },
         {
             name: 'Active Charts',
-            value: statistics?.chartStats?.value,
-            change: statistics?.chartStats?.percentage_change,
+            value: statistics.chartStats?.value,
+            change: statistics.chartStats?.percentage_change,
             icon: BarChart3,
         },
         {
             name: 'Team Members',
-            value: statistics?.teamMemberStats?.value,
-            change: statistics?.teamMemberStats?.percentage_change,
+            value: statistics.teamMemberStats?.value,
+            change: statistics.teamMemberStats?.percentage_change,
             icon: Users,
         },
         // {
@@ -64,18 +64,7 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
-                        <Deferred
-                            data="statistics"
-                            fallback={
-                                <Card>
-                                    <CardContent>
-                                        <LoadingSkeleton />
-                                    </CardContent>
-                                </Card>
-                            }
-                        >
-                            <StatsCard key={index} stat={stat} index={index} />
-                        </Deferred>
+                        <StatsCard key={index} stat={stat} index={index} />
                     ))}
                 </div>
 
@@ -100,7 +89,7 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
                             fallback={
                                 <Card>
                                     <CardContent>
-                                        <LoadingSkeleton />
+                                        <Loader2 className="w-10 h-10 animate-spin text-center"/>
                                     </CardContent>
                                 </Card>
                             }
