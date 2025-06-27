@@ -19,10 +19,8 @@ class ProjectChartsController extends Controller
         ]);
     }
 
-    public function edit($project, $chart): Response
+    public function edit(Project $project, Chart $chart): Response
     {
-        $chart = new Chart(['id' => $chart]);
-
         return Inertia::render('charts/chart-editor', [
             'chart' => $chart,
         ]);

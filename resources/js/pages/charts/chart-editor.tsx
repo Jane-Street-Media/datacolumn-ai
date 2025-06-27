@@ -55,7 +55,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function ChartEditor() {
+export default function ChartEditor({ chart }) {
     const xAxisConfig = useRef({
         allowDuplicatedCategory: true,
         allowDecimals: false,
@@ -67,7 +67,7 @@ export default function ChartEditor() {
         padding: { left: 0, right: 0 },
         allowDataOverflow: false,
         reversed: false,
-        dataKey: "month",
+        dataKey: 'month',
         label: 'Ullo ka patthasaxs',
         tickLine: true,
         axisLine: true,
@@ -81,7 +81,7 @@ export default function ChartEditor() {
         width: 50,
         height: 1,
         mirror: false,
-        type: "number",
+        type: 'number',
         padding: { top: 20, bottom: 20 },
         allowDataOverflow: true,
         reversed: false,
@@ -116,7 +116,7 @@ export default function ChartEditor() {
         paddingOption: 'default',
         customPaddingValue: 20,
         theme: 'light',
-        backgroundColor: 'default'
+        backgroundColor: 'default',
     });
 
     const handleConfigChange = (newConfig: CustomChartConfig) => {
@@ -130,30 +130,19 @@ export default function ChartEditor() {
         [key: string]: string | number;
     }
 
-    const [data, setData] = useState<DataPoint[]>([
-        { month: 'Jan', sales: 4000, profit: 2400 },
-        { month: 'Feb', sales: 3000, profit: 1398 },
-        { month: 'Mar', sales: 2000, profit: 9800 },
-        { month: 'Apr', sales: 2780, profit: 3908 },
-        { month: 'May', sales: 1890, profit: 4800 },
-        { month: 'Jun', sales: 2390, profit: 3800 },
-    ]);
+    const [data, setData] = useState<DataPoint[]>(chart.data);
     // setData(sampleData);
-    const [columns, setColumns] = useState<string[]>([
-        'month',
-        'sales',
-        'profit'
-    ]);
+    const [columns, setColumns] = useState<string[]>(Object.keys(chart.data[0]));
 
     const onImportSuccess = (result) => {
         setData(result.data);
         setColumns(result.columns);
-        setConfig(prev => ({
+        setConfig((prev) => ({
             ...prev,
             xAxis: result.columns[0] || '',
             yAxis: result.columns[1] || '',
         }));
-    }
+    };
 
     const handleDataChange = (newData: DataPoint[]) => {
         setData(newData);
@@ -161,7 +150,7 @@ export default function ChartEditor() {
 
     const handleAddRow = () => {
         const newRow: DataPoint = {};
-        columns.forEach(col => {
+        columns.forEach((col) => {
             newRow[col] = '';
         });
         setData([...data, newRow]);
@@ -196,12 +185,7 @@ export default function ChartEditor() {
                                 </div>
                             </TabsContent>
                             <TabsContent value="data">
-                                <DataTable
-                                    data={data}
-                                    columns={columns}
-                                    onDataChange={handleDataChange}
-                                    onAddRow={handleAddRow}
-                                />
+                                <DataTable data={data} columns={columns} onDataChange={handleDataChange} onAddRow={handleAddRow} />
                             </TabsContent>
                             <TabsContent value="preview">
                                 <ChartRenderer data={data} config={config} />
