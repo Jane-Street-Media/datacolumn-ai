@@ -33,6 +33,7 @@ import { useRef, useState } from 'react';
 import { ChartControls } from '@/components/chart-editor/chartControls';
 import { CustomChartConfig } from '@/pages/charts/types';
 import { ChartHeaderActions } from '@/components/chart-editor/chart-header-actions';
+import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
 
 export const description = "An area chart with axes"
 const chartData = [
@@ -144,6 +145,22 @@ export default function ChartEditor() {
         console.log(config);
     };
 
+    interface DataPoint {
+        [key: string]: string | number;
+    }
+
+    const [data, setData] = useState<DataPoint[]>([]);
+    const sampleData = [
+        { month: 'Jan', sales: 4000, profit: 2400 },
+        { month: 'Feb', sales: 3000, profit: 1398 },
+        { month: 'Mar', sales: 2000, profit: 9800 },
+        { month: 'Apr', sales: 2780, profit: 3908 },
+        { month: 'May', sales: 1890, profit: 4800 },
+        { month: 'Jun', sales: 2390, profit: 3800 },
+    ];
+
+    setData(sampleData);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -162,41 +179,7 @@ export default function ChartEditor() {
                                 <div className="flex-1 overflow-hidden">
                                     <div className="h-full flex flex-col lg:grid lg:grid-cols-3 lg:gap-6 p-4 sm:p-6">
                                         <div className="lg:col-span-2 order-2 lg:order-1 mb-6 lg:mb-0">
-                                            <ChartContainer config={chartConfig}>
-                                                <CardHeader>
-                                                    <CardTitle>Area Chart</CardTitle>
-                                                    <CardDescription>Showing total visitors for the last 6 months</CardDescription>
-                                                </CardHeader>
-                                                <AreaChart
-                                                    accessibilityLayer
-                                                    data={chartData}
-                                                    margin={{
-                                                        left: -20,
-                                                        right: 12,
-                                                    }}
-                                                >
-                                                    <CartesianGrid vertical={false} horizontal={true} />
-                                                    <XAxis {...xAxisConfig.current} tickFormatter={(value) => String(value).slice(0, 3)} />
-                                                    <YAxis {...yAxisConfig.current} />
-                                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                                                    <Area
-                                                        dataKey="mobile"
-                                                        type="natural"
-                                                        fill="var(--color-mobile)"
-                                                        fillOpacity={0.4}
-                                                        stroke="var(--color-mobile)"
-                                                        stackId="a"
-                                                    />
-                                                    <Area
-                                                        dataKey="desktop"
-                                                        type="natural"
-                                                        fill="var(--color-desktop)"
-                                                        fillOpacity={0.4}
-                                                        stroke="var(--color-desktop)"
-                                                        stackId="a"
-                                                    />
-                                                </AreaChart>
-                                            </ChartContainer>
+                                            <ChartRenderer data={data} config={config} />
                                         </div>
                                         <div className="order-1 lg:order-2 flex-1 lg:flex-none">
                                             <div className="h-full">

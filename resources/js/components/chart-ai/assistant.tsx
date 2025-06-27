@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
 import axios from 'axios';
+import { Button } from '@/components/ui/button';
 
 interface Message {
     id: string;
@@ -503,50 +504,47 @@ export const Assistant: React.FC = () => {
                                             <ChartRenderer data={message.generatedData} config={message.chartConfig} />
 
                                             {/* Chart Actions */}
-                                            {/*<div className="mt-4 flex items-center justify-center space-x-3">*/}
-                                            {/*    <button*/}
-                                            {/*        onClick={() => handleEditInProject(message.chartConfig!, message.generatedData!)}*/}
-                                            {/*        className="flex items-center space-x-2 rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors duration-200 hover:bg-blue-700"*/}
-                                            {/*    >*/}
-                                            {/*        <Edit className="h-4 w-4" />*/}
-                                            {/*        <span>Edit in Project</span>*/}
-                                            {/*    </button>*/}
-                                            {/*    <button*/}
-                                            {/*        onClick={() => handleShowEmbed(message.chartConfig!, message.generatedData!)}*/}
-                                            {/*        className="flex items-center space-x-2 rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors duration-200 hover:bg-blue-700"*/}
-                                            {/*    >*/}
-                                            {/*        <Code className="h-4 w-4" />*/}
-                                            {/*        <span>Get Embed Code</span>*/}
-                                            {/*    </button>*/}
-                                            {/*    <div className="relative">*/}
-                                            {/*        <button*/}
-                                            {/*            onClick={() => setShowExportMenu(showExportMenu === message.id ? null : message.id)}*/}
-                                            {/*            className="flex items-center space-x-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"*/}
-                                            {/*        >*/}
-                                            {/*            <Download className="h-4 w-4" />*/}
-                                            {/*            <span>Export</span>*/}
-                                            {/*        </button>*/}
+                                            <div className="mt-4 flex items-center justify-center space-x-3">
+                                                <Button onClick={() => handleEditInProject(message.chartConfig!, message.generatedData!)}>
+                                                    <Edit className="h-4 w-4" />
+                                                    <span>Edit in Project</span>
+                                                </Button>
+                                                {/*<button*/}
+                                                {/*    onClick={() => handleShowEmbed(message.chartConfig!, message.generatedData!)}*/}
+                                                {/*    className="flex items-center space-x-2 rounded-lg bg-blue-600 px-3 py-2 text-sm text-white transition-colors duration-200 hover:bg-blue-700"*/}
+                                                {/*>*/}
+                                                {/*    <Code className="h-4 w-4" />*/}
+                                                {/*    <span>Get Embed Code</span>*/}
+                                                {/*</button>*/}
+                                                <div className="relative">
+                                                    <button
+                                                        onClick={() => setShowExportMenu(showExportMenu === message.id ? null : message.id)}
+                                                        className="flex items-center space-x-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                        <span>Export</span>
+                                                    </button>
 
-                                            {/*        {showExportMenu === message.id && (*/}
-                                            {/*            <div className="absolute right-0 z-10 mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">*/}
-                                            {/*                <button*/}
-                                            {/*                    onClick={() => handleExportChart(message.id, message.chartConfig!, 'png')}*/}
-                                            {/*                    className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"*/}
-                                            {/*                >*/}
-                                            {/*                    <FileImage className="h-4 w-4" />*/}
-                                            {/*                    <span>Export as PNG</span>*/}
-                                            {/*                </button>*/}
-                                            {/*                <button*/}
-                                            {/*                    onClick={() => handleExportChart(message.id, message.chartConfig!, 'svg')}*/}
-                                            {/*                    className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"*/}
-                                            {/*                >*/}
-                                            {/*                    <Code className="h-4 w-4" />*/}
-                                            {/*                    <span>Export as SVG</span>*/}
-                                            {/*                </button>*/}
-                                            {/*            </div>*/}
-                                            {/*        )}*/}
-                                            {/*    </div>*/}
-                                            {/*</div>*/}
+                                                    {showExportMenu === message.id && (
+                                                        <div className="absolute right-0 z-10 mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                                                            <button
+                                                                onClick={() => handleExportChart(message.id, message.chartConfig!, 'png')}
+                                                                className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                                                            >
+                                                                <FileImage className="h-4 w-4" />
+                                                                <span>Export as PNG</span>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleExportChart(message.id, message.chartConfig!, 'svg')}
+                                                                className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                                                            >
+                                                                <Code className="h-4 w-4" />
+                                                                <span>Export as SVG</span>
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
 
