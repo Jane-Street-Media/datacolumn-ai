@@ -171,7 +171,7 @@ export default function ChartEditor() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} />
+                <ChartHeaderActions config={config} onImportSuccess={(result) => onImportSuccess(result)} />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>
