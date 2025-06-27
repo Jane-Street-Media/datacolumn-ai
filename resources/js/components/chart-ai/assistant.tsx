@@ -470,7 +470,7 @@ export const Assistant: React.FC = () => {
                                     {message.type === 'user' ? (
                                         <AvatarFallback className="bg-primary text-foreground rounded-lg">{getInitials('aamish')}</AvatarFallback>
                                     ) : (
-                                        <AvatarFallback className="text-foreground rounded-lg bg-gradient-to-r bg-gradient-from bg-gradient-to">
+                                        <AvatarFallback className="text-foreground rounded-lg bg-gradient-to-r from-gradient-from to-gradient-to">
                                             <Bot className="h-4 w-4" />
                                         </AvatarFallback>
                                     )}
