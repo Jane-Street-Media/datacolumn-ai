@@ -164,9 +164,11 @@ export default function ChartEditor({ chart }) {
         config: [],
     });
     const updateChart = (e) => {
+        console.log('hit');
         e.preventDefault();
         setChartData((chartData.data = data));
         setChartData((chartData.config = config));
+        console.log('2');
 
         patch(route('projects.charts.update', {
             project: chart.project_id,
@@ -174,6 +176,7 @@ export default function ChartEditor({ chart }) {
         }), {
             onSuccess: (response) => {
                 toast.success(response.props.flash.success)
+                console.log(response);
             },
             onError: (errors) => {
                 if(errors.error){
@@ -187,7 +190,7 @@ export default function ChartEditor({ chart }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} />
+                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={processing} />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>

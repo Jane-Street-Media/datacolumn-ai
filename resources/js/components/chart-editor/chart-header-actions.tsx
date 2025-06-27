@@ -1,14 +1,14 @@
 import {Button} from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
-import { Import, Save, Share2, Upload } from 'lucide-react';
+import { Import, Loader2, Save, Share2, Upload } from 'lucide-react';
 import * as React from 'react';
 import { toast } from 'sonner';
 import { useDataImport } from '@/hooks/use-data-import';
 import { useRef } from 'react';
 
 
-export function ChartHeaderActions({ onImportSuccess, onSave } ) {
+export function ChartHeaderActions({ onImportSuccess, onSave, loading} ) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { importCSV, isImporting } = useDataImport();
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,11 @@ export function ChartHeaderActions({ onImportSuccess, onSave } ) {
                                     <span>Export</span>
                                 </Button>
                                 <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)}>
-                                    <Save />
+                                    {loading ? (
+                                        <Loader2 className="w-4 h-4 animate-spin"/>
+                                    ) : (
+                                        <Save />
+                                    )}
                                     <span>Save</span>
                                 </Button>
                                 <Button variant={'ghost'} className="border">
