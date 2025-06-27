@@ -29,37 +29,22 @@ class ProjectsController extends Controller
     public function index(ProjectFilterRequest $request): Response
     {
         return Inertia::render('projects', [
-            'projects' => Inertia::defer(fn () => GetProjects::handle($request->validated())),
-            'folders' => Inertia::defer(fn () => GetFolders::handle()),
+            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())),
+            'folders' => Inertia::defer(fn() => GetFolders::handle()),
         ]);
     }
 
-    public function store(CreateProjectRequest $request)
+    public function store(CreateProjectRequest $request): RedirectResponse
     {
+
         try {
             $data = $request->validated();
             $user = Auth::user();
-            $project = CreateProject::handle(Auth::user(), $data);
-            if (isset($data['chart'])) {
-                CreateChart::handle($project, CreateProjectData::from([
-                    'chart' => ChartData::from([
-                        ...$data['chart'],
-                        'user_id' => $user->id,
-                        'team_id' => $user->current_team_id,
-                    ]),
-                ]));
-            }
+            CreateProject::handle(Auth::user(), CreateProjectData::from([
+                ...$data,
+                'user_id' => $user->id,
+            ]));
 
-            if (isset($data['dataset'])) {
-                CreateDataset::handle($project, CreateProjectData::from([
-                    'dataset' => DatasetData::from([
-                        ...$data['dataset'],
-                        'user_id' => $user->id,
-                        'team_id' => $user->current_team_id,
-                        'source' => DatasetSource::AI_ASSISTANT,
-                    ]),
-                ]));
-            }
 
             return back()->with('success', 'Project Created Successfully');
         } catch (PackageLimitExceededException $exception) {

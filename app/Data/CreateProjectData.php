@@ -11,8 +11,9 @@ class CreateProjectData extends Data
         public ?string $name,
         public ?string $description,
         public ?int $folder_id,
-        public ChartData|Optional $chart,
-        public DatasetData|Optional $dataset,
+        public ?int $team_id,
+        public ?ChartData $chart,
+        public ?DatasetData $dataset,
 
     ) {}
 }
