@@ -22,20 +22,20 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
     const stats = [
         {
             name: 'Total Projects',
-            value: statistics.projectStats?.value,
-            change: statistics.projectStats?.percentage_change,
+            value: statistics?.projectStats?.value,
+            change: statistics?.projectStats?.percentage_change,
             icon: FileText,
         },
         {
             name: 'Active Charts',
-            value: statistics.chartStats?.value,
-            change: statistics.chartStats?.percentage_change,
+            value: statistics?.chartStats?.value,
+            change: statistics?.chartStats?.percentage_change,
             icon: BarChart3,
         },
         {
             name: 'Team Members',
-            value: statistics.teamMemberStats?.value,
-            change: statistics.teamMemberStats?.percentage_change,
+            value: statistics?.teamMemberStats?.value,
+            change: statistics?.teamMemberStats?.percentage_change,
             icon: Users,
         },
         // {
@@ -64,7 +64,18 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
-                        <StatsCard key={index} stat={stat} index={index} />
+                        <Deferred
+                            data="statistics"
+                            fallback={
+                                <Card>
+                                    <CardContent>
+                                        <LoadingSkeleton />
+                                    </CardContent>
+                                </Card>
+                            }
+                        >
+                            <StatsCard key={index} stat={stat} index={index} />
+                        </Deferred>
                     ))}
                 </div>
 
@@ -84,7 +95,18 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
                         </Deferred>
                     </div>
                     <div className="space-y-4">
-                        <ActivityFeed activityLogs={activityLogs} />
+                        <Deferred
+                            data="activityLogs"
+                            fallback={
+                                <Card>
+                                    <CardContent>
+                                        <LoadingSkeleton />
+                                    </CardContent>
+                                </Card>
+                            }
+                        >
+                            <ActivityFeed activityLogs={activityLogs} />
+                        </Deferred>
                         <QuickActions folders={folders} roles={roles} />
                     </div>
                 </div>
