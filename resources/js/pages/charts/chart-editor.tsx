@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { CustomChartConfig } from '@/pages/charts/types';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -152,37 +152,25 @@ export default function ChartEditor({ chart }) {
         setData([...data, newRow]);
     };
 
-    const {
-        data: chartData,
-        setData: setChartData,
-        patch,
-        processing,
-    } = useForm({
-        type: '',
-        title: '',
-        data: [],
-        config: [],
-    });
+    const [updating, setUpdating] = useState(false)
     const updateChart = (e) => {
-        console.log('hit');
+        setUpdating(true)
         e.preventDefault();
-        setChartData((chartData.data = data));
-        setChartData((chartData.config = config));
-        console.log('2');
-
-        patch(route('projects.charts.update', {
-            project: chart.project_id,
-            chart: chart.id
-        }), {
+        router.patch(route('projects.charts.update', { project: chart.project_id, chart: chart.id }), {
+            data: data,
+            config: config
+        }, {
             onSuccess: (response) => {
                 toast.success(response.props.flash.success)
-                console.log(response);
             },
             onError: (errors) => {
                 if(errors.error){
                     toast.error(errors.error)
+                }else {
+                    console.log(errors);
                 }
-            }
+            },
+            onFinish: () => setUpdating(false)
         })
     };
 
@@ -190,7 +178,7 @@ export default function ChartEditor({ chart }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={processing} />
+                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating} />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Projects\Charts;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseTeamRequest;
 
-class UpdateChartRequest extends FormRequest
+class UpdateChartRequest extends BaseTeamRequest
 {
     public function authorize(): bool
     {
