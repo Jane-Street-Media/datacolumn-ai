@@ -169,7 +169,7 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
             <BarChart {...commonProps}>
                 {config.showGrid && <CartesianGrid {...config.grid} />}
                 <XAxis dataKey={config.xAxis} {...xAxisProps} />
-                <YAxis {...yAxisProps} />entry
+                <YAxis {...yAxisProps} />
                 <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
                 {config.showLegend && <Legend />}
                 {}

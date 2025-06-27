@@ -56,7 +56,7 @@ export function ChartHeaderActions({ onImportSuccess, onSave, loading} ) {
                                     <Upload />
                                     <span>Export</span>
                                 </Button>
-                                <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)}>
+                                <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)} disabled={loading}>
                                     {loading ? (
                                         <Loader2 className="w-4 h-4 animate-spin"/>
                                     ) : (
