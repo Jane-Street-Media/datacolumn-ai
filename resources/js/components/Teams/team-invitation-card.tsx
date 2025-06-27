@@ -40,7 +40,7 @@ export default function TeamInvitationCard({ invitation }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex items-center justify-between rounded-xl border p-4"
+                className="flex items-center justify-between flex-col lg:flex-row rounded-xl border p-4 space-y-4 lg:space-y-0"
             >
                 <div className="flex items-center space-x-4">
                     <div className="relative">
@@ -59,10 +59,12 @@ export default function TeamInvitationCard({ invitation }) {
 
                 </div>
 
-                <div className="flex items-center space-x-4">
-                            <Badge className={'bg-yellow-500'}>{'pending'}</Badge>
+                <div className="flex flex-col lg:flex-row w-full lg:w-auto items-center space-x-4 space-y-4 lg:space-y-0">
+                    <div className="text-right w-full lg:w-auto" >
+                        <Badge className={'bg-yellow-500'}>{'pending'}</Badge>
+                    </div>
 
-                    <div className="text-muted-foreground text-right text-sm">
+                    <div className="text-muted-foreground text-right text-sm w-full lg:w-auto">
                         <p>Sent at: {format(new Date(invitation.created_at), 'MMM d, yyyy')}</p>
                     </div>
 

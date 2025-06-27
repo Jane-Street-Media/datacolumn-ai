@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import Papa from 'papaparse';
 
 export const useChartExport = () => {
@@ -21,7 +21,8 @@ export const useChartExport = () => {
       link.href = canvas.toDataURL();
       link.click();
     } catch (error) {
-      throw new Error('Failed to export chart');
+        console.log(error);
+        throw new Error('Failed to export chart');
     }
   }, []);
 
@@ -40,7 +41,7 @@ export const useChartExport = () => {
 
       // Clone the SVG to avoid modifying the original
       const clonedSvg = svgElement.cloneNode(true) as SVGElement;
-      
+
       // Ensure the SVG has proper dimensions and namespace
       if (!clonedSvg.getAttribute('width')) {
         clonedSvg.setAttribute('width', svgElement.getBoundingClientRect().width.toString());
@@ -54,7 +55,7 @@ export const useChartExport = () => {
 
       // Get the SVG markup
       const svgMarkup = new XMLSerializer().serializeToString(clonedSvg);
-      
+
       // Create a complete SVG document with proper XML declaration
       const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -63,12 +64,12 @@ ${svgMarkup}`;
       // Create blob and download
       const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
-      
+
       const link = document.createElement('a');
       link.download = `${filename}.svg`;
       link.href = url;
       link.click();
-      
+
       // Clean up
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -81,7 +82,7 @@ ${svgMarkup}`;
     const csv = Papa.unparse(data);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    
+
     if (link.download !== undefined) {
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);

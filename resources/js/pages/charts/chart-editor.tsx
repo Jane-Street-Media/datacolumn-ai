@@ -178,7 +178,7 @@ export default function ChartEditor({ chart }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating} />
+                <ChartHeaderActions config={config} data={data} columns={columns} onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating}/>
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>
@@ -190,7 +190,7 @@ export default function ChartEditor({ chart }) {
                         <CardContent>
                             <TabsContent value="design">
                                 <div className="flex-1 overflow-hidden">
-                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid lg:grid-cols-3 lg:gap-6">
+                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid xl:grid-cols-3 lg:gap-6">
                                         <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0">
                                             <ChartRenderer data={data} config={config} />
                                         </div>
