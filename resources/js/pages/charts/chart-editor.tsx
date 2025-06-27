@@ -183,7 +183,7 @@ export default function ChartEditor() {
                         <CardContent>
                             <TabsContent value="design">
                                 <div className="flex-1 overflow-hidden">
-                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid lg:grid-cols-3 lg:gap-6">
+                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid xl:grid-cols-3 lg:gap-6">
                                         <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0">
                                             <ChartRenderer data={data} config={config} />
                                         </div>

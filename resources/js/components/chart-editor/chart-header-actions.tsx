@@ -73,33 +73,33 @@ export function ChartHeaderActions({ config, data, columns, onImportSuccess } ) 
                                 <Button onClick={() => fileInputRef.current?.click()}
                                         disabled={isImporting}>
                                     <Import />
-                                    <span>Import</span>
+                                    <span className={'hidden lg:block'}>Import</span>
                                 </Button>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant={'ghost'} className="border">
                                             <Upload />
-                                            <span>Export</span>
+                                            <span className={'hidden lg:block'}>Export</span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-56" align="end">
                                         <DropdownMenuItem asChild>
                                             <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportChart('png')}>
                                                 <FileImage className="w-4 h-4" />
-                                                <span>Export as PNG</span>
+                                                <span className={'hidden lg:block'}>Export as PNG</span>
                                             </Button>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
                                             <Button variant="ghost" className="w-full justify-start" onClick={() => handleExportChart('svg')}>
                                                 <Code className="w-4 h-4" />
-                                                <span>Export as SVG</span>
+                                                <span className={'hidden lg:block'}>Export as SVG</span>
                                             </Button>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <Button variant={'ghost'} className="border">
                                     <Save />
-                                    <span>Save</span>
+                                    <span className={'hidden lg:block'}>Save</span>
                                 </Button>
                                 <EmbedDialog config={config} data={data} columns={columns} />
                             </div>
