@@ -148,7 +148,7 @@ const chartTypes = [
     // { type: 'radialBar' as const, label: 'Radial Bar', icon: Circle },
     // { type: 'funnel' as const, label: 'Funnel Chart', icon: GitFork },
     // { type: 'treemap' as const, label: 'Treemap', icon: LayoutGrid },
-    // { type: 'composed' as const, label: 'Composed', icon: Layers },
+    { type: 'composed' as const, label: 'Composed', icon: Layers },
 ];
 
 const colorSchemes = [

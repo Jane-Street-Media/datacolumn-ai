@@ -339,8 +339,26 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
             <YAxis {...yAxisProps} />
             <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
             {config.showLegend && <Legend />}
-            <Bar dataKey={config.yAxis} barSize={20} fill={config.colors[0]} />
-            <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[1] || config.colors[0]} />
+              {config.series ? (
+                  config.series.map((data) => {
+                    if (data.type === 'line') {
+                      return <Line key={data.dataKey} {...data} />;
+                    } else if (data.type === 'bar') {
+                      return <Bar key={data.dataKey} {...data} />;
+                    } else if (data.type === 'area') {
+                      return <Area key={data.dataKey} {...data} />;
+                    }
+                    <Line key={data.dataKey} {...data} />;
+                  })
+              ) : (
+                config.type === 'line'
+                  ? <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} />
+                  : config.type === 'bar'
+                    ? <Bar dataKey={config.yAxis} barSize={20} fill={config.colors[0]} />
+                    : config.type === 'area'
+                      ? <Area type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} fill={config.colors[0]} fillOpacity={0.6} />
+                      : <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} />
+              )}
           </ComposedChart>
         );
 

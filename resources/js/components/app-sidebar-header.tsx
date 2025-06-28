@@ -12,9 +12,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { useEffect, useState } from 'react';
 
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
@@ -36,19 +37,35 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     const { auth } = usePage().props;
     const teams = auth.user.teams;
 
-    const { data, setData, patch} = useForm({
-        team_id: auth.user.current_team_id,
-    });
+    const { patch} = useForm();
 
-    const handleSwitchUserTeam = (value) => {
-        setData({ team_id: value });
-        patch(route('current-team.update'), {
-            onSuccess: (response) => {
-                toast.success(response.props.flash.success, {
-                    description: 'You\'re now operating with your selected team.',
-                });
+    const [currentTeam, setCurrentTeam] = useState<number>(auth.user.current_team_id);
+
+    useEffect(() => {
+        handleSwitchUserTeam();
+    }, [currentTeam]);
+
+    const handleSwitchUserTeam = () => {
+        router.patch(
+            route('current-team.update'),
+            {
+                team_id: currentTeam,
             },
-        });
+            {
+                onSuccess: (response) => {
+                    toast.success(response.props.flash.success, {
+                        description: "You're now operating with your selected team.",
+                    });
+                },
+                onError: (errors) => {
+                    if (errors.error) {
+                        toast.error(errors.error);
+                    } else {
+                        console.log(errors);
+                    }
+                },
+            },
+        );
     };
 
     return (
@@ -116,10 +133,10 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                                     <Button
                                         variant="ghost"
                                         className="w-full justify-start"
-                                        onClick={() => handleSwitchUserTeam(team.id)}
+                                        onClick={() => setCurrentTeam(team.id)}
                                     >
                                         <span>{team.name}</span>
-                                        {auth.user.current_team_id === team.id &&
+                                        {currentTeam === team.id &&
                                             <Badge className="ml-auto">
                                                 active
                                             </Badge>
