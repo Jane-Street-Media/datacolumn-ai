@@ -11,7 +11,7 @@ class GetProjectCharts
     public static function handle(Project $project, ?ChartFilterData $data = null): Collection
     {
         return $project->charts()
-            ->when($data?->search, fn($query) => $query->whereAny(['title', 'description'], 'like', '%' . $data->search . '%'))
+            ->when($data?->search, fn ($query) => $query->whereAny(['title', 'description'], 'like', '%'.$data->search.'%'))
             ->get();
     }
 }

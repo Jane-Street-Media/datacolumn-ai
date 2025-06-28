@@ -32,6 +32,17 @@ class CreateProjectRequest extends BaseTeamRequest
                     $query->where('team_id', $this->team_id);
                 }),
             ],
+            'chart' => ['nullable', 'array'],
+            'chart.title' => ['required_with:chart', 'string'],
+            'chart.type' => ['required_with:chart', 'string'],
+            'chart.description' => ['required_with:chart', 'string'],
+            'chart.config' => ['required_with:chart', 'array'],
+            'chart.data' => ['required_with:chart', 'array'],
+
+            'dataset' => ['nullable', 'array'],
+            'dataset.name' => ['required_with:dataset', 'string'],
+            'dataset.data' => ['required_with:dataset', 'array'],
+            'dataset.columns' => ['required_with:dataset', 'array'],
         ];
     }
 }

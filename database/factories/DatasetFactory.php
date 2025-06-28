@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\DatasetSource;
+use App\Enums\DatasetSource;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -17,7 +17,7 @@ class ProjectChartsController extends Controller
     public function index(Project $project, ChartFilterRequest $request): Response
     {
         return Inertia::render('charts/chart-index', [
-            'charts' => Inertia::defer(fn() => GetProjectCharts::handle($project, ChartFilterData::from($request->validated())))
+            'charts' => Inertia::defer(fn () => GetProjectCharts::handle($project, ChartFilterData::from($request->validated()))),
         ]);
     }
 

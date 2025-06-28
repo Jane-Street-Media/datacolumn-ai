@@ -34,7 +34,7 @@ class ChartAIConversationController extends Controller
             'generatedData' => $response['generatedData'] ?? null,
             'dataInsights' => $response['dataInsights'] ?? null,
             'chartRecommendation' => $response['chartRecommendation'] ?? null,
-            'suggestions' => $response['suggestions'] ?? []
+            'suggestions' => $response['suggestions'] ?? [],
         ]);
     }
 }

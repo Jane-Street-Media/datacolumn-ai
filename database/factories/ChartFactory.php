@@ -40,13 +40,13 @@ class ChartFactory extends Factory
                     // draw horizontal grid lines
                     'horizontal' => true,
                     // line color
-                    'stroke' => "#e0e0e0",
+                    'stroke' => '#e0e0e0',
                     // dash 'pattern' => "length spacing"
-                    'strokeDasharray' => "3 3",
+                    'strokeDasharray' => '3 3',
                     // fill background banding (requires `horizontal` or `vertical` false to see through)
-                    'fill' => "#fafafa",
+                    'fill' => '#fafafa',
                     // grid line thickness
-                    'strokeWidth' => 1
+                    'strokeWidth' => 1,
                 ],
                 'showGrid' => true,
                 'tooltip' => [],

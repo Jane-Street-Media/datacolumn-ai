@@ -7,6 +7,7 @@ use App\Actions\Project\CreateProject;
 use App\Actions\Project\DeleteProject;
 use App\Actions\Project\GetProjects;
 use App\Actions\Project\UpdateProject;
+use App\Data\CreateProjectData;
 use App\Exceptions\PackageLimitExceededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Projects\CreateProjectRequest;
@@ -23,15 +24,22 @@ class ProjectsController extends Controller
     public function index(ProjectFilterRequest $request): Response
     {
         return Inertia::render('projects', [
-            'projects' => Inertia::defer(fn () => GetProjects::handle($request->validated())),
-            'folders' => Inertia::defer(fn () => GetFolders::handle()),
+            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())),
+            'folders' => Inertia::defer(fn() => GetFolders::handle()),
         ]);
     }
 
     public function store(CreateProjectRequest $request): RedirectResponse
     {
+
         try {
-            CreateProject::handle(Auth::user(), $request->validated());
+            $data = $request->validated();
+            $user = Auth::user();
+            CreateProject::handle(Auth::user(), CreateProjectData::from([
+                ...$data,
+                'user_id' => $user->id,
+            ]));
+
 
             return back()->with('success', 'Project Created Successfully');
         } catch (PackageLimitExceededException $exception) {
