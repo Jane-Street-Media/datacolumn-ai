@@ -190,7 +190,11 @@ interface ChartControlsProps {
     onConfigChange: (config: CustomChartConfig) => void;
 }
 
-export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, onConfigChange}) => {
+const defaultCardContentClasses = {
+    default: 'max-h-[calc(100vh-300px)] lg:max-h-[calc(100vh-200px)]',
+};
+
+export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, onConfigChange, cardContentClasses = defaultCardContentClasses,}) => {
 
     const updateConfig = useCallback((updates: Partial<CustomChartConfig>) => {
         onConfigChange({ ...config, ...updates });
@@ -201,7 +205,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
             <CardHeader>
                 <CardTitle>Chart Configuration</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 h-full max-h-[calc(100vh-300px)] lg:max-h-[calc(100vh-200px)] overflow-y-auto overscroll-contain">
+            <CardContent className={`space-y-6 h-full overflow-y-auto ${typeof cardContentClasses !== 'object' ? cardContentClasses : cardContentClasses?.default}`}>
                 {/* Chart Type */}
                 <div>
                     <h4 className="mb-3 text-sm font-medium">Chart Type</h4>

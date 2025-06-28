@@ -105,7 +105,11 @@ The returned object must include:
   • title: a human-readable chart title
   • xAxis & yAxis: the data keys to map on each axis
   • data: an array of objects, each containing at least the xAxis and yAxis fields
-  • series: an array of objects, each with a `dataKey` field for the series values
+  • series: an array of objects, each defining a series in the chart with:
+    • type: the series type (e.g. 'bar', 'line', etc.)
+    • dataKey: the field in each data object to use for this series
+    • fill: the color to fill the series (for bar/area charts)
+    • stroke: the color to outline the series (for line charts)
   • colors: an ordered list of color strings (hex codes or CSS names) for the series
 DESC,
                 'parameters' => [
@@ -147,12 +151,18 @@ DESC,
                             'minItems' => 1,
                             'examples' => [
                                 [
+                                    'type' => 'bar',
                                     'dataKey' => 'salary',
+                                    'fill' => '#8884d8',
+                                    'stroke' => '#8884d8'
                                 ],
                                 [
-                                    'dataKey' => 'revenue',
-                                ],
-                            ],
+                                    'type' => 'line',
+                                    'dataKey' =>  'revenue',
+                                    'fill' => '#82ca9d',
+                                    'stroke' => '#82ca9d'
+                                ]
+                            ]
                         ],
                         'data' => [
                             'type' => 'array',

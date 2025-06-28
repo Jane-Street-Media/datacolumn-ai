@@ -49,7 +49,7 @@ export default function FolderDialog() {
             <DialogTrigger asChild>
                 <Button>
                     <FolderOpen />
-                    <span>New Folder</span>
+                    <span className={'hidden lg:block'}>New Folder</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

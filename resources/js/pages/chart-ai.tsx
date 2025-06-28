@@ -44,7 +44,7 @@ export default function Projects() {
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                     <div className={`p-3 sm:p-4 bg-card rounded-xl backdrop-blur-sm border-card-border border transition-colors duration-300`}>
                         <div className="text-xl sm:text-2xl font-bold text-gradient-from mb-1">AI</div>
                         <div className={`text-xs sm:text-sm text-foreground`}>Powered</div>
