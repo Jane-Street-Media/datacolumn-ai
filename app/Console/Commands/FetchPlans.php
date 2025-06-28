@@ -43,6 +43,9 @@ class FetchPlans extends Command
                 'type' => [
                     'is' => 'plan',
                 ],
+                'status' => [
+                    'is' => 'active',
+                ],
             ]);
             foreach ($items->list as $itemEntry) {
                 $item = $itemEntry->item;
