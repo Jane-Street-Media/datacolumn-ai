@@ -37,19 +37,15 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     const { auth } = usePage().props;
     const teams = auth.user.teams;
 
-    const { patch} = useForm();
-
-    const [currentTeam, setCurrentTeam] = useState<number>(auth.user.current_team_id);
-
-    useEffect(() => {
-        handleSwitchUserTeam();
-    }, [currentTeam]);
-
-    const handleSwitchUserTeam = () => {
+    const handleSwitchUserTeam = (teamId) => {
+        if (auth.user.current_team_id === teamId) {
+            toast.info("You're already operating with this team.");
+            return;
+        }
         router.patch(
             route('current-team.update'),
             {
-                team_id: currentTeam,
+                team_id: teamId,
             },
             {
                 onSuccess: (response) => {
@@ -133,10 +129,10 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                                     <Button
                                         variant="ghost"
                                         className="w-full justify-start"
-                                        onClick={() => setCurrentTeam(team.id)}
+                                        onClick={() => handleSwitchUserTeam(team.id)}
                                     >
                                         <span>{team.name}</span>
-                                        {currentTeam === team.id &&
+                                        {auth.user.current_team_id === team.id &&
                                             <Badge className="ml-auto">
                                                 active
                                             </Badge>
