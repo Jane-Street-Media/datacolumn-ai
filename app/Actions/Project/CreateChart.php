@@ -10,6 +10,6 @@ class CreateChart
 {
     public static function handle(Project $project, ChartData $data): Chart
     {
-        return $project->charts()->create($data->toArray());
+        return $project->charts()->create(array_merge($data->toArray(), ['embed_settings' => $data->config]));
     }
 }

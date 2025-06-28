@@ -73,7 +73,6 @@ class ReChartAIService
             if ($messageResponse->functionCall) {
                 $fn = $messageResponse->functionCall;
                 $parsed = json_decode($fn->arguments, true);
-
                 return $this->handleFunctionCall($fn->name, $parsed, $messageResponse->content ?? '');
             }
 
@@ -100,6 +99,7 @@ class ReChartAIService
                 'name' => 'create_chart',
                 'description' => <<<'DESC'
 Generate a fully-formed Recharts configuration object based on the user's natural-language request. If they dont provide data, use data from your knowledge base.
+Always include **series** attribute even if its just x and y so to keep consistency in response.
 The returned object must include:
   • chartType: which Recharts component to render (e.g. 'bar', 'line', 'pie', etc.)
   • title: a human-readable chart title
@@ -142,7 +142,7 @@ DESC,
                         ],
                         'series' => [
                             'type' => 'array',
-                            'description' => 'Field name in each data object to use for the series values.',
+                            'description' => 'Field name in each data object to use for the series values. This field is **mandatory** even if it contains only x and y axis data. My represent all they Y axis data is different objects.',
                             'items' => [
                                 'type' => 'object',
                                 'additionalProperties' => true,
@@ -342,7 +342,7 @@ DESIGN PRINCIPLES:
                 'title' => $args['title'],
                 'xAxis' => $args['xAxis'],
                 'yAxis' => $args['yAxis'],
-                'series' => $args['series'],
+                'series' => $args['series'] ?? [],
                 'colors' => $this->ensureColorCount($args['colors'], count($args['data'])),
                 'showGrid' => $args['showGrid'] ?? true,
                 'showLegend' => $args['showLegend'] ?? true,

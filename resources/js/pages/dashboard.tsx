@@ -39,9 +39,9 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
             icon: Users,
         },
         {
-            name: 'This Month',
+            name: 'Need to decide what to put here',
             value: 1,
-            change: '+25%',
+            change: '+25',
             icon: Users,
         }
     ];
