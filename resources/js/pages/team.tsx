@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { CrownIcon, MailIcon, Search, ShieldIcon, Users } from 'lucide-react';
+import { CrownIcon, Mail, MailIcon, Search, ShieldIcon, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -133,7 +133,14 @@ export default function Team({ roles, statistics, teamUsers, teamInvitations }) 
                         }
                     >
                         <CardContent className={'space-y-5'}>
-                            {teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)}
+                            {teamUsers?.length ? (
+                                teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)
+                            ) : (
+                                <div className="py-8 text-center">
+                                    <Users className="mx-auto mb-4 h-12 w-12" />
+                                    <p className="text-secondary-foreground mb-4">No team users yet</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Deferred>
                 </Card>
@@ -157,9 +164,16 @@ export default function Team({ roles, statistics, teamUsers, teamInvitations }) 
                         }
                     >
                         <CardContent className={'space-y-5'}>
-                            {teamInvitations?.map((invitation, index) => (
-                                <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />
-                            ))}
+                            {teamInvitations?.length ? (
+                                teamInvitations?.map((invitation, index) => (
+                                    <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />
+                                ))
+                            ) : (
+                                <div className="py-8 text-center">
+                                    <Mail className="mx-auto mb-4 h-12 w-12" />
+                                    <p className="text-secondary-foreground mb-4">No team invitations yet</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Deferred>
                 </Card>

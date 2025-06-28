@@ -17,7 +17,7 @@ class DashboardController extends Controller
         return Inertia::render('dashboard', [
             'projects' => Inertia::defer(fn () => GetRecentProjectQuery::handle()->latest()->limit(3)->get()),
             'statistics' => GetStats::handle(),
-            'activityLogs' => GetActivityLogs::handle(),
+            'activityLogs' => Inertia::defer(fn () => GetActivityLogs::handle()),
             'folders' => Inertia::defer(fn () => GetFolders::handle()),
             'roles' => Inertia::defer(fn () => Role::all()),
         ]);

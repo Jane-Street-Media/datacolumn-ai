@@ -4,14 +4,15 @@ import FolderDialog from '@/components/projects/folder-dialog';
 import ChartCard from '@/components/projects/charts/chart-card';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { Search, UserPlus, X } from 'lucide-react';
+import { BarChart3, FolderOpen, Search, UserPlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import ProjectCard from '@/components/projects/project-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -98,7 +99,20 @@ export default function ChartIndex({ charts }) {
                             </Card>
                         }
                     >
-                        {charts?.map((chart, index) => <ChartCard key={chart.id} index={index} chart={chart} />)}{' '}
+                        {charts?.length ? (
+                            charts?.map((chart, index) => <ChartCard key={chart.id} index={index} chart={chart} />)
+                        ) : (
+                            <Card className="col-span-3">
+                                <CardHeader>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="py-8 text-center">
+                                        <BarChart3 className="mx-auto mb-4 h-12 w-12" />
+                                        <p className="text-secondary-foreground mb-4">No charts yet</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
                     </Deferred>
                 </div>
             </div>

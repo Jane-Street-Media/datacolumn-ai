@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
-import { BarChart3, FileText, Users } from 'lucide-react';
+import { BarChart3, FileText, Loader2, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -84,7 +84,18 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
                         </Deferred>
                     </div>
                     <div className="space-y-4">
-                        <ActivityFeed activityLogs={activityLogs} />
+                        <Deferred
+                            data="activityLogs"
+                            fallback={
+                                <Card>
+                                    <CardContent>
+                                        <Loader2 className="w-10 h-10 animate-spin text-center"/>
+                                    </CardContent>
+                                </Card>
+                            }
+                        >
+                            <ActivityFeed activityLogs={activityLogs} />
+                        </Deferred>
                         <QuickActions folders={folders} roles={roles} />
                     </div>
                 </div>
