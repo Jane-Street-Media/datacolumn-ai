@@ -132,7 +132,7 @@ export default function Team({ roles, statistics, teamUsers, teamInvitations }) 
                             </Card>
                         }
                     >
-                        <CardContent>
+                        <CardContent className={'space-y-5'}>
                             {teamUsers?.length ? (
                                 teamUsers?.map((user, index) => <TeamMemberCard key={user.id} index={index} user={user} roles={roles} />)
                             ) : (
@@ -163,7 +163,7 @@ export default function Team({ roles, statistics, teamUsers, teamInvitations }) 
                             </Card>
                         }
                     >
-                        <CardContent>
+                        <CardContent className={'space-y-5'}>
                             {teamInvitations?.length ? (
                                 teamInvitations?.map((invitation, index) => (
                                     <TeamInvitationCard key={invitation.id} index={index} invitation={invitation} />

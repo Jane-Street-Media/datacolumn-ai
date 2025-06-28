@@ -58,46 +58,49 @@ class GenerateDummyData extends Command
                     $team->users()->attach($du->id);
                     $user->assignRole('member');
                 }
-            }
 
-            // 2. Folders
-            $this->info('Creating folders...');
-            $folders = collect();
-            for ($i = 0; $i < 3; $i++) {
-                $folders->push(
-                    Folder::factory()->create([
-                        'user_id' => $user->id,
-                        'team_id' => $teams->random()->id,
-                    ])
-                );
-            }
+                // 2. Folders
+                $this->info('Creating folders...');
+                $folders = collect();
+                for ($i = 0; $i < 3; $i++) {
+                    $folders->push(
+                        Folder::factory()->create([
+                            'user_id' => $user->id,
+                            'team_id' => $team->id,
+                        ])
+                    );
+                }
 
-            // 3. Projects, Datasets & Charts
-            $this->info('Creating projects, datasets, and charts...');
-            foreach ($folders as $folder) {
-                $projects = Project::factory()
-                    ->count(2)
-                    ->create([
-                        'user_id' => $user->id,
-                        'folder_id' => $folder->id,
-                    ]);
-
-                foreach ($projects as $project) {
-                    // Datasets (2 per project)
-                    Dataset::factory()
+                // 3. Projects, Datasets & Charts
+                $this->info('Creating projects, datasets, and charts...');
+                foreach ($folders as $folder) {
+                    $projects = Project::factory()
                         ->count(2)
                         ->create([
                             'user_id' => $user->id,
-                            'project_id' => $project->id,
+                            'team_id' => $team->id,
+                            'folder_id' => $folder->id,
                         ]);
 
-                    // Charts (2 per project)
-                    Chart::factory()
-                        ->count(2)
-                        ->create([
-                            'user_id' => $user->id,
-                            'project_id' => $project->id,
-                        ]);
+                    foreach ($projects as $project) {
+                        // Datasets (2 per project)
+                        Dataset::factory()
+                            ->count(2)
+                            ->create([
+                                'user_id' => $user->id,
+                                'team_id' => $team->id,
+                                'project_id' => $project->id,
+                            ]);
+
+                        // Charts (2 per project)
+                        Chart::factory()
+                            ->count(2)
+                            ->create([
+                                'user_id' => $user->id,
+                                'team_id' => $team->id,
+                                'project_id' => $project->id,
+                            ]);
+                    }
                 }
             }
         });

@@ -18,7 +18,7 @@ export default function RecentProjects({ projects, folders }) {
                             trigger={
                                 <Button>
                                     <Plus />
-                                    <span>New Project</span>
+                                    <span className={'hidden lg:block'}>New Project</span>
                                 </Button>
                             }
                         />

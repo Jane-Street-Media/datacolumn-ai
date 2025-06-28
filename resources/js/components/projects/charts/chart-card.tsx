@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
@@ -55,8 +55,15 @@ export default function ChartCard({ index = 1, chart }) {
         });
     };
 
+    const showChartDetails = () => {
+        return router.visit(route('projects.charts.edit', {
+            project: chart.project_id,
+            chart: chart.id
+        }))
+    }
+
     return (
-        <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard onClick={() => showChartDetails()} className="cursor-pointer hover:border-primary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">

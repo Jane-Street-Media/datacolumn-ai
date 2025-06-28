@@ -38,12 +38,12 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
             change: statistics.teamMemberStats?.percentage_change,
             icon: Users,
         },
-        // {
-        //     name: 'This Month',
-        //     value: 1,
-        //     change: '+25%',
-        //     icon: TrendingUp,
-        // },
+        {
+            name: 'Need to decide what to put here',
+            value: 1,
+            change: '+25',
+            icon: Users,
+        }
     ];
     const [message] = useState(flash?.success || flash?.error || null);
     const [hasShown, setHasShown] = useState(false);
@@ -62,14 +62,14 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat, index) => (
                         <StatsCard key={index} stat={stat} index={index} />
                     ))}
                 </div>
 
-                <div className="mb-8 grid grid-cols-3 gap-4 md:grid-cols-3 lg:grid-cols-3">
-                    <div className="col-span-2">
+                <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                    <div className="col-span-1 lg:col-span-2">
                         <Deferred
                             data="projects"
                             fallback={

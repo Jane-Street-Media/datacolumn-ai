@@ -63,7 +63,7 @@ export default function TeamMember({ user, roles }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex items-center justify-between rounded-xl border p-4"
+                className="flex items-center justify-between flex-col lg:flex-row rounded-xl border p-4 space-y-4 lg:space-y-0"
             >
                 <div className="flex items-center space-x-4">
                     <div className="relative">
@@ -84,28 +84,27 @@ export default function TeamMember({ user, roles }) {
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex flex-col lg:flex-row w-full lg:w-auto items-center space-x-4 space-y-4 lg:space-y-0">
 
-                        <div className="text-right" >
-                            <Select value={data.role} onValueChange={handleSwitchRole}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Change role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        {roles?.map((role) => (
-                                            <SelectItem key={role.id} value={String(role.name)}>
-                                                {role.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            <Badge className={'mt-2'}>{'active'}</Badge>
-                        </div>
+                    <div className="text-right w-full lg:w-auto" >
+                        <Select value={data.role} onValueChange={handleSwitchRole}>
+                            <SelectTrigger className={'w-full lg:w-auto'}>
+                                <SelectValue placeholder="Change role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {roles?.map((role) => (
+                                        <SelectItem key={role.id} value={String(role.name)}>
+                                            {role.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <Badge className={'mt-2'}>{'active'}</Badge>
+                    </div>
 
-
-                    <div className="text-muted-foreground text-right text-sm">
+                    <div className="text-muted-foreground text-right text-sm w-full lg:w-auto">
                         <p>Joined: {format(new Date(user.created_at), 'MMM d, yyyy')}</p>
                         <p className="text-xs">Last active: {format(new Date(), 'MMM d, h:mm a')}</p>
                     </div>

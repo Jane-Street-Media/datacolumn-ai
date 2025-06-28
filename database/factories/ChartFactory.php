@@ -27,28 +27,38 @@ class ChartFactory extends Factory
                 'type' => $type,
                 'width' => $this->faker->numberBetween(400, 800),
                 'height' => $this->faker->numberBetween(300, 600),
-                'margin' => [
-                    'top' => 5,
-                    'right' => 30,
-                    'left' => 20,
-                    'bottom' => 5,
+                'xAxis' => 'month',
+                'yAxis' => '',
+                'series' => [
+                    ['type' => $type, 'dataKey' => 'Apples', 'fill' => '#fc59a3', 'stroke' => '#fc59a3'],
+                    ['type' => $type, 'dataKey' => 'Oranges', 'fill' => '#87c830', 'stroke' => '#87c830'],
+                    ['type' => $type, 'dataKey' => 'Bananas', 'fill' => '#ffd400', 'stroke' => '#ffd400'],
                 ],
-                'xAxis' => ['dataKey' => 'x'],
-                'yAxis' => [],
-                'tooltip' => true,
-                'legend' => true,
-                'dataKey' => 'y',
-                'lineProps' => [
-                    'type' => 'monotone',
-                    'dataKey' => 'y',
-                    'stroke' => $this->faker->randomElement($colors),
-                    'activeDot' => ['r' => 8],
+                'grid' => [
+                    // draw vertical grid lines
+                    'vertical' => true,
+                    // draw horizontal grid lines
+                    'horizontal' => true,
+                    // line color
+                    'stroke' => '#e0e0e0',
+                    // dash 'pattern' => "length spacing"
+                    'strokeDasharray' => '3 3',
+                    // fill background banding (requires `horizontal` or `vertical` false to see through)
+                    'fill' => '#fafafa',
+                    // grid line thickness
+                    'strokeWidth' => 1,
                 ],
+                'showGrid' => true,
+                'tooltip' => [],
+                'legend' => ['verticalAlign' => 'top'],
+                'colors' => $colors,
             ],
-            'data' => [[
-                'x' => $this->faker->numberBetween(1, 10),
-                'y' => $this->faker->numberBetween(1, 100),
-            ]],
+            'data' => [
+                ['month' => 'Jan', 'Apples' => 400, 'Oranges' => 240, 'Bananas' => 240],
+                ['month' => 'Feb', 'Apples' => 300, 'Oranges' => 139, 'Bananas' => 221],
+                ['month' => 'Mar', 'Apples' => 200, 'Oranges' => 980, 'Bananas' => 229],
+                ['month' => 'Apr', 'Apples' => 278, 'Oranges' => 390, 'Bananas' => 200],
+            ],
             'embed_settings' => ['responsive' => true],
         ];
     }

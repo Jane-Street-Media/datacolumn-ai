@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
+use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\ProjectChartsController;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('{project}/charts')->group(function () {
             Route::get('/', [ProjectChartsController::class, 'index'])->name('projects.charts.index');
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
+            Route::patch('/{chart}', [ProjectChartsController::class, 'update'])->name('projects.charts.update');
         });
     });
 
@@ -82,7 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
     });
 
-    Route::patch('/current-team/update', [SwitchUserTeamController::class, 'update'])->name('current-team.update');
+    Route::patch('/current-team/switch', [SwitchUserTeamController::class, 'update'])->name('current-team.update');
 
     // Team Invitations
     Route::prefix('team-invitation')->group(function () {
@@ -95,7 +97,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('chart-ai')->group(function () {
         Route::get('/', ChartAIController::class)->name('chart-ai');
     });
+
+    Route::prefix('chart-ai')->group(function () {
+        Route::get('/', ChartAIController::class)->name('chart-ai');
+        Route::post('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
+    });
 });
+
+Route::get('chart/embed/{uuid}', function ($uuid) {
+    $chart = \App\Models\Chart::where('uuid', $uuid)->firstOrFail();
+
+    return Inertia::render('charts/chart-embed', [
+        'config' => $chart->config,
+        'data' => $chart->data,
+    ]);
+})->name('chart.1');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/checkout.php';
