@@ -10,6 +10,7 @@ use App\Mail\InvitationSent;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use Illuminate\Support\Facades\Mail;
+use function Illuminate\Support\defer;
 
 class SendTeamInvitation
 {

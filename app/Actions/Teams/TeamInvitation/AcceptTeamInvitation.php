@@ -6,6 +6,7 @@ use App\Actions\Teams\SwitchUserTeam;
 use App\Enums\ActivityEvents;
 use App\Models\TeamInvitation;
 use App\Models\User;
+use function Illuminate\Support\defer;
 
 class AcceptTeamInvitation
 {

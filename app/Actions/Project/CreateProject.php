@@ -13,6 +13,7 @@ use App\Exceptions\PackageLimitExceededException;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use function Illuminate\Support\defer;
 
 class CreateProject
 {
