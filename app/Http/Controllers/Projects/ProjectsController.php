@@ -35,13 +35,13 @@ class ProjectsController extends Controller
         try {
             $data = $request->validated();
             $user = Auth::user();
-            CreateProject::handle(Auth::user(), CreateProjectData::from([
+            $project = CreateProject::handle(Auth::user(), CreateProjectData::from([
                 ...$data,
                 'user_id' => $user->id,
             ]));
 
 
-            return back()->with('success', 'Project Created Successfully');
+            return back()->with('success', 'Project Created Successfully')->with('data', $project);
         } catch (PackageLimitExceededException $exception) {
             return redirect()->back()
                 ->withErrors(['package_restriction' => $exception->getMessage()]);

@@ -11,6 +11,7 @@ import { ChartConfig } from '@/types';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import ExportChart from '@/components/chart-editor/export-chart';
 
 interface Message {
     id: string;
@@ -54,7 +55,6 @@ export const Assistant: React.FC = () => {
     const [showExportMenu, setShowExportMenu] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const { exportChart, exportChartAsSVG } = useChartExport();
-    const createProject = () => {};
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -135,217 +135,6 @@ export const Assistant: React.FC = () => {
         }
     };
 
-    const getFallbackResponse = (message: string, context?: any): AIResponse => {
-        const lowerMessage = message.toLowerCase();
-
-        // Chart creation from descriptions
-        if (lowerMessage.includes('create') || lowerMessage.includes('make') || lowerMessage.includes('build')) {
-            if (lowerMessage.includes('bar') || lowerMessage.includes('column')) {
-                return createSampleChart('bar', message);
-            }
-            if (lowerMessage.includes('line') || lowerMessage.includes('trend')) {
-                return createSampleChart('line', message);
-            }
-            if (lowerMessage.includes('area') || lowerMessage.includes('area')) {
-                return createSampleChart('area', message);
-            }
-            if (lowerMessage.includes('pie') || lowerMessage.includes('donut')) {
-                return createSampleChart('pie', message);
-            }
-            if (lowerMessage.includes('scatter') || lowerMessage.includes('correlation')) {
-                return createSampleChart('scatter', message);
-            }
-            if (lowerMessage.includes('area') || lowerMessage.includes('filled')) {
-                return createSampleChart('area', message);
-            }
-            if (lowerMessage.includes('radar') || lowerMessage.includes('spider')) {
-                return createSampleChart('radar', message);
-            }
-            if (lowerMessage.includes('radial') || lowerMessage.includes('circular')) {
-                return createSampleChart('radialBar', message);
-            }
-            if (lowerMessage.includes('funnel') || lowerMessage.includes('conversion')) {
-                return createSampleChart('funnel', message);
-            }
-            if (lowerMessage.includes('treemap') || lowerMessage.includes('hierarchy')) {
-                return createSampleChart('treemap', message);
-            }
-            if (lowerMessage.includes('composed') || lowerMessage.includes('combined') || lowerMessage.includes('mixed')) {
-                return createSampleChart('composed', message);
-            }
-
-            // Default to bar chart for general creation requests
-            return createSampleChart('bar', message);
-        }
-
-        // Default response
-        return {
-            content:
-                "I'm here to help you create effective data visualizations! I can create charts from descriptions and professional guidance. What would you like to work on?",
-            suggestions: [
-                'Create a bar chart showing quarterly sales',
-                'Make a line chart of website traffic',
-                'Build a area chart for monthly expenses',
-            ],
-        };
-    };
-
-    const createSampleChart = (type: string, message: string): AIResponse => {
-        const chartConfigs = {
-            bar: {
-                title: 'Quarterly Sales Performance',
-                data: [
-                    { quarter: 'Q1 2024', sales: 45000, target: 40000 },
-                    { quarter: 'Q2 2024', sales: 52000, target: 48000 },
-                    { quarter: 'Q3 2024', sales: 61000, target: 55000 },
-                    { quarter: 'Q4 2024', sales: 58000, target: 60000 },
-                ],
-                xAxis: 'quarter',
-                yAxis: 'sales',
-                series: [{ dataKey: 'sales' }, { dataKey: 'target' }],
-            },
-            line: {
-                title: 'Website Traffic Over Time',
-                data: [
-                    { month: 'Jan', visitors: 12500, pageviews: 45000 },
-                    { month: 'Feb', visitors: 13200, pageviews: 48000 },
-                    { month: 'Mar', visitors: 15800, pageviews: 52000 },
-                    { month: 'Apr', visitors: 14600, pageviews: 49000 },
-                    { month: 'May', visitors: 16900, pageviews: 58000 },
-                    { month: 'Jun', visitors: 18200, pageviews: 62000 },
-                ],
-                xAxis: 'month',
-                yAxis: 'visitors',
-                series: [{ dataKey: 'visitors' }, { dataKey: 'pageviews' }],
-            },
-            pie: {
-                title: 'Market Share by Company',
-                data: [
-                    { company: 'Company A', share: 35 },
-                    { company: 'Company B', share: 28 },
-                    { company: 'Company C', share: 22 },
-                    { company: 'Company D', share: 15 },
-                ],
-                xAxis: 'company',
-                yAxis: 'share',
-                series: [{ dataKey: 'share' }],
-            },
-            area: {
-                title: 'Revenue Growth',
-                data: [
-                    { year: '2020', revenue: 120000 },
-                    { year: '2021', revenue: 145000 },
-                    { year: '2022', revenue: 168000 },
-                    { year: '2023', revenue: 195000 },
-                    { year: '2024', revenue: 220000 },
-                ],
-                xAxis: 'year',
-                yAxis: 'revenue',
-                series: [{ dataKey: 'revenue' }],
-            },
-            scatter: {
-                title: 'Price vs. Sales Correlation',
-                data: [
-                    { price: 25, sales: 450 },
-                    { price: 30, sales: 380 },
-                    { price: 35, sales: 320 },
-                    { price: 40, sales: 280 },
-                    { price: 45, sales: 240 },
-                    { price: 50, sales: 200 },
-                ],
-                xAxis: 'price',
-                yAxis: 'sales',
-                series: [{ dataKey: 'sales' }],
-            },
-            radar: {
-                title: 'Product Feature Comparison',
-                data: [
-                    { feature: 'Quality', productA: 85, productB: 90, productC: 78 },
-                    { feature: 'Price', productA: 65, productB: 50, productC: 95 },
-                    { feature: 'Durability', productA: 90, productB: 85, productC: 70 },
-                    { feature: 'Design', productA: 75, productB: 95, productC: 80 },
-                    { feature: 'Support', productA: 80, productB: 75, productC: 65 },
-                ],
-                xAxis: 'feature',
-                yAxis: 'productA',
-                series: [{ dataKey: 'productA' }, { dataKey: 'productB' }, { dataKey: 'productC' }],
-            },
-            radialBar: {
-                title: 'Goal Completion Rates',
-                data: [
-                    { name: 'Sales', value: 85 },
-                    { name: 'Marketing', value: 72 },
-                    { name: 'Development', value: 90 },
-                    { name: 'Support', value: 68 },
-                ],
-                xAxis: 'name',
-                yAxis: 'value',
-                series: [{ dataKey: 'value' }],
-            },
-            funnel: {
-                title: 'Sales Conversion Funnel',
-                data: [
-                    { stage: 'Visitors', value: 5000 },
-                    { stage: 'Leads', value: 3500 },
-                    { stage: 'Qualified', value: 2200 },
-                    { stage: 'Proposals', value: 1200 },
-                    { stage: 'Closed', value: 600 },
-                ],
-                xAxis: 'stage',
-                yAxis: 'value',
-                series: [{ dataKey: 'value' }],
-            },
-            treemap: {
-                title: 'Budget Allocation by Department',
-                data: [
-                    { department: 'Marketing', budget: 250000 },
-                    { department: 'R&D', budget: 350000 },
-                    { department: 'Operations', budget: 200000 },
-                    { department: 'Sales', budget: 300000 },
-                    { department: 'IT', budget: 180000 },
-                    { department: 'HR', budget: 120000 },
-                ],
-                xAxis: 'department',
-                yAxis: 'budget',
-                series: [{ dataKey: 'budget' }],
-            },
-            composed: {
-                title: 'Sales Performance vs Target',
-                data: [
-                    { month: 'Jan', sales: 45000, target: 40000 },
-                    { month: 'Feb', sales: 52000, target: 48000 },
-                    { month: 'Mar', sales: 61000, target: 55000 },
-                    { month: 'Apr', sales: 58000, target: 60000 },
-                    { month: 'May', sales: 64000, target: 62000 },
-                    { month: 'Jun', sales: 68000, target: 65000 },
-                ],
-                xAxis: 'month',
-                yAxis: 'sales',
-                series: [{ dataKey: 'sales' }, { dataKey: 'target' }],
-            },
-        };
-
-        const config = chartConfigs[type as keyof typeof chartConfigs];
-
-        return {
-            content: `I've created a ${type} chart for you! This visualization demonstrates how ${type} charts can effectively display your data. You can customize the colors, labels, and styling to match your needs.`,
-            chartConfig: {
-                type,
-                title: config.title,
-                xAxis: config.xAxis,
-                yAxis: config.yAxis,
-                series: config.series,
-                colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                showGrid: true,
-                showLegend: true,
-                width: 800,
-                height: 400,
-            },
-            generatedData: config.data,
-            suggestions: ['Customize the chart colors', 'Change the chart title', 'Add your own data', 'Export for publication'],
-        };
-    };
-
     const handleSuggestionClick = (suggestion: string) => {
         setInputValue(suggestion);
     };
@@ -353,21 +142,6 @@ export const Assistant: React.FC = () => {
     const handleShowEmbed = (config: ChartConfig, data: any[]) => {
         setSelectedChart({ config, data });
         setShowEmbedModal(true);
-    };
-
-    const handleExportChart = async (messageId: string, config: ChartConfig, format: 'png' | 'svg') => {
-        try {
-            if (format === 'svg') {
-                await exportChartAsSVG(config.title || 'ai-generated-chart');
-                toast.success('Chart exported as SVG successfully!');
-            } else {
-                await exportChart(config.title || 'ai-generated-chart');
-                toast.success('Chart exported as PNG successfully!');
-            }
-        } catch (error) {
-            toast.error(`Failed to export chart as ${format.toUpperCase()}.`);
-        }
-        setShowExportMenu(null);
     };
 
     const handleEditInProject = async (config: ChartConfig, data: any[]) => {
@@ -390,7 +164,8 @@ export const Assistant: React.FC = () => {
 
         router.post(route('project.store'), payload, {
             only: ['flash'],
-            onSuccess: () => {
+            onSuccess: (response) => {
+                router.visit(route('projects.charts.index', response.props.flash.data.id))
                 toast.success('🎉 Project Deployed!', {
                     id: 'create-project',
                     description: `Project "${config.title}" has been successfully set up with its chart and dataset. Dive into your insights now. 📊`
@@ -422,7 +197,7 @@ export const Assistant: React.FC = () => {
                                     {message.type === 'user' ? (
                                         <AvatarFallback className="bg-primary text-foreground rounded-lg">{getInitials('aamish')}</AvatarFallback>
                                     ) : (
-                                        <AvatarFallback className="text-foreground bg-gradient-from bg-gradient-to rounded-lg bg-gradient-to-r">
+                                        <AvatarFallback className="text-foreground from-gradient-from to-gradient-to rounded-lg bg-gradient-to-r">
                                             <Bot className="h-4 w-4" />
                                         </AvatarFallback>
                                     )}
@@ -455,7 +230,7 @@ export const Assistant: React.FC = () => {
 
                                             {/* Chart Actions */}
                                             <div className="mt-4 flex items-center justify-center space-x-3">
-                                                <Button onClick={() => handleEditInProject(message.chartConfig!, message.generatedData!)}>
+                                                <Button onClick={() => handleEditInProject(message.chartConfig, message.generatedData)}>
                                                     <Edit className="h-4 w-4" />
                                                     <span>Edit in Project</span>
                                                 </Button>
@@ -467,32 +242,7 @@ export const Assistant: React.FC = () => {
                                                 {/*    <span>Get Embed Code</span>*/}
                                                 {/*</button>*/}
                                                 <div className="relative">
-                                                    <button
-                                                        onClick={() => setShowExportMenu(showExportMenu === message.id ? null : message.id)}
-                                                        className="flex items-center space-x-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                                                    >
-                                                        <Download className="h-4 w-4" />
-                                                        <span>Export</span>
-                                                    </button>
-
-                                                    {showExportMenu === message.id && (
-                                                        <div className="absolute right-0 z-10 mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-                                                            <button
-                                                                onClick={() => handleExportChart(message.id, message.chartConfig!, 'png')}
-                                                                className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-                                                            >
-                                                                <FileImage className="h-4 w-4" />
-                                                                <span>Export as PNG</span>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleExportChart(message.id, message.chartConfig!, 'svg')}
-                                                                className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-                                                            >
-                                                                <Code className="h-4 w-4" />
-                                                                <span>Export as SVG</span>
-                                                            </button>
-                                                        </div>
-                                                    )}
+                                                    <ExportChart title={message.chartConfig.title} />
                                                 </div>
                                             </div>
                                         </div>
