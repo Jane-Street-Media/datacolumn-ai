@@ -89,6 +89,8 @@ class FetchPlans extends Command
                                 'Email support',
                             ],
                             'features' => [
+                                'no_of_invitations' => 0,
+                                'no_of_projects' => -1,
                                 'no_of_charts' => -1,
                                 'no_of_exports' => -1,
                                 'watermark' => false,
@@ -118,7 +120,10 @@ class FetchPlans extends Command
                                 'Usage analytics',
                             ],
                             'features' => [
-                                'no_of_seats' => 5,
+                                'no_of_invitations' => 5,
+                                'no_of_projects' => -1,
+                                'no_of_charts' => -1,
+                                'no_of_exports' => -1,
                                 'shared_folders' => true,
                                 'shared_styles' => true,
                                 'access_controls' => true,

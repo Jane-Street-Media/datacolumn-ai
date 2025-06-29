@@ -29,6 +29,9 @@ class EnterprisePlanSeeder extends Seeder
                     'Advanced security',
                 ],
                 'features' => [
+                    'no_of_invitations' => -1,
+                    'no_of_projects' => -1,
+                    'no_of_charts' => -1,
                     'no_of_seats' => -1,
                     'api_integrations' => true,
                     'sla' => true,

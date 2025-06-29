@@ -25,6 +25,8 @@ class FreePlanSeeder extends Seeder
                     'Community support',
                 ],
                 'features' => [
+                    'no_of_invitations' => 3,
+                    'no_of_projects' => 3,
                     'no_of_charts' => 3,
                     'basic_customization' => true,
                     'branded_embeds' => true,
@@ -57,6 +59,8 @@ class FreePlanSeeder extends Seeder
                     'Community support',
                 ],
                 'features' => [
+                    'no_of_invitations' => 3,
+                    'no_of_projects' => 3,
                     'no_of_charts' => 3,
                     'basic_customization' => true,
                     'branded_embeds' => true,
