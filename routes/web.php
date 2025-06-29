@@ -93,8 +93,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
     });
 
-    Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
-
     Route::prefix('chart-ai')->group(function () {
         Route::get('/', ChartAIController::class)->name('chart-ai');
     });
@@ -106,6 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('chart/embed/{chart:uuid}', EmbeddedChartController::class)->name('chart.embed');
+Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
