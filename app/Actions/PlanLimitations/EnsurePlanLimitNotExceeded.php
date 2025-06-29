@@ -16,7 +16,7 @@ class EnsurePlanLimitNotExceeded
         $features = GetSubscribedPlanFeatures::handle($team);
         $featureUsageCount = $feature->getFeatureUsageCount($team);
 
-        if (!isset($features[$featureUsageCount])) {
+        if (!isset($features[$feature->value])) {
             throw new PackageLimitExceededException('You current package does not support this feature.');
         }
 
