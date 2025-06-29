@@ -15,7 +15,7 @@ import {
 import { useChartExport } from '@/hooks/use-chart-export';
 import EmbedDialog from '@/components/chart-editor/embed-dialog';
 
-export function ChartHeaderActions({ chart, config, data, columns, onImportSuccess, onSave, loading } ) {
+export function ChartHeaderActions({ chart, config, data, columns, handleConfigChange, onImportSuccess, onSave, loading } ) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { importCSV, isImporting } = useDataImport();
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +105,7 @@ export function ChartHeaderActions({ chart, config, data, columns, onImportSucce
                                     )}
                                     <span>Save</span>
                                 </Button>
-                                <EmbedDialog chart={chart} config={config} data={data} columns={columns} />
+                                <EmbedDialog chart={chart} config={config} data={data} columns={columns} handleConfigChange={handleConfigChange} />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>

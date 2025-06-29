@@ -18,13 +18,7 @@ import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
 import { ChartControls } from '@/components/chart-editor/chartControls';
 import { Card, CardContent } from '@/components/ui/card';
 
-export default function EmbedDialog({ chart, config, data, columns }) {
-
-    const handleConfigChange = () => {
-        // Handle configuration changes here
-        toast.success('Configuration updated successfully!');
-    }
-
+export default function EmbedDialog({ chart, config, data, columns, handleConfigChange }) {
     const embedScript = `<!-- DataColumn.ai Chart -->
 <div id="dc-chart-123" style="width: ${config.responsive ? '100%' : config.width}; height: ${config.height}; border-radius: 8px; overflow: hidden;"></div>
 <script>
