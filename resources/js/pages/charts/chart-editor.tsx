@@ -178,7 +178,7 @@ export default function ChartEditor({ chart }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions config={config} data={data} columns={columns} onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating}/>
+                <ChartHeaderActions chart={chart} config={config} data={data} columns={columns} onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating}/>
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>

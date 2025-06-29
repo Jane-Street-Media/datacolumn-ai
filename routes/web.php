@@ -4,6 +4,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
 use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmbeddedChartController;
 use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
@@ -104,14 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-Route::get('chart/embed/{uuid}', function ($uuid) {
-    $chart = \App\Models\Chart::where('uuid', $uuid)->firstOrFail();
-
-    return Inertia::render('charts/chart-embed', [
-        'config' => $chart->config,
-        'data' => $chart->data,
-    ]);
-})->name('chart.1');
+Route::get('chart/embed/{chart:uuid}', EmbeddedChartController::class)->name('chart.embed');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
