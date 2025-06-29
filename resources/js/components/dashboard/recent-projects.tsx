@@ -4,8 +4,13 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { BarChart3, Plus } from 'lucide-react';
+import { router } from '@inertiajs/react';
 
 export default function RecentProjects({ projects, folders }) {
+    const showProject = (projectId) => {
+        return router.visit(route('projects.charts.index', projectId))
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -30,6 +35,7 @@ export default function RecentProjects({ projects, folders }) {
                     {projects?.length  ? (
                         projects.map((project, index) => (
                             <motion.div
+                                onClick={() => showProject(project.id)}
                                 key={project.id}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}

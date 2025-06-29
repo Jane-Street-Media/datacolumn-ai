@@ -10,6 +10,7 @@ class GetRecentProjectQuery
     public static function handle(): Builder
     {
         return Project::query()->select([
+            'id',
             'user_id',
             'team_id',
             'name',
