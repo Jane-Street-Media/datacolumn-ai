@@ -26,7 +26,7 @@ class ProjectChartsController extends Controller
         ]);
     }
 
-    public function store(Project $project)
+    public function store(Project $project): RedirectResponse
     {
         try {
             $chart = CreateSampleChart::handle(Auth::user(), $project);
