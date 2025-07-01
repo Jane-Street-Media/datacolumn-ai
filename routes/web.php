@@ -73,24 +73,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [FolderController::class, 'store'])->name('folder.store');
     });
 
-    Route::prefix('team')->group(function () {
-        Route::get('/', [TeamController::class, 'index'])->name('teams.store');
-        Route::post('/', [TeamController::class, 'store'])->name('teams.store');
-        Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
-        Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::group(['middleware' => 'isTeamPlan'], function () {
+        Route::prefix('team')->group(function () {
+            Route::get('/', [TeamController::class, 'index'])->name('teams.index');
+            Route::post('/', [TeamController::class, 'store'])->name('teams.store');
+            Route::put('/{team}', [TeamController::class, 'update'])->name('teams.update');
+            Route::delete('/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
 
-        // Team Member Management
-        Route::patch('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
-        Route::delete('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
-        Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
-    });
+            // Team Member Management
+            Route::patch('/{user}/update-role', [TeamMemberController::class, 'update'])->name('team.member.update');
+            Route::delete('/{team}/remove-member', [TeamMemberController::class, 'destroy'])->name('team.member.destroy');
+            Route::post('/{team}/invitation', [TeamMemberController::class, 'store'])->name('team.member.store');
+        });
 
-    Route::patch('/current-team/switch', [SwitchUserTeamController::class, 'update'])->name('current-team.update');
+        Route::patch('/current-team/switch', [SwitchUserTeamController::class, 'update'])->name('current-team.update');
 
-    // Team Invitations
-    Route::prefix('team-invitation')->group(function () {
-        Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
-        Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
+        // Team Invitations
+        Route::prefix('team-invitation')->group(function () {
+            Route::get('/{teamInvitation}/accept', [TeamInvitationController::class, 'store'])->name('team-invitations.accept')->middleware('signed');
+            Route::delete('/{teamInvitation}', [TeamInvitationController::class, 'destroy'])->name('team-invitations.destroy');
+        });
     });
 
     Route::prefix('chart-ai')->group(function () {

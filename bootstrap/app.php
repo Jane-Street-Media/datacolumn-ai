@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\IsTeamPlan;
 use App\Http\Middleware\SetTeam;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'teams' => SetTeam::class,
+            'isTeamPlan' => IsTeamPlan::class,
         ]);
     })
 
