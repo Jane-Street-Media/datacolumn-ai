@@ -13,10 +13,7 @@ class GetSubscribedPlanFeatures
         $subscription = $team->subscriptionWithProductDetails();
 
         if (! $subscription) {
-            return [
-                PlanFeatureEnum::NO_OF_PROJECTS->value => Plan::FREE_PLAN_NO_OF_PROJECTS,
-                PlanFeatureEnum::NO_OF_INVITATIONS->value => Plan::FREE_PLAN_NO_OF_INVITATIONS,
-            ];
+            return Plan::where('chargebee_id', 'free-monthly')->first()->features;
         }
 
         return Plan::where('chargebee_id', $subscription->chargebee_price)->first()->features;

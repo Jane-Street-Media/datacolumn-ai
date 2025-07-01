@@ -133,6 +133,7 @@ class FetchPlans extends Command
                                 'brand_customization' => true,
                                 'usage_analytics' => true,
                                 'ai_assistant' => false,
+                                'watermark' => false,
                             ],
                             'cta' => 'Start Team Trial',
                             'popular' => false,
