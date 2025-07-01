@@ -11,6 +11,7 @@ enum PlanFeatureEnum: string
     case NO_OF_PROJECTS = 'no_of_projects';
     case NO_OF_CHARTS = 'no_of_charts';
     case NO_OF_SEATS = 'no_of_seats';
+    case NO_OF_AI_GENERATIONS = 'no_of_ai_generations';
     case API_INTEGRATIONS = 'api_integrations';
     case SLA = 'sla';
     case FULL_WHITE_LABELING = 'full_white_labeling';
