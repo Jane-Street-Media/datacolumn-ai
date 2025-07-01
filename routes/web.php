@@ -6,7 +6,7 @@ use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmbeddedChartController;
 use App\Http\Controllers\Folders\FolderController;
-use App\Http\Controllers\ProjectChartsController;
+use App\Http\Controllers\Projects\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\SwitchUserTeamController;
@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('{project}/charts')->group(function () {
             Route::get('/', [ProjectChartsController::class, 'index'])->name('projects.charts.index');
+            Route::post('/store', [ProjectChartsController::class, 'store'])->name('projects.charts.store');
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
             Route::patch('/{chart}', [ProjectChartsController::class, 'update'])->name('projects.charts.update');
         });

@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Projects;
 
+use App\Actions\Project\Charts\CreateSampleChart;
 use App\Actions\Project\Charts\GetProjectCharts;
 use App\Data\Projects\Charts\ChartFilterData;
+use App\Exceptions\PackageLimitExceededException;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Projects\Charts\ChartFilterRequest;
 use App\Http\Requests\Projects\Charts\UpdateChartRequest;
 use App\Models\Chart;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,7 +22,24 @@ class ProjectChartsController extends Controller
     {
         return Inertia::render('charts/chart-index', [
             'charts' => Inertia::defer(fn () => GetProjectCharts::handle($project, ChartFilterData::from($request->validated()))),
+            'project' => $project,
         ]);
+    }
+
+    public function store(Project $project)
+    {
+        try {
+            $chart = CreateSampleChart::handle(Auth::user(), $project);
+            return redirect()->route('projects.charts.edit', [
+                'project' => $project,
+                'chart' => $chart,
+            ]);
+
+        } catch (PackageLimitExceededException $exception) {
+            return redirect()->back()
+                ->withErrors(['package_restriction' => $exception->getMessage()]);
+        }
+
     }
 
     public function edit(Project $project, Chart $chart): Response
