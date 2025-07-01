@@ -18,6 +18,6 @@ class IsTeamPlan
 
     private function isTeamPlan(Request $request): bool
     {
-        return $request->user()?->currentTeam?->subscriptionWithProductDetails()->plan->display_name === 'Team';
+        return $request->user()?->currentTeam?->subscriptionWithProductDetails()?->plan?->display_name === 'Team';
     }
 }
