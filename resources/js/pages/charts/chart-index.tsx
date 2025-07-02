@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Deferred, Head, router } from '@inertiajs/react';
+import { Deferred, Head, router, useForm } from '@inertiajs/react';
 import { BarChart, BarChart3, FolderOpen, LineChart, Loader2, Search, UserPlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ProjectCard from '@/components/projects/project-card';
@@ -40,19 +40,16 @@ export default function ChartIndex({ charts, project }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
-    const [creatingChart, setCreatingChart] = useState(false)
+    const {data, setData, post, processing} = useForm({})
     const createChart = (e) => {
         e.preventDefault()
-        setCreatingChart(true)
-        router.post(route('projects.charts.store', project.id), {}, {
+        post(route('projects.charts.store', project.id), {
+            showProgress: false,
             onError: (errors) => {
                 if(errors.package_restriction){
                     toast.error(errors.package_restriction)
                 }
             },
-            onFinish: () => {
-                setCreatingChart(false)
-            }
         })
     }
 
@@ -67,7 +64,7 @@ export default function ChartIndex({ charts, project }) {
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
                                         <Button variant="ghost" className="border" onClick={(e) => createChart(e)}>
-                                            {creatingChart ? (
+                                            {processing ? (
                                                 <>
                                                     <Loader2 className="w-5 h-5 animate-spin"/>
                                                     Processing...
