@@ -15,7 +15,7 @@ use App\Models\User;
 
 class SyncSubscriptionPlanChanges
 {
-    public static function handle(User $user)
+    public static function handle(User $user): void
     {
         if ($user->currentTeam->isOnFreePlan()) {
             $freePlanFeatures = $user->currentTeam->freePlan()->features;
