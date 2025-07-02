@@ -8,7 +8,7 @@ use App\Models\Team;
 
 class GetSubscribedPlanFeatures
 {
-    public static function handle(Team $team)
+    public static function handle(Team $team): array
     {
         return $team->subscriptionWithProductDetails()->plan->features;
     }
