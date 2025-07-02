@@ -168,8 +168,8 @@ export default function ChartEditor({ chart }) {
                     toast.error(errors.error)
                 }
 
-                if(errors.cannot_update){
-                    toast.error(errors.cannot_update)
+                if(errors.package_restriction){
+                    toast.error(errors.package_restriction)
                 }
             },
             onFinish: () => setUpdating(false)

@@ -59,10 +59,6 @@ export default function ProjectDialog({ folders, project = null, trigger, status
                         description: 'Upgrade your plan to create more projects.',
                     });
                 }
-
-                if (err.cannot_update) {
-                    toast.error(err.cannot_update);
-                }
             },
             onSuccess: (response) => {
                 console.log(response, 'this is response');

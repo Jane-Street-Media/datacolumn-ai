@@ -55,7 +55,7 @@ class UpdateProjectRequest extends BaseTeamRequest
         return [
             function (Validator $validator) use ($project, $limitExceeded) {
                 if($project->status === ProjectStatus::INACTIVE && $limitExceeded){
-                    $validator->errors()->add('cannot_update', 'You cannot update the project.');
+                    $validator->errors()->add('package_restriction', 'You have reached the maximum number of projects allowed by your plan.');
                 }
             }
         ];

@@ -40,7 +40,7 @@ class UpdateChartRequest extends BaseTeamRequest
         return [
             function (Validator $validator) use ($chart, $limitExceeded) {
                 if($chart->status === ChartStatus::INACTIVE && $limitExceeded){
-                    $validator->errors()->add('cannot_update', 'You cannot update the chart.');
+                    $validator->errors()->add('package_restriction', 'You have reached the maximum number of charts allowed by your plan.');
                 }
             }
         ];

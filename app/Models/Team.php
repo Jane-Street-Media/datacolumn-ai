@@ -58,9 +58,4 @@ class Team extends Model
             'plan' => Plan::query()->where('chargebee_id', 'free-monthly')->first()
         ];
     }
-
-    public function isOnFreePlan(): bool
-    {
-        return $this->subscriptionWithProductDetails()?->chargebee_status === SubscriptionStatus::CANCELLED->value;
-    }
 }
