@@ -16,7 +16,7 @@ import {
     Layers
 } from 'lucide-react';
 import { CustomChartConfig } from '../../pages/charts/types';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
@@ -200,26 +200,47 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         onConfigChange({ ...config, ...updates });
     }, [config, onConfigChange]);
 
-    const [selectedSeriesIndex, setSelectedSeriesIndex] = useState(null);
-    const [selectedSeries, setSelectedSeries] = useState(null);
-
     const [series, setSeries] = useState(config.series || []);
-    const addSeries = (value) => {
-        // check if values already exists in series
+
+    useEffect(() => {
+        updateConfig({ series });
+    }, [series]);
+
+    const addSeries = (value: string) => {
         if (series.some(sery => sery.dataKey === value)) {
             return;
         }
+        const findSeriesItem = config.series.find((item) => item.dataKey === value);
+        setSeries([...series, findSeriesItem]);
+    }
+    const updateSeries = (data: {
+        itemIndex: number;
+        itemValue: Partial<CustomChartConfig['series'][number]>;
+    }) => {
+        const updatedSeries = [...config.series];
 
-        const newSeries = {
-            dataKey: value,
-            type: 'line',
-            fill: '#8884d8',
-            stroke: '#8884d8',
+        const oldColorValue = (updatedSeries[data.itemIndex].hasOwnProperty('fill')) ? updatedSeries[data.itemIndex].fill : updatedSeries[data.itemIndex].stroke;
+        if (data.itemValue.chartType === 'line') {
+            delete updatedSeries[data.itemIndex].fill;
+            updatedSeries[data.itemIndex].stroke = oldColorValue;
+        } else {
+            delete updatedSeries[data.itemIndex].stroke;
+            updatedSeries[data.itemIndex].fill = oldColorValue;
+        }
+
+        updatedSeries[data.itemIndex] = {
+            ...updatedSeries[data.itemIndex],
+            ...data.itemValue,
         };
 
-        setSeries([...series, newSeries]);
-        updateConfig({ series: series })
-    }
+        setSeries([...updatedSeries]);
+    };
+
+    const removeSeries = (index: number) => {
+        const updatedSeries = [...config.series];
+        updatedSeries.splice(index, 1);
+        setSeries([...updatedSeries]);
+    };
 
 
 
@@ -414,11 +435,15 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                                     </SelectContent>
                                 </Select>
 
-                                {series.map((yaxis) => (
-                                    <div className="flex flex-row items-center space-y-4 space-x-2">
+                                {series.map((yaxis, yaxisIndex) => (
+                                    <div className="flex flex-row items-center gap-4 relative pr-5">
                                         <div className={'m-0 space-y-2'}>
                                             <h4 className="text-sm font-medium capitalize"> {yaxis.dataKey} Type </h4>
-                                            <Select value={yaxis.type} className={'w-full'}>
+                                            <Select
+                                                value={yaxis.chartType}
+                                                className={'w-full'}
+                                                onValueChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {chartType: val}})}
+                                            >
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Y Sery" />
                                                 </SelectTrigger>
@@ -435,11 +460,23 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                                         <div className={'space-y-2'}>
                                             <h4 className="text-sm font-medium capitalize"> {yaxis.dataKey} Color </h4>
                                             {(yaxis.fill != '' && yaxis.fill !== undefined) && (
-                                                <ColorPicker value={yaxis.fill} />
+                                                <ColorPicker
+                                                    value={yaxis.fill}
+                                                    onChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {fill: val}})}
+                                                />
                                             )}
                                             {(yaxis.stroke != '' && yaxis.stroke !== undefined) && (
-                                                <ColorPicker value={yaxis.stroke} />
+                                                <ColorPicker
+                                                    value={yaxis.stroke}
+                                                    onChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {stroke: val}})}
+                                                />
                                             )}
+                                        </div>
+
+                                        <div
+                                            className={'flex justify-center items-center absolute right-0 top-0 bottom-0 my-auto h-fit w-fit cursor-pointer'}
+                                            onClick={() => removeSeries(yaxisIndex)} >
+                                            X
                                         </div>
                                     </div>
                                 ))}
