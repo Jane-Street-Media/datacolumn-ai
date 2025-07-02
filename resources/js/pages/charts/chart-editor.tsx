@@ -166,8 +166,10 @@ export default function ChartEditor({ chart }) {
             onError: (errors) => {
                 if(errors.error){
                     toast.error(errors.error)
-                }else {
-                    console.log(errors);
+                }
+
+                if(errors.cannot_update){
+                    toast.error(errors.cannot_update)
                 }
             },
             onFinish: () => setUpdating(false)

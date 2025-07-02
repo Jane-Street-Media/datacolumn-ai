@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('folder_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('status')->default(ProjectStatus::DRAFT->value);
+            $table->string('status')->default(ProjectStatus::PUBLISHED->value);
             $table->json('tags')->nullable();
             $table->timestamps();
         });

@@ -135,7 +135,14 @@ export default function ChartCard({ index = 1, chart }) {
                 </div>
             </CardContent>
             <CardFooter className="flex items-center justify-between">
-
+                <div
+                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${chart.status === 'active'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
+                        : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
+                    }`}
+                >
+                    {chart.status}
+                </div>
             </CardFooter>
         </MotionCard>
     );

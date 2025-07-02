@@ -19,7 +19,7 @@ class SendTeamInvitation
      */
     public static function handle(array $data, Team $team): TeamInvitation
     {
-        EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_INVITATIONS);
+        EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_TEAM_MEMBERS);
         $teamInvitation = $team->invitations()->create($data);
         Mail::to($teamInvitation->email)->send(new InvitationSent($teamInvitation));
 

@@ -25,7 +25,7 @@ class FreePlanSeeder extends Seeder
                     'Community support',
                 ],
                 'features' => [
-                    'no_of_invitations' => 0,
+                    'no_of_team_members' => 0,
                     'no_of_projects' => 3,
                     'no_of_charts' => 3,
                     'no_of_exports' => 3,
@@ -61,7 +61,7 @@ class FreePlanSeeder extends Seeder
                     'Community support',
                 ],
                 'features' => [
-                    'no_of_invitations' => 0,
+                    'no_of_team_members' => 0,
                     'no_of_projects' => 3,
                     'no_of_charts' => 3,
                     'no_of_exports' => 3,

@@ -24,14 +24,16 @@ type ProjectForm = {
     name: string;
     description: string;
     folder_id: number;
+    status: string
 };
 
-export default function ProjectDialog({ folders, project = null, trigger }) {
+export default function ProjectDialog({ folders, project = null, trigger, statuses}) {
     const [open, setOpen] = useState(false);
     const { data, setData, post, patch, processing, errors, reset } = useForm<ProjectForm>({
         name: project?.name ?? '',
         description: project?.description ?? '',
         folder_id: project?.folder_id ?? '',
+        status: project?.status ?? ''
     });
 
     const isEdit = useMemo(() => !!project?.id, [project]);
@@ -56,6 +58,10 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                     toast.error(err.package_restriction, {
                         description: 'Upgrade your plan to create more projects.',
                     });
+                }
+
+                if (err.cannot_update) {
+                    toast.error(err.cannot_update);
                 }
             },
             onSuccess: (response) => {
@@ -113,6 +119,23 @@ export default function ProjectDialog({ folders, project = null, trigger }) {
                             placeholder="Enter Project Description"
                         />
                         <InputError message={errors.description} />
+
+                        <Label htmlFor="status">Folder</Label>
+                        <Select value={data.status} onValueChange={(value) => setData('status', value)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {statuses?.map((status) => (
+                                        <SelectItem key={status.label} value={String(status.value)}>
+                                            {status.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.folder_id} />
 
                         <Label htmlFor="folder">Folder</Label>
                         <Select value={String(data.folder_id)} onValueChange={(value) => setData('folder_id', Number(value))}>

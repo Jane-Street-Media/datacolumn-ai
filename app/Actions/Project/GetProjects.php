@@ -3,15 +3,14 @@
 namespace App\Actions\Project;
 
 use App\Models\Project;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class GetProjects
 {
-    public static function handle(array $data): Collection
+    public static function handle(?array $data = null): Builder
     {
-        return Project::withCount('charts')
+        return Project::query()->withCount('charts')
             ->when(isset($data['folder']), fn ($q) => $q->whereRelation('folder', 'id', $data['folder']))
-            ->when(isset($data['search']), fn ($query) => $query->where('name', 'like', '%'.$data['search'].'%'))
-            ->get();
+            ->when(isset($data['search']), fn ($query) => $query->where('name', 'like', '%'.$data['search'].'%'));
     }
 }
