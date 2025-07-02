@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ProjectStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->foreignId('folder_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('status')->default('draft');
+            $table->string('status')->default(ProjectStatus::PUBLISHED->value);
             $table->json('tags')->nullable();
             $table->timestamps();
         });

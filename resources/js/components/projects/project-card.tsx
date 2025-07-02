@@ -21,7 +21,7 @@ import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
 const MotionCard = motion(Card);
-export default function ProjectCard({ index = 1, project, folders }) {
+export default function ProjectCard({ index = 1, project, folders, statuses }) {
     const { delete: destroy, reset, processing } = useForm();
 
     const deleteProject: FormEventHandler = (e) => {
@@ -36,12 +36,14 @@ export default function ProjectCard({ index = 1, project, folders }) {
             },
         });
     };
-    const showProject = (projectId) => {
-        return router.visit(route('projects.charts.index', projectId))
+    const showProject = (projectId, e) => {
+        if(e.target === e.currentTarget){
+            return router.visit(route('projects.charts.index', projectId))
+        }
     }
 
     return (
-        <MotionCard onClick={() => showProject(project.id)} className={`cursor-pointer hover:border-primary`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard onClick={(e) => showProject(project.id, e)} className={`cursor-pointer hover:border-primary`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
@@ -58,6 +60,7 @@ export default function ProjectCard({ index = 1, project, folders }) {
                                 <ProjectDialog
                                     folders={folders}
                                     project={project}
+                                    statuses={statuses}
                                     trigger={
                                         <Button variant="ghost" className="justify-start">
                                             <Edit />
@@ -114,13 +117,12 @@ export default function ProjectCard({ index = 1, project, folders }) {
             </CardContent>
             <CardFooter className="flex items-center justify-between">
                 <div
-                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                        'published' === 'published'
+                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${project.status === 'published'
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                            : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
                     }`}
                 >
-                    {'published'}
+                    {project.status}
                 </div>
 
                 <div className="text-secondary-foreground flex items-center text-sm">

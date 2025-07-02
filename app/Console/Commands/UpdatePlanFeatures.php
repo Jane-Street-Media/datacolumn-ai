@@ -29,7 +29,7 @@ class UpdatePlanFeatures extends Command
         $features = [
             'no_of_projects' => 10,
             'no_of_folders' => 10,
-            'no_of_invitations' => 10,
+            'no_of_team_members' => 10,
         ];
 
         $plans = Plan::all();
@@ -38,7 +38,7 @@ class UpdatePlanFeatures extends Command
             $plan->features = [
                 'no_of_projects' => 10 - $k + 2,
                 'no_of_folders' => 10 - $k + 2,
-                'no_of_invitations' => 10 - $k + 2,
+                'no_of_team_members' => 10 - $k + 2,
             ];
         }
     }

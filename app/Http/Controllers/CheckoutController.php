@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Actions\Notifications\SendNotification;
 use App\Enums\NotificationType;
+use App\Actions\SyncSubscriptionPlanChanges;
 use App\Helpers\SubscriptionLockHelper;
 use Chargebee\Cashier\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -71,6 +73,8 @@ class CheckoutController extends Controller
             $oldPlanName,
             $newPlanName
         );
+
+        SyncSubscriptionPlanChanges::handle(Auth::user());
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }

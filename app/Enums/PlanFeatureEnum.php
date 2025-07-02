@@ -6,7 +6,7 @@ use App\Models\Team;
 
 enum PlanFeatureEnum: string
 {
-    case NO_OF_INVITATIONS = 'no_of_invitations';
+    case NO_OF_TEAM_MEMBERS = 'no_of_team_members';
     case NO_OF_FOLDERS = 'no_of_folders';
     case NO_OF_PROJECTS = 'no_of_projects';
     case NO_OF_CHARTS = 'no_of_charts';
@@ -44,7 +44,7 @@ enum PlanFeatureEnum: string
     {
         return match ($this) {
             self::NO_OF_PROJECTS => $team->projects()->count(),
-            self::NO_OF_INVITATIONS => $team->users()->count() + $team->invitations()->count(),
+            self::NO_OF_TEAM_MEMBERS => $team->users()->count() + $team->invitations()->count(),
             self::NO_OF_CHARTS => $team->charts()->count(),
         };
     }
@@ -53,7 +53,7 @@ enum PlanFeatureEnum: string
     {
         return match ($this) {
             self::NO_OF_PROJECTS => 'You have reached the maximum number of projects allowed by your plan.',
-            self::NO_OF_INVITATIONS => 'You have reached the maximum number of invitations allowed by your plan.',
+            self::NO_OF_TEAM_MEMBERS => 'You have reached the maximum number of invitations allowed by your plan.',
             self::NO_OF_CHARTS => 'You have reached the maximum number of charts allowed by your plan.',
         };
     }
