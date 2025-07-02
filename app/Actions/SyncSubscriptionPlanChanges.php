@@ -28,7 +28,7 @@ class SyncSubscriptionPlanChanges
         }
 
         $totalProjectsCount = GetProjects::handle()->count();
-        if ($totalProjectsCount > $projectLimit) {
+        if ($projectLimit !== -1 && $totalProjectsCount > $projectLimit) {
             $excessProjectCount = $totalProjectsCount - $projectLimit;
             defer(fn() => GetProjects::handle()
                 ->latest()
@@ -39,7 +39,7 @@ class SyncSubscriptionPlanChanges
         }
 
         $totalChartsCount = GetChartQuery::handle()->count();
-        if ($totalChartsCount > $chartLimit) {
+        if ($chartLimit !== -1 && $totalChartsCount > $chartLimit) {
             $excessChartCount = $totalChartsCount - $chartLimit;
             defer(fn() => GetChartQuery::handle()
                 ->latest()
@@ -50,7 +50,7 @@ class SyncSubscriptionPlanChanges
         }
 
         $totalTeamMembersCount = $user->currentTeam->users()->count();
-        if ($totalTeamMembersCount > $teamMembersLimit) {
+        if ($teamMembersLimit !== -1 && $totalTeamMembersCount > $teamMembersLimit) {
             $excessTeamMembersCount = $totalTeamMembersCount - $teamMembersLimit;
             defer(fn() => $user->currentTeam->users()
                 ->latest('team_user.created_at')
