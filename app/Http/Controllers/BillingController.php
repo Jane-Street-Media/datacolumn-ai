@@ -67,7 +67,7 @@ class BillingController extends Controller
     public function subscriptions(Request $request): Response
     {
         return Inertia::render('settings/subscription', [
-            'subscription' => $request->user()->currentTeam->subscriptionWithProductDetails() ?? null,
+            'subscription' => $request->user()->currentTeam->subscriptionWithProductDetails(),
             'plans' => $this->getAllPlans(),
         ]);
     }

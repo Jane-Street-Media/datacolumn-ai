@@ -8,6 +8,7 @@ use App\Actions\Project\DeleteProject;
 use App\Actions\Project\GetProjects;
 use App\Actions\Project\UpdateProject;
 use App\Data\CreateProjectData;
+use App\Enums\ProjectStatus;
 use App\Exceptions\PackageLimitExceededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Projects\CreateProjectRequest;
@@ -24,8 +25,9 @@ class ProjectsController extends Controller
     public function index(ProjectFilterRequest $request): Response
     {
         return Inertia::render('projects', [
-            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())),
+            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())->latest()->get()),
             'folders' => Inertia::defer(fn() => GetFolders::handle()),
+            'statuses' => ProjectStatus::getFormattedValues()
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChartStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,7 @@ class Chart extends TeamBootModel
         'config' => 'json',
         'data' => 'json',
         'embed_settings' => 'json',
+        'status' => ChartStatus::class,
     ];
 
     public function uniqueIds(): array

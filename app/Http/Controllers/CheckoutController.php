@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\SyncSubscriptionPlanChanges;
 use App\Helpers\SubscriptionLockHelper;
 use Chargebee\Cashier\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,6 +40,8 @@ class CheckoutController extends Controller
             return redirect()->back()->withErrors(['error' => 'Something went wrong while swapping your price. Please try again later.']);
         }
         $request->user()->currentTeam->subscriptionWithProductDetails()->swap($plan);
+
+        SyncSubscriptionPlanChanges::handle(Auth::user());
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }

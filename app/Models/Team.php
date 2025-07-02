@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SubscriptionStatus;
 use Chargebee\Cashier\Billable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,7 @@ class Team extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class)->withTimestamps()->withPivot('status');
     }
 
     public function owner(): BelongsTo
@@ -44,7 +45,7 @@ class Team extends Model
         return $this->hasMany(Chart::class);
     }
 
-    public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription
+    public function subscriptionWithProductDetails(): object
     {
         if ($this->subscribed()) {
             $subscription = $this->subscriptions()->first();
@@ -53,6 +54,8 @@ class Team extends Model
             return $subscription;
         }
 
-        return null;
+        return (object)[
+            'plan' => Plan::query()->where('chargebee_id', 'free-monthly')->first()
+        ];
     }
 }

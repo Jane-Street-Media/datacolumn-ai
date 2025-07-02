@@ -22,7 +22,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Projects({ folders, projects }) {
+export default function Projects({ folders, projects, statuses }) {
     const [filters, setFilters] = useState({
         search: '',
         folder: '',
@@ -143,7 +143,7 @@ export default function Projects({ folders, projects }) {
                         }
                     >
                         {projects?.length ? (
-                            projects?.map((project, index) => <ProjectCard key={project.id} index={index} project={project} folders={folders} />)
+                            projects?.map((project, index) => <ProjectCard key={project.id} index={index} project={project} folders={folders} statuses={statuses}/>)
                         ) : (
                             <Card className="col-span-3">
                                 <CardHeader>
