@@ -19,7 +19,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) => {
     const { auth } = usePage<SharedData>().props;
-    console.log(subscription);
     const isSubscribed = subscription.plan.chargebee_id !== 'free-monthly';
     const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
     const [cancelSubscriptionModalOpen, setCancelSubscriptionModalOpen] = useState(false);
