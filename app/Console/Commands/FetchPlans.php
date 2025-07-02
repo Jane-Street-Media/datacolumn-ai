@@ -122,7 +122,7 @@ class FetchPlans extends Command
                                 'Usage analytics',
                             ],
                             'features' => [
-                                'no_of_team_members' => -1,
+                                'no_of_team_members' => 5,
                                 'no_of_projects' => -1,
                                 'no_of_charts' => -1,
                                 'no_of_exports' => -1,
