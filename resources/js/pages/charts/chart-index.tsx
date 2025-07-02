@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Deferred, Head, router } from '@inertiajs/react';
-import { BarChart3, FolderOpen, Search, UserPlus, X } from 'lucide-react';
+import { Deferred, Head, router, useForm } from '@inertiajs/react';
+import { BarChart, BarChart3, FolderOpen, LineChart, Loader2, Search, UserPlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ProjectCard from '@/components/projects/project-card';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,7 +22,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function ChartIndex({ charts }) {
+export default function ChartIndex({ charts, project }) {
     const [filters, setFilters] = useState({
         search: '',
     });
@@ -39,6 +40,19 @@ export default function ChartIndex({ charts }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
+    const {data, setData, post, processing} = useForm({})
+    const createChart = (e) => {
+        e.preventDefault()
+        post(route('projects.charts.store', project.id), {
+            showProgress: false,
+            onError: (errors) => {
+                if(errors.package_restriction){
+                    toast.error(errors.package_restriction)
+                }
+            },
+        })
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -49,16 +63,19 @@ export default function ChartIndex({ charts }) {
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                {/*<FolderDialog />*/}
-                                {/*<ProjectDialog*/}
-                                {/*    folders={folders}*/}
-                                {/*    trigger={*/}
-                                {/*        <Button variant="ghost" className="border">*/}
-                                {/*            <UserPlus className="mr-2 h-4 w-4" />*/}
-                                {/*            <span>New Project</span>*/}
-                                {/*        </Button>*/}
-                                {/*    }*/}
-                                {/*/>*/}
+                                        <Button variant="ghost" className="border" onClick={(e) => createChart(e)}>
+                                            {processing ? (
+                                                <>
+                                                    <Loader2 className="w-5 h-5 animate-spin"/>
+                                                    Processing...
+                                                </>
+                                            ) : (
+                                                <span className="flex items-center">
+                                                    <BarChart className="mr-2 h-4 w-4" />
+                                                    <span>Create a chart</span>
+                                                </span>
+                                            ) }
+                                        </Button>
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>

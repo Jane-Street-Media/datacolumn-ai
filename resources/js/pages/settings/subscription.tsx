@@ -223,9 +223,9 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                         <h3 className="text-md mb-3 font-semibold text-zinc-900 dark:text-zinc-50">Features Included</h3>
                                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                             {subscription.plan.details &&
-                                                subscription.plan.details.map((detail) => {
+                                                subscription.plan.details.map((detail, index) => {
                                                     return (
-                                                        <div className="flex items-center">
+                                                        <div className="flex items-center" key={index}>
                                                             <Check className={`mr-2 h-5 w-5 text-green-500`} />
                                                             <span className="text-zinc-700 dark:text-zinc-300">{detail}</span>
                                                         </div>

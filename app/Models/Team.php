@@ -39,6 +39,11 @@ class Team extends Model
         return $this->hasMany(Project::class);
     }
 
+    public function charts(): HasMany
+    {
+        return $this->hasMany(Chart::class);
+    }
+
     public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription
     {
         if ($this->subscribed()) {
