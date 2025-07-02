@@ -15,14 +15,9 @@ class TeamInvitationController extends Controller
 {
     public function store(int $teamInvitationId): RedirectResponse
     {
-        try {
-            $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
-            AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
-            return redirect(route('dashboard'))->with('success', 'You’ve successfully joined the team. You can now collaborate with your teammates.');
-        } catch (PackageLimitExceededException $exception) {
-            return redirect(route('dashboard'))->withErrors(['package_restriction' => $exception->getMessage()]);
-        }
-
+        $teamInvitation = TeamInvitation::query()->withoutGlobalScope(TeamScope::class)->findOrFail($teamInvitationId);
+        AcceptTeamInvitation::handle(Auth::user(), $teamInvitation);
+        return redirect(route('dashboard'))->with('success', 'You’ve successfully joined the team. You can now collaborate with your teammates.');
     }
 
     public function destroy(TeamInvitation $teamInvitation): RedirectResponse

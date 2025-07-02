@@ -15,9 +15,6 @@ class AcceptTeamInvitation
 {
     public static function handle(User $user, TeamInvitation $teamInvitation): TeamInvitation
     {
-        $invitingTeam = Team::query()->findOrFail($teamInvitation->team_id);
-        EnsurePlanLimitNotExceeded::handle($invitingTeam, PlanFeatureEnum::NO_OF_TEAM_MEMBERS);
-
         $teamInvitation->team->users()->attach($user->id);
         setPermissionsTeamId($teamInvitation->team->id);
         $user->assignRole($teamInvitation->role);

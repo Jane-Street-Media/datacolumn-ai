@@ -9,6 +9,8 @@ use App\Enums\ChartStatus;
 use App\Enums\PlanFeatureEnum;
 use App\Enums\ProjectStatus;
 use App\Enums\TeamUserStatus;
+use App\Models\TeamInvitation;
+use App\Models\TeamUser;
 use App\Models\User;
 
 class SyncSubscriptionPlanChanges
@@ -52,12 +54,7 @@ class SyncSubscriptionPlanChanges
         $totalTeamMembersCount = $user->currentTeam->users()->count();
         if ($teamMembersLimit !== -1 && $totalTeamMembersCount > $teamMembersLimit) {
             $excessTeamMembersCount = $totalTeamMembersCount - $teamMembersLimit;
-            defer(fn() => $user->currentTeam->users()
-                ->latest('team_user.created_at')
-                ->limit($excessTeamMembersCount)
-                ->update([
-                    'status' => TeamUserStatus::INACTIVE,
-                ]));
+            defer(fn() => TeamInvitation::query()->latest()->limit($excessTeamMembersCount)->delete());
         }
 
     }
