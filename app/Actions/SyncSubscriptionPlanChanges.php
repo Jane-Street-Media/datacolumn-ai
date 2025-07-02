@@ -17,12 +17,12 @@ class SyncSubscriptionPlanChanges
 {
     public static function handle(User $user)
     {
-        $freePlanFeatures = $user->currentTeam->freePlan()->features;
-        $projectLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_PROJECTS->value];
-        $chartLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
-        $teamMembersLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
-
-        if(! $user->currentTeam->isOnFreePlan()){
+        if ($user->currentTeam->isOnFreePlan()) {
+            $freePlanFeatures = $user->currentTeam->freePlan()->features;
+            $projectLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_PROJECTS->value];
+            $chartLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
+            $teamMembersLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
+        } else {
             $currentPlan = $user->currentTeam->subscriptionWithProductDetails()->plan;
             $projectLimit = $currentPlan->features[PlanFeatureEnum::NO_OF_PROJECTS->value];
             $chartLimit = $currentPlan->features[PlanFeatureEnum::NO_OF_CHARTS->value];
@@ -51,9 +51,9 @@ class SyncSubscriptionPlanChanges
                 ]));
         }
 
-        $totalTeamInvitationCount = $user->currentTeam->invitations()->count();
-        if ($teamMembersLimit !== -1 && $totalTeamInvitationCount > $teamMembersLimit) {
-            $excessTeamMembersCount = $totalTeamInvitationCount - $teamMembersLimit;
+        $totalTeamMembersCount = $user->currentTeam->invitations()->count() + $user->currentTeam->users()->count();
+        if ($teamMembersLimit !== -1 && $totalTeamMembersCount > $teamMembersLimit) {
+            $excessTeamMembersCount = $totalTeamMembersCount - $teamMembersLimit;
             defer(fn() => TeamInvitation::query()->latest()->limit($excessTeamMembersCount)->delete());
         }
 
