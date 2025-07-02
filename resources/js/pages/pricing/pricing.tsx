@@ -151,6 +151,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
             {
                 showProgress: false,
                 preserveScroll: true,
+                only: ['flash', 'auth', 'subscription'],
                 onStart: () => {
                     setLoading(true);
                     setLoadingPlanId(planId);

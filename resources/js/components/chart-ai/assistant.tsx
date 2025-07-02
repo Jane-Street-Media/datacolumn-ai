@@ -164,6 +164,7 @@ export const Assistant: React.FC = () => {
 
         router.post(route('project.store'), payload, {
             only: ['flash'],
+            preserveScroll: true,
             onSuccess: (response) => {
                 router.visit(route('projects.charts.index', response.props.flash.data.id))
                 toast.success('🎉 Project Deployed!', {
@@ -172,7 +173,9 @@ export const Assistant: React.FC = () => {
                 });
             },
             onError: (errors) => {
-                console.error('Validation failed:', errors);
+                if(errors.package_restriction){
+                    toast.error(errors.package_restriction)
+                }
             },
         });
     };
