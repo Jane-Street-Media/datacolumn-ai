@@ -119,14 +119,14 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
   // Determine chart padding based on paddingOption
   const getChartMargin = () => {
     if (!config.paddingOption || config.paddingOption === 'default') {
-      return { top: 20, right: 30, left: 20, bottom: 20 };
+      return { top: 20, right: 30, left: 20, bottom: 70 };
     } else if (config.paddingOption === 'none') {
-      return { top: 0, right: 0, left: 0, bottom: 0 };
+      return { top: 0, right: 0, left: 0, bottom: 70 };
     } else if (config.paddingOption === 'custom') {
-      const padding = config.customPaddingValue || 0;
-      return { top: padding, right: padding, left: padding, bottom: padding };
+      const padding = parseInt(config.customPaddingValue) || 0;
+      return { top: padding, right: padding, left: padding, bottom: (padding+70) };
     }
-    return { top: 20, right: 30, left: 20, bottom: 20 };
+    return { top: 20, right: 30, left: 20, bottom: 200 };
   };
 
   const renderChart = () => {
@@ -144,7 +144,7 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
       xAxisProps.label = {
         value: config.xAxisLabel,
         position: 'insideBottom',
-        offset: -10,
+        offset: -50,
         style: { textAnchor: 'middle', fill: '#666' }
       };
     }
@@ -336,17 +336,17 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
           <ComposedChart {...commonProps}>
               {config.showGrid && <CartesianGrid {...config.grid} />}
             <XAxis dataKey={config.xAxis} {...xAxisProps} />
-            <YAxis {...yAxisProps} />
+            {/*<YAxis {...yAxisProps} />*/}
             <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
             {config.showLegend && <Legend />}
               {config.series ? (
                   config.series.map((data) => {
-                    if (data.type === 'line') {
-                      return <Line key={data.dataKey} {...data} />;
-                    } else if (data.type === 'bar') {
-                      return <Bar key={data.dataKey} {...data} />;
-                    } else if (data.type === 'area') {
-                      return <Area key={data.dataKey} {...data} />;
+                    if (data.chartType === 'line') {
+                      return <Line type="monotone" key={data.dataKey} {...data} />;
+                    } else if (data.chartType === 'bar') {
+                      return <Bar type="monotone" key={data.dataKey} {...data} />;
+                    } else if (data.chartType === 'area') {
+                      return <Area type="monotone" key={data.dataKey} {...data} />;
                     }
                     <Line key={data.dataKey} {...data} />;
                   })
@@ -393,13 +393,13 @@ export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) =>
 
   return (
     <div
-      className={`rounded-lg border ${isDarkTheme ? 'border-gray-700' : 'border-gray-200'} ${bgColorClass}`}
+      className={`rounded-lg border py-8 px-4 ${isDarkTheme ? 'border-gray-700' : 'border-gray-200'} ${bgColorClass}`}
       id="chart-container"
       style={bgColorStyle}
     >
       {/* Title */}
       {config.title && (
-        <div className={`mb-4 ${getTitleAlignment()}`}>
+        <div className={`px-10 mb-4 ${getTitleAlignment()}`}>
           <h2
             className={`text-2xl mb-2 ${config.titleWeight === 'bold' ? 'font-bold' : 'font-normal'}`}
             style={{ color: config.titleColor }}
