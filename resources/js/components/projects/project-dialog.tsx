@@ -120,7 +120,7 @@ export default function ProjectDialog({ folders, project = null, trigger, status
                         />
                         <InputError message={errors.description} />
 
-                        <Label htmlFor="status">Folder</Label>
+                        <Label htmlFor="status">Status</Label>
                         <Select value={data.status} onValueChange={(value) => setData('status', value)}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Status" />

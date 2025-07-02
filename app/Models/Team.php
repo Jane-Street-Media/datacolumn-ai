@@ -45,7 +45,7 @@ class Team extends Model
         return $this->hasMany(Chart::class);
     }
 
-    public function subscriptionWithProductDetails(): ?\Chargebee\Cashier\Subscription
+    public function subscriptionWithProductDetails(): object
     {
         if ($this->subscribed()) {
             $subscription = $this->subscriptions()->first();
@@ -54,16 +54,13 @@ class Team extends Model
             return $subscription;
         }
 
-        return null;
+        return (object)[
+            'plan' => Plan::query()->where('chargebee_id', 'free-monthly')->first()
+        ];
     }
 
     public function isOnFreePlan(): bool
     {
         return $this->subscriptionWithProductDetails()?->chargebee_status === SubscriptionStatus::CANCELLED->value;
-    }
-
-    public function freePlan(): ?Plan
-    {
-        return Plan::query()->where('chargebee_id', 'free-monthly')->first();
     }
 }

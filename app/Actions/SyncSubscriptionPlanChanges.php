@@ -2,32 +2,23 @@
 
 namespace App\Actions;
 
-use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Actions\Project\GetProjects;
 use App\Actions\Queries\Dashboard\GetChartQuery;
 use App\Enums\ChartStatus;
 use App\Enums\PlanFeatureEnum;
 use App\Enums\ProjectStatus;
-use App\Enums\TeamUserStatus;
 use App\Models\TeamInvitation;
-use App\Models\TeamUser;
 use App\Models\User;
 
 class SyncSubscriptionPlanChanges
 {
     public static function handle(User $user): void
     {
-        if ($user->currentTeam->isOnFreePlan()) {
-            $freePlanFeatures = $user->currentTeam->freePlan()->features;
-            $projectLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_PROJECTS->value];
-            $chartLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
-            $teamMembersLimit = $freePlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
-        } else {
-            $currentPlan = $user->currentTeam->subscriptionWithProductDetails()->plan;
-            $projectLimit = $currentPlan->features[PlanFeatureEnum::NO_OF_PROJECTS->value];
-            $chartLimit = $currentPlan->features[PlanFeatureEnum::NO_OF_CHARTS->value];
-            $teamMembersLimit = $currentPlan->features[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
-        }
+
+        $currentPlanFeatures = $user->currentTeam->subscriptionWithProductDetails()->plan->features;
+        $projectLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_PROJECTS->value];
+        $chartLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
+        $teamMembersLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
 
         $totalProjectsCount = GetProjects::handle()->count();
         if ($projectLimit !== -1 && $totalProjectsCount > $projectLimit) {
