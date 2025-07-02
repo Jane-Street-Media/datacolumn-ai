@@ -26,6 +26,11 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('home');
 
+Route::get('/landing', function () {
+    return Inertia::render('LandingPage');
+})->name('landing');
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('test', function () {
