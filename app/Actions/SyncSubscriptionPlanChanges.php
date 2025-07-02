@@ -51,9 +51,9 @@ class SyncSubscriptionPlanChanges
                 ]));
         }
 
-        $totalTeamMembersCount = $user->currentTeam->users()->count();
-        if ($teamMembersLimit !== -1 && $totalTeamMembersCount > $teamMembersLimit) {
-            $excessTeamMembersCount = $totalTeamMembersCount - $teamMembersLimit;
+        $totalTeamInvitationCount = $user->currentTeam->invitations()->count();
+        if ($teamMembersLimit !== -1 && $totalTeamInvitationCount > $teamMembersLimit) {
+            $excessTeamMembersCount = $totalTeamInvitationCount - $teamMembersLimit;
             defer(fn() => TeamInvitation::query()->latest()->limit($excessTeamMembersCount)->delete());
         }
 
