@@ -14,26 +14,28 @@ class DynamicFrameGuard
 
         // Only on your “public/embed” (or whatever) routes:
         if ($request->route()->getName() === 'chart.embed') {
-            // 1) strip the SAMEORIGIN header
             $response->headers->remove('X-Frame-Options');
 
-            // 2) grab the Origin header the browser sent
-            $origin = $request->headers->get('Origin');
+            $old = $response->headers->get('Content-Security-Policy', '');
+            // remove any existing frame-ancestors directive
+            $merged = preg_replace(
+                '/\s*frame-ancestors[^;]+;?/',
+                '',
+                $old
+            );
 
-            // 3) validate it’s a well-formed HTTPS origin:
+            // build our new frame-ancestors
+            $origin = $request->headers->get('Origin');
+            $allowed = "'self'";
             if ($origin && preg_match('#^https://[A-Za-z0-9.\-]+$#', $origin)) {
-                // echo it back in CSP
-                $response->headers->set(
-                    'Content-Security-Policy',
-                    "frame-ancestors 'self' {$origin}"
-                );
-            } else {
-                // no Origin? or not valid? keep only same-origin
-                $response->headers->set(
-                    'Content-Security-Policy',
-                    "frame-ancestors 'self'"
-                );
+                $allowed .= " {$origin}";
             }
+
+            // re-set the full CSP
+            $response->headers->set(
+                'Content-Security-Policy',
+                trim($merged) . "; frame-ancestors {$allowed};"
+            );
         }
 
         return $response;
