@@ -114,7 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-Route::get('chart/embed/{chart:uuid}', EmbeddedChartController::class)->name('chart.embed');
+Route::get('chart/embed/{chart:uuid}', EmbeddedChartController::class)->middleware('iframe.dynamic')->name('chart.embed');
 Route::post('/chargebee/webhook', [WebhookController::class, 'handleWebhook'])->middleware(AuthenticateWebhook::class);
 
 require __DIR__.'/settings.php';
