@@ -4,6 +4,7 @@ namespace App\Actions\PlanLimitations;
 
 use App\Enums\PlanFeatureEnum;
 use App\Exceptions\PackageLimitExceededException;
+use App\Models\Chart;
 use App\Models\Team;
 
 class EnsurePlanLimitNotExceeded
@@ -11,10 +12,10 @@ class EnsurePlanLimitNotExceeded
     /**
      * @throws PackageLimitExceededException
      */
-    public static function handle(Team $team, PlanFeatureEnum $feature): int
+    public static function handle(Team $team, PlanFeatureEnum $feature, ?Chart $chart = null): int
     {
         $features = GetSubscribedPlanFeatures::handle($team);
-        $featureUsageCount = $feature->getFeatureUsageCount($team);
+        $featureUsageCount = $feature->getFeatureUsageCount($team, $chart);
 
         if (!isset($features[$feature->value])) {
             throw new PackageLimitExceededException('You current package does not support this feature.');

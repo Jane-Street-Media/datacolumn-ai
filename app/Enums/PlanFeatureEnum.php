@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Models\Chart;
 use App\Models\Team;
 
 enum PlanFeatureEnum: string
@@ -40,12 +41,13 @@ enum PlanFeatureEnum: string
     case BRAND_CUSTOMIZATION = 'brand_customization';
     case USAGE_ANALYTICS = 'usage_analytics';
 
-    public function getFeatureUsageCount(Team $team): int
+    public function getFeatureUsageCount(Team $team, ?Chart $chart = null): int
     {
         return match ($this) {
             self::NO_OF_PROJECTS => $team->projects()->count(),
             self::NO_OF_TEAM_MEMBERS => $team->users()->count() + $team->invitations()->count(),
             self::NO_OF_CHARTS => $team->charts()->count(),
+            self::NO_OF_EXPORTS => $chart?->total_exports,
         };
     }
 
@@ -55,6 +57,7 @@ enum PlanFeatureEnum: string
             self::NO_OF_PROJECTS => 'You have reached the maximum number of projects allowed by your plan.',
             self::NO_OF_TEAM_MEMBERS => 'You have reached the maximum number of invitations allowed by your plan.',
             self::NO_OF_CHARTS => 'You have reached the maximum number of charts allowed by your plan.',
+            self::NO_OF_EXPORTS => 'You have reached the maximum number of exports allowed by your plan.',
         };
     }
 }
