@@ -4,7 +4,6 @@ namespace App\Actions\PlanLimitations;
 
 use App\Enums\PlanFeatureEnum;
 use App\Exceptions\PackageLimitExceededException;
-use App\Models\Chart;
 use App\Models\Team;
 
 class EnsurePlanLimitNotExceeded
