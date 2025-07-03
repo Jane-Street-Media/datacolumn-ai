@@ -10,6 +10,7 @@ use App\Models\Chart;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use LibDNS\Records\Types\Char;
 
 class ValidateChartExportController extends Controller
 {
@@ -17,9 +18,7 @@ class ValidateChartExportController extends Controller
     {
         try {
             EnsurePlanLimitNotExceeded::handle(Auth::user()->currentTeam, PlanFeatureEnum::NO_OF_EXPORTS);
-            $chart->update([
-                'total_exports' => ++$chart->total_exports
-            ]);
+            $chart->increment('total_exports');
             return back()->with('success', 'Plan export limit not exceeded.');
         } catch (PackageLimitExceededException $e) {
             return back()->withErrors(['package_restriction' => $e->getMessage()]);
