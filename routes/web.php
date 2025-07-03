@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/store', [ProjectChartsController::class, 'store'])->name('projects.charts.store');
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
             Route::patch('/{chart}', [ProjectChartsController::class, 'update'])->name('projects.charts.update');
+            Route::delete('/{chart}/destroy', [ProjectChartsController::class, 'destroy'])->name('projects.charts.destroy');
         });
     });
 

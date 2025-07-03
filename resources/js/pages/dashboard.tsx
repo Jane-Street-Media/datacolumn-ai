@@ -18,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard({ projects, statistics, activityLogs, folders, roles, flash }) {
+export default function Dashboard({ projects, statistics, activityLogs, folders, roles, flash, projectStatuses }) {
     const stats = [
         {
             name: 'Total Projects',
@@ -80,7 +80,7 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
                                 </Card>
                             }
                         >
-                            <RecentProjects projects={projects} folders={folders} />
+                            <RecentProjects projects={projects} folders={folders} projectStatuses={projectStatuses} />
                         </Deferred>
                     </div>
                     <div className="space-y-4">
@@ -96,7 +96,7 @@ export default function Dashboard({ projects, statistics, activityLogs, folders,
                         >
                             <ActivityFeed activityLogs={activityLogs} />
                         </Deferred>
-                        <QuickActions folders={folders} roles={roles} />
+                        <QuickActions folders={folders} roles={roles} projectStatuses={projectStatuses} />
                     </div>
                 </div>
             </div>

@@ -59,4 +59,10 @@ class ProjectChartsController extends Controller
         }
         return back()->with(['success' => 'Chart updated successfully.']);
     }
+
+    public function destroy(Project $project, Chart $chart): RedirectResponse
+    {
+        $chart->delete();
+        return redirect()->back()->with('success', 'Chart deleted successfully.');
+    }
 }

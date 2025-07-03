@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { router, useForm } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
@@ -20,7 +20,7 @@ import {
     BarChart3,
     Calendar,
     Delete,
-    Edit,
+    Edit, Eye,
     LineChart,
     LoaderCircle,
     MoreHorizontal,
@@ -44,33 +44,34 @@ export default function ChartCard({ index = 1, chart }) {
 
     const deleteChart: FormEventHandler = (e) => {
         e.preventDefault();
-        destroy(route('chart.delete', chart.id), {
+        destroy(route('projects.charts.destroy', {
+            project: chart.project_id,
+            chart: chart.id
+        }), {
+            showProgress: false,
+            only: ['flash', 'charts', 'project'],
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                reset('name', 'description'); // Resets form fields if needed
-                toast(response.props.flash.success, {
-                    description: '🚀 Your chart has been deleted successfully.',
-                });
+                toast.success(response.props.flash.success);
             },
         });
     };
 
-    const showChartDetails = () => {
-        return router.visit(route('projects.charts.edit', {
-            project: chart.project_id,
-            chart: chart.id
-        }))
-    }
-
     return (
-        <MotionCard onClick={() => showChartDetails()} className="cursor-pointer hover:border-primary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard className="hover:border-primary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
                         {ChartIcon ? <ChartIcon/> : <BarChart3/>}
                     </div>
                 </CardTitle>
-                <CardAction>
+                <CardAction className="flex space-x-2">
+                    <Link href={route('projects.charts.edit', {
+                        project: chart.project_id,
+                        chart: chart.id
+                    })} className="hover:text-primary" prefetch>
+                        <Eye />
+                    </Link>
                     <Popover>
                         <PopoverTrigger>
                             <MoreHorizontal />

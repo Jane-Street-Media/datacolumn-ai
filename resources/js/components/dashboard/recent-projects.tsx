@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { BarChart3, Plus } from 'lucide-react';
 import { router } from '@inertiajs/react';
 
-export default function RecentProjects({ projects, folders }) {
+export default function RecentProjects({ projects, folders, projectStatuses }) {
     const showProject = (projectId) => {
         return router.visit(route('projects.charts.index', projectId))
     }
@@ -20,6 +20,7 @@ export default function RecentProjects({ projects, folders }) {
                     <CardAction>
                         <ProjectDialog
                             folders={folders}
+                            statuses={projectStatuses}
                             trigger={
                                 <Button>
                                     <Plus />
@@ -77,6 +78,7 @@ export default function RecentProjects({ projects, folders }) {
                             <p className="text-secondary-foreground mb-4">No projects yet</p>
                             <ProjectDialog
                                 folders={folders}
+                                statuses={projectStatuses}
                                 trigger={
                                     <Button>Create Your First Project</Button>
                                 }
