@@ -57,4 +57,17 @@ return [
     'openai' => [
         'key' => env('OPENAI_API_KEY'),
     ],
+
+    'cloudflare' => [
+        'api_token'  => env('CLOUDFLARE_API_TOKEN'),
+        'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
+        'zone' => env('CLOUDFLARE_ZONE'),
+        // you can add defaults here if you like:
+        // 'default_ttl'      => 3600,
+        // 'default_proxied'  => true,
+    ],
+
+    'digitalocean' => [
+        'droplet_ip'  => env('DO_DROPLET_IP'),
+    ],
 ];
