@@ -46,7 +46,6 @@ export default function ExportChart({ title, chart }) {
                 }
             },
             onError: (errors) => {
-                console.log(errors);
                 if (errors.package_restriction){
                     toast.error(errors.package_restriction);
                 }
