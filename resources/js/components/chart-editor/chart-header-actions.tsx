@@ -53,7 +53,7 @@ export function ChartHeaderActions({ chart, config, data, columns, handleConfigC
                                     <Import />
                                     <span className={'hidden lg:block'}>Import</span>
                                 </Button>
-                                <ExportChart title={config.title} />
+                                <ExportChart title={config.title} chart={chart}/>
                                 <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)} disabled={loading}>
                                     {loading ? (
                                         <Loader2 className="w-4 h-4 animate-spin"/>
