@@ -13,10 +13,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { router, useForm } from '@inertiajs/react';
+import { useForm, Link } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { BarChart3, Calendar, Delete, Edit, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
+import { BarChart3, Calendar, Delete, Edit, Eye, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
@@ -35,22 +35,20 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                 });
             },
         });
-    };
-    const showProject = (projectId, e) => {
-        if(e.target === e.currentTarget){
-            return router.visit(route('projects.charts.index', projectId))
-        }
     }
 
     return (
-        <MotionCard onClick={(e) => showProject(project.id, e)} className={`cursor-pointer hover:border-primary`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard className="hover:border-primary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
                         <BarChart3 className="h-5 w-5" />
                     </div>
                 </CardTitle>
-                <CardAction>
+                <CardAction className="flex space-x-2">
+                    <Link href={route('projects.charts.index', project.id)} className="hover:text-primary" prefetch>
+                        <Eye />
+                    </Link>
                     <Popover>
                         <PopoverTrigger>
                             <MoreHorizontal />
