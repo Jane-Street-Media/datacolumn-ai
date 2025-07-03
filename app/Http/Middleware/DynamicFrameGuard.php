@@ -13,7 +13,8 @@ class DynamicFrameGuard
         $response = $next($request);
 
         // Only on your “public/embed” (or whatever) routes:
-        if ($request->route('chart.embed')) {
+        if ($request->route()->getName() === 'chart.embed') {
+            dd(123123);
             // 1) strip the SAMEORIGIN header
             $response->headers->remove('X-Frame-Options');
 
