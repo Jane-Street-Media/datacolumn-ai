@@ -36,7 +36,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
 
     const { auth } = usePage().props;
     const teams = auth.user.teams;
-    const isOnTeamPlan = useMemo(() => auth.subscription.plan.display_name === 'Team', [auth])
+    const isOnTeamPlan = useMemo(() => auth.subscription?.plan?.display_name === 'Team', [auth])
 
     const handleSwitchUserTeam = (teamId) => {
         if (auth.user.current_team_id === teamId) {
