@@ -49,10 +49,8 @@ export default function ExportChart({ title, chart }) {
                 if (errors.package_restriction){
                     toast.error(errors.package_restriction);
                 }
-            },
-            onFinish: () => {
                 setExporting(false)
-            }
+            },
         })
 
     };
