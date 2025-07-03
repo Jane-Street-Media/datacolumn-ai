@@ -15,7 +15,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
@@ -36,6 +36,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
 
     const { auth } = usePage().props;
     const teams = auth.user.teams;
+    const isOnTeamPlan = useMemo(() => auth.subscription.plan.display_name === 'Team', [auth])
 
     const handleSwitchUserTeam = (teamId) => {
         if (auth.user.current_team_id === teamId) {
@@ -56,8 +57,9 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 onError: (errors) => {
                     if (errors.error) {
                         toast.error(errors.error);
-                    } else {
-                        console.log(errors);
+                    }
+                    if (errors.package_restriction){
+                        toast.error(errors.error);
                     }
                 },
             },
@@ -106,42 +108,45 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                         </Settings>
                     </Link>
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="size-10 rounded-full p-1">
-                                <Avatar className="size-8 overflow-hidden rounded-full">
-                                    <AvatarFallback
-                                        className="rounded-lg bg-secondary text-foreground">
-                                        {getInitials('team name')}
-                                    </AvatarFallback>
-                                </Avatar>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="end">
-                            <DropdownMenuLabel className="p-0 font-normal">
-                                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                    Your Teams
-                                </div>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            {teams?.map((team) => (
-                                <DropdownMenuItem key={team.id} asChild>
-                                    <Button
-                                        variant="ghost"
-                                        className="w-full justify-start"
-                                        onClick={() => handleSwitchUserTeam(team.id)}
-                                    >
-                                        <span>{team.name}</span>
-                                        {auth.user.current_team_id === team.id &&
-                                            <Badge className="ml-auto">
-                                                active
-                                            </Badge>
-                                        }
-                                    </Button>
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    {isOnTeamPlan ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="size-10 rounded-full p-1">
+                                    <Avatar className="size-8 overflow-hidden rounded-full">
+                                        <AvatarFallback
+                                            className="rounded-lg bg-secondary text-foreground">
+                                            {getInitials('team name')}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end">
+                                <DropdownMenuLabel className="p-0 font-normal">
+                                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                        Your Teams
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                {teams?.map((team) => (
+                                    <DropdownMenuItem key={team.id} asChild>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => handleSwitchUserTeam(team.id)}
+                                        >
+                                            <span>{team.name}</span>
+                                            {auth.user.current_team_id === team.id &&
+                                                <Badge className="ml-auto">
+                                                    active
+                                                </Badge>
+                                            }
+                                        </Button>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (<></>)}
+
                 </div>
             </div>
         </header>

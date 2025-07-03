@@ -6,7 +6,7 @@ import { Deferred, usePage } from '@inertiajs/react';
 import { Plus, Users } from 'lucide-react';
 import { LoadingSkeleton } from '@/components/loading-skeleton';
 
-export default function QuickActions({ folders, roles }) {
+export default function QuickActions({ folders, roles, projectStatuses }) {
     return (
         <Card className="from-gradient-from to-gradient-to bg-gradient-to-r">
             <CardHeader>
@@ -16,6 +16,7 @@ export default function QuickActions({ folders, roles }) {
                 <div className="space-y-3">
                     <ProjectDialog
                         folders={folders}
+                        statuses={projectStatuses}
                         trigger={
                             <Button className="flex w-full items-center space-x-3 rounded-lg bg-white/20 p-3 text-white transition-colors duration-200 hover:bg-white/30">
                                 <Plus className="h-4 w-4" />

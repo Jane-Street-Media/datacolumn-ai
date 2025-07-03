@@ -10,6 +10,7 @@ class CreateProjectData extends Data
     public function __construct(
         public ?string $name,
         public ?string $description,
+        public ?string $status,
         public ?int $folder_id,
         public ?int $team_id,
         public ?ChartData $chart,
