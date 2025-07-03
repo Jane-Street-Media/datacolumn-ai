@@ -68,6 +68,7 @@ export default function Projects({ folders, projects, statuses }) {
                                 <FolderDialog />
                                 <ProjectDialog
                                     folders={folders}
+                                    statuses={statuses}
                                     trigger={
                                         <Button variant="ghost" className="border">
                                             <UserPlus className="mr-2 h-4 w-4" />
