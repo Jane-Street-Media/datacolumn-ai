@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\DynamicFrameGuard;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IsTeamPlan;
 use App\Http\Middleware\SetTeam;
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'teams' => SetTeam::class,
             'isTeamPlan' => IsTeamPlan::class,
+            'iframe.dynamic' => DynamicFrameGuard::class,
         ]);
     })
 
