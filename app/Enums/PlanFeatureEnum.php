@@ -3,7 +3,6 @@
 namespace App\Enums;
 
 use App\Actions\Queries\Dashboard\GetChartQuery;
-use App\Models\Chart;
 use App\Models\Team;
 
 enum PlanFeatureEnum: string
