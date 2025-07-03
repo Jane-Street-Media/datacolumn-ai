@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Actions\Queries\Dashboard\GetChartQuery;
 use App\Models\Chart;
 use App\Models\Team;
 
@@ -41,13 +42,13 @@ enum PlanFeatureEnum: string
     case BRAND_CUSTOMIZATION = 'brand_customization';
     case USAGE_ANALYTICS = 'usage_analytics';
 
-    public function getFeatureUsageCount(Team $team, ?Chart $chart = null): int
+    public function getFeatureUsageCount(Team $team): int
     {
         return match ($this) {
             self::NO_OF_PROJECTS => $team->projects()->count(),
             self::NO_OF_TEAM_MEMBERS => $team->users()->count() + $team->invitations()->count(),
             self::NO_OF_CHARTS => $team->charts()->count(),
-            self::NO_OF_EXPORTS => $chart?->total_exports,
+            self::NO_OF_EXPORTS => GetChartQuery::handle()->sum('total_exports'),
         };
     }
 

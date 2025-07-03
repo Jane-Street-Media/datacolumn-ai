@@ -16,9 +16,9 @@ class ValidateChartExportController extends Controller
     public function __invoke(Project $project, Chart $chart): RedirectResponse
     {
         try {
-            EnsurePlanLimitNotExceeded::handle(Auth::user()->currentTeam, PlanFeatureEnum::NO_OF_EXPORTS, $chart);
+            EnsurePlanLimitNotExceeded::handle(Auth::user()->currentTeam, PlanFeatureEnum::NO_OF_EXPORTS);
             $chart->update([
-                'total_exports' => $chart->total_exports++
+                'total_exports' => ++$chart->total_exports
             ]);
             return back()->with('success', 'Plan export limit not exceeded.');
         } catch (PackageLimitExceededException $e) {

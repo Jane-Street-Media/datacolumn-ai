@@ -12,10 +12,10 @@ class EnsurePlanLimitNotExceeded
     /**
      * @throws PackageLimitExceededException
      */
-    public static function handle(Team $team, PlanFeatureEnum $feature, ?Chart $chart = null): int
+    public static function handle(Team $team, PlanFeatureEnum $feature): int
     {
         $features = GetSubscribedPlanFeatures::handle($team);
-        $featureUsageCount = $feature->getFeatureUsageCount($team, $chart);
+        $featureUsageCount = $feature->getFeatureUsageCount($team);
 
         if (!isset($features[$feature->value])) {
             throw new PackageLimitExceededException('You current package does not support this feature.');
