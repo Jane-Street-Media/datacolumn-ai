@@ -3,20 +3,14 @@ import * as React from 'react';
 import {
     BarChart,
     LineChart,
-    PieChart,
-    ScatterChart,
     TrendingUp,
     Sun,
     Moon,
     Monitor,
-    Radar,
-    Circle,
-    GitFork,
-    LayoutGrid,
     Layers
 } from 'lucide-react';
 import { CustomChartConfig } from '../../pages/charts/types';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
@@ -24,118 +18,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColorPicker } from "@/components/color-picker";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-
-const chartControls = [
-    {
-        label: 'Type',
-        key: 'type',
-        useHtmlElement: 'radio-button',
-        data: [
-            { type: 'bar' as const, label: 'Bar Chart', icon: BarChart },
-            { type: 'line' as const, label: 'Line Chart', icon: LineChart },
-            { type: 'area' as const, label: 'Area Chart', icon: TrendingUp },
-            { type: 'pie' as const, label: 'Pie Chart', icon: PieChart },
-            { type: 'scatter' as const, label: 'Scatter Plot', icon: ScatterChart },
-            { type: 'radar' as const, label: 'Radar Chart', icon: Radar },
-            { type: 'radialBar' as const, label: 'Radial Bar', icon: Circle },
-            { type: 'funnel' as const, label: 'Funnel Chart', icon: GitFork },
-            { type: 'treemap' as const, label: 'Treemap', icon: LayoutGrid },
-            { type: 'composed' as const, label: 'Composed', icon: Layers },
-        ],
-    },
-    {
-        label: 'Theme',
-        key: 'theme',
-        useHtmlElement: 'radio-button',
-        data: ['light', 'dark', 'system'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Background Color',
-        key: 'bgColor',
-        useHtmlElement: 'radio-button',
-        data: ['default', 'transparent', 'custom'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Title',
-        key: 'title',
-        useHtmlElement: 'text-input',
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Title Alignment',
-        key: 'titleAlignment',
-        useHtmlElement: 'radio-button',
-        data: ['left', 'center', 'right'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Title Color',
-        key: 'titleColor',
-        useHtmlElement: 'color-input',
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Title Weight',
-        key: 'titleWeight',
-        useHtmlElement: 'radio-button',
-        data: ['regular', 'bold'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Title Size',
-        key: 'titleSize',
-        useHtmlElement: 'radio-button',
-        data: ['16px', '18px', '20px', '22px'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: []
-    },
-    {
-        label: 'Sub Title',
-        key: 'subTitle',
-        useHtmlElement: 'text-input',
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Sub Title Alignment',
-        key: 'subTitleAlignment',
-        useHtmlElement: 'radio-button',
-        data: ['left', 'center', 'right'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Sub Title Color',
-        key: 'subTitleColor',
-        useHtmlElement: 'color-input',
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Sub Title Weight',
-        key: 'subTitleWeight',
-        useHtmlElement: 'radio-button',
-        data: ['regular', 'bold'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-    {
-        label: 'Sub Title Size',
-        key: 'subTitleSize',
-        useHtmlElement: 'radio-button',
-        data: ['16px', '18px', '20px', '22px'],
-        supportedCharts: ['bar', 'line', 'area', 'pie', 'scatter', 'radar', 'radialBar', 'funnel', 'treemap', 'composed'],
-        unSupportedCharts: [],
-    },
-]
 
 const chartTypes = [
     { type: 'bar' as const, label: 'Bar Chart', icon: BarChart },
@@ -181,12 +63,11 @@ const fontWeights = [
     { value: 'bold', label: 'Bold' }
 ];
 
-const columns = [];
-
-
 interface ChartControlsProps {
     config: CustomChartConfig;
     onConfigChange: (config: CustomChartConfig) => void;
+    columns: Array<string>;
+    cardContentClasses: Record<string, string>;
 }
 
 const defaultCardContentClasses = {
@@ -195,6 +76,31 @@ const defaultCardContentClasses = {
 
 
 export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, onConfigChange, cardContentClasses = defaultCardContentClasses,}) => {
+
+    const handleChartTypeChange = (type: CustomChartConfig['type']) => {
+        if (type !== 'composed') {
+            // // If the chart type is not composed, reset series to only include the first dataKey
+            if (config.series.length) {
+                setSeries([config.series[0]])
+                updateConfig({
+                    type: type,
+                });
+                return
+            }
+        }
+
+        updateConfig({ type });
+    }
+    const [seriesColumns, setSeriesColumns] = useState<Array<string>>([]);
+
+    useEffect(() => {
+        // extra series columns from columns props and filter out the column is already in config.xAxis
+        const index = series.findIndex(ser => ser.dataKey === config.xAxis);
+        if (index !== -1) {
+            removeSeries(index)
+            setSeriesColumns(columns.filter(col => col !== config.xAxis));
+        }
+    }, [columns, config.xAxis]);
 
     const updateConfig = useCallback((updates: Partial<CustomChartConfig>) => {
         onConfigChange({ ...config, ...updates });
@@ -210,9 +116,23 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         if (series.some(sery => sery.dataKey === value)) {
             return;
         }
-        const findSeriesItem = config.series.find((item) => item.dataKey === value);
-        setSeries([...series, findSeriesItem]);
+        if (config.type === 'composed') {
+            setSeries([...series, {
+                dataKey: value,
+                chartType: 'line',
+                fill: '#1221c8',
+                stroke: '#1221c8',
+            }]);
+        } else {
+            setSeries([{
+                dataKey: value,
+                chartType: 'line',
+                fill: '#1221c8',
+                stroke: '#1221c8',
+            }]);
+        }
     }
+
     const updateSeries = (data: {
         itemIndex: number;
         itemValue: Partial<CustomChartConfig['series'][number]>;
@@ -258,7 +178,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     <ToggleGroup
                         type="single"
                         value={config.type}
-                        onValueChange={(val) => updateConfig({ type: val })}
+                        onValueChange={(val) => handleChartTypeChange(val)}
                         className="grid grid-cols-2 gap-2 sm:grid-cols-3"
                     >
                         {chartTypes.map(({ type, label, icon: Icon }) => (
@@ -400,90 +320,76 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                             onChange={(e) => updateConfig({ xAxisLabel: e.target.value })}
                             placeholder="Enter X-axis label (optional)"
                         />
-                        <Select value={config.yAxis} onValueChange={(val) => updateConfig({ yAxis: val })}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select Y axis columns" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {columns.map((col) => (
-                                    <SelectItem key={col} value={col}>
-                                        {col}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+
                         <Input
                             value={config.yAxisLabel || ''}
                             onChange={(e) => updateConfig({ yAxisLabel: e.target.value })}
                             placeholder="Enter Y-axis label (optional)"
                         />
 
-                        {config.series !== null && config.series.length > 0 && (
-                            <div className="space-y-4">
-                                <h4 className="mb-3 text-sm font-medium">Series Config</h4>
+                        <div className="space-y-4">
+                            <h4 className="mb-3 text-sm font-medium">Series Config</h4>
 
-                                <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select Y Sery" />
-                                    </SelectTrigger>
-                                    <SelectContent className="w-full">
-                                        {Object.values(config.series).map((sery, index) => (
-                                            <SelectItem key={index} value={sery.dataKey}>
-                                                {sery.dataKey}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                            <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select Y Sery" />
+                                </SelectTrigger>
+                                <SelectContent className="w-full">
+                                    {seriesColumns.map((column, index) => (
+                                        <SelectItem key={index} value={column}>
+                                            {column}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
 
-                                {series.map((yaxis, yaxisIndex) => (
-                                    <div className="flex flex-row items-center gap-4 relative pr-5">
-                                        <div className={'m-0 space-y-2'}>
-                                            <h4 className="text-sm font-medium capitalize"> {yaxis.dataKey} Type </h4>
-                                            <Select
-                                                value={yaxis.chartType}
-                                                className={'w-full'}
-                                                onValueChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {chartType: val}})}
-                                            >
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select Y Sery" />
-                                                </SelectTrigger>
-                                                <SelectContent className="w-full">
-                                                    {chartTypes.map(({ type, label, icon: Icon }) => (
-                                                        <SelectItem key={type} value={type}>
-                                                            {label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className={'space-y-2'}>
-                                            <h4 className="text-sm font-medium capitalize"> {yaxis.dataKey} Color </h4>
-                                            {(yaxis.fill != '' && yaxis.fill !== undefined) && (
-                                                <ColorPicker
-                                                    value={yaxis.fill}
-                                                    onChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {fill: val}})}
-                                                />
-                                            )}
-                                            {(yaxis.stroke != '' && yaxis.stroke !== undefined) && (
-                                                <ColorPicker
-                                                    value={yaxis.stroke}
-                                                    onChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {stroke: val}})}
-                                                />
-                                            )}
-                                        </div>
-
-                                        <div
-                                            className={'flex justify-center items-center absolute right-0 top-0 bottom-0 my-auto h-fit w-fit cursor-pointer'}
-                                            onClick={() => removeSeries(yaxisIndex)} >
-                                            X
-                                        </div>
+                            {series.map((yaxis, yaxisIndex) => (
+                                <div className="flex flex-row items-center gap-4 relative pr-5">
+                                    <div className={'m-0 space-y-2'}>
+                                        <h4 className="text-sm font-medium capitalize"> {yaxis.dataKey} Type </h4>
+                                        <Select
+                                            value={yaxis.chartType}
+                                            className={'w-full'}
+                                            onValueChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {chartType: val}})}
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Y Sery" />
+                                            </SelectTrigger>
+                                            <SelectContent className="w-full">
+                                                {chartTypes.map(({ type, label, icon: Icon }) => (
+                                                    <SelectItem key={type} value={type}>
+                                                        {label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
-                                ))}
-                            </div>
-                        )}
 
-                        {/* Series Color */}
+                                    <div className="m-0 space-y-2 text-center">
+                                        <h4 className="text-sm font-medium capitalize"> Fill Color </h4>
+                                        <ColorPicker
+                                            className={'w-full'}
+                                            value={yaxis.fill}
+                                            onChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {fill: val}})}
+                                        />
+                                    </div>
+
+                                    <div className="m-0 space-y-2 text-center">
+                                        <h4 className="text-sm font-medium capitalize"> Stroke Color </h4>
+                                        <ColorPicker
+                                            value={yaxis.stroke}
+                                            onChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {stroke: val}})}
+                                        />
+                                    </div>
+
+                                    <div
+                                        className={'flex justify-center items-center absolute right-0 top-0 bottom-0 my-auto h-fit w-fit cursor-pointer'}
+                                        onClick={() => removeSeries(yaxisIndex)} >
+                                        X
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
 

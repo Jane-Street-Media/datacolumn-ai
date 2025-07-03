@@ -3,34 +3,15 @@ import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
 import { ChartControls } from '@/components/chart-editor/chartControls';
 import { DataTable } from '@/components/chart-editor/data-table';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChartConfig } from '@/components/ui/chart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { CustomChartConfig } from '@/pages/charts/types';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/react';
-import { useRef, useState } from 'react';
+import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
-export const description = 'An area chart with axes';
-const chartData = [
-    { month: 'January', desktop: 186, mobile: 80 },
-    { month: 'February', desktop: 305, mobile: 200 },
-    { month: 'March', desktop: 237, mobile: 120 },
-    { month: 'April', desktop: 73, mobile: 190 },
-    { month: 'May', desktop: 209, mobile: 130 },
-    { month: 'June', desktop: 214, mobile: 140 },
-];
-const chartConfig = {
-    desktop: {
-        label: 'Desktop',
-        color: 'green',
-    },
-    mobile: {
-        label: 'Mobile',
-        color: 'yellow',
-    },
-} satisfies ChartConfig;
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -52,41 +33,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ChartEditor({ chart }) {
-    const xAxisConfig = useRef({
-        allowDuplicatedCategory: true,
-        allowDecimals: false,
-        hide: false,
-        orientation: 'top',
-        width: 50,
-        height: 50,
-        mirror: false,
-        padding: { left: 0, right: 0 },
-        allowDataOverflow: false,
-        reversed: false,
-        dataKey: 'month',
-        label: 'Ullo ka patthasaxs',
-        tickLine: true,
-        axisLine: true,
-        tickMargin: 8,
-    });
-    const yAxisConfig = useRef({
-        allowDuplicatedCategory: true,
-        allowDecimals: true,
-        hide: false,
-        orientation: 'right',
-        width: 50,
-        height: 1,
-        mirror: false,
-        type: 'number',
-        padding: { top: 20, bottom: 20 },
-        allowDataOverflow: true,
-        reversed: false,
-        label: 'tu ho ga',
-        tickLine: true,
-        axisLine: true,
-        tickMargin: 8,
-        tickCount: 8,
-    });
 
     const [config, setConfig] = useState<CustomChartConfig>({
         type: chart.config.type ?? 'bar',
