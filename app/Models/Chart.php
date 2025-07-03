@@ -23,6 +23,7 @@ class Chart extends TeamBootModel
         'config',
         'data',
         'embed_settings',
+        'total_exports',
     ];
 
     protected $casts = [

@@ -9,6 +9,7 @@ use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\Projects\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\Projects\ValidateChartExportController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\SwitchUserTeamController;
 use App\Http\Controllers\Team\TeamController;
@@ -72,7 +73,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
             Route::patch('/{chart}', [ProjectChartsController::class, 'update'])->name('projects.charts.update');
             Route::delete('/{chart}/destroy', [ProjectChartsController::class, 'destroy'])->name('projects.charts.destroy');
+            Route::get('/{chart}/validate-export', ValidateChartExportController::class)->name('projects.charts.validate-export');
         });
+
     });
 
     Route::prefix('folder')->group(function () {
