@@ -44,13 +44,15 @@ export default function ChartCard({ index = 1, chart }) {
 
     const deleteChart: FormEventHandler = (e) => {
         e.preventDefault();
-        destroy(route('chart.delete', chart.id), {
+        destroy(route('projects.charts.destroy', {
+            project: chart.project_id,
+            chart: chart.id
+        }), {
+            showProgress: false,
+            only: ['flash', 'charts', 'project'],
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                reset('name', 'description'); // Resets form fields if needed
-                toast(response.props.flash.success, {
-                    description: '🚀 Your chart has been deleted successfully.',
-                });
+                toast.success(response.props.flash.success);
             },
         });
     };
