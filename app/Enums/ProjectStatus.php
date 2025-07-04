@@ -8,6 +8,6 @@ enum ProjectStatus: string
 {
     use EnumToArray;
     case DRAFT = 'draft';
-    case PUBLISHED = 'published';
+    case ACTIVE = 'active';
     case INACTIVE = 'inactive';             // Manually disabled by user or system
 }
