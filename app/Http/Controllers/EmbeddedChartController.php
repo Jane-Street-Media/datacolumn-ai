@@ -10,8 +10,7 @@ class EmbeddedChartController extends Controller
     public function __invoke(Chart $chart)
     {
         return Inertia::render('charts/chart-embed', [
-            'config' => $chart->config,
-            'data' => $chart->data,
+            'chart' => $chart,
         ]);
     }
 }
