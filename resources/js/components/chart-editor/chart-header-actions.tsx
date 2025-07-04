@@ -8,8 +8,12 @@ import { useDataImport } from '@/hooks/use-data-import';
 import { useRef } from 'react';
 import EmbedDialog from '@/components/chart-editor/embed-dialog';
 import ExportChart from '@/components/chart-editor/export-chart';
+import { useChartEditor } from '@/contexts/chart-editor-context';
 
-export function ChartHeaderActions({ chart, config, data, columns, handleConfigChange, onImportSuccess, onSave, loading } ) {
+export function ChartHeaderActions( ) {
+
+    const { config, setData, setColumns, chart, updateChart, updating } = useChartEditor();
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { importCSV, isImporting } = useDataImport();
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,14 +27,15 @@ export function ChartHeaderActions({ chart, config, data, columns, handleConfigC
 
         try {
             const result = await importCSV(file);
-            onImportSuccess(result)
+            console.log('result');
+            console.log(result);
+            setData(result.data)
+            setColumns(result.columns)
             toast.success('Data imported successfully!');
         } catch (error) {
             toast.error('Failed to import data. Please check your CSV file.');
         }
     };
-
-    const handleSaveButton = (e) => onSave(e);
 
     return (
         <Card>
@@ -54,15 +59,15 @@ export function ChartHeaderActions({ chart, config, data, columns, handleConfigC
                                     <span className={'hidden lg:block'}>Import</span>
                                 </Button>
                                 <ExportChart title={config.title} chart={chart}/>
-                                <Button variant={'ghost'} className="border" onClick={(e) => handleSaveButton(e)} disabled={loading}>
-                                    {loading ? (
+                                <Button variant={'ghost'} className="border" onClick={(e) => updateChart(e)} disabled={updating}>
+                                    {updating ? (
                                         <Loader2 className="w-4 h-4 animate-spin"/>
                                     ) : (
                                         <Save />
                                     )}
                                     <span>Save</span>
                                 </Button>
-                                <EmbedDialog chart={chart} config={config} data={data} columns={columns} handleConfigChange={handleConfigChange} />
+                                <EmbedDialog />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>

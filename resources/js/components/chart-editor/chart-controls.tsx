@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColorPicker } from "@/components/color-picker";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useChartEditor } from '@/contexts/chart-editor-context';
 
 const chartTypes = [
     { type: 'bar' as const, label: 'Bar Chart', icon: BarChart },
@@ -64,10 +65,7 @@ const fontWeights = [
 ];
 
 interface ChartControlsProps {
-    config: CustomChartConfig;
-    onConfigChange: (config: CustomChartConfig) => void;
-    columns: Array<string>;
-    cardContentClasses: Record<string, string>;
+    cardContentClasses?: string;
 }
 
 const defaultCardContentClasses = {
@@ -75,61 +73,57 @@ const defaultCardContentClasses = {
 };
 
 
-export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, onConfigChange, cardContentClasses = defaultCardContentClasses,}) => {
+export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses = defaultCardContentClasses,}) => {
+    const { config, setConfig, columns} = useChartEditor();
 
     const handleChartTypeChange = (type: CustomChartConfig['type']) => {
         if (type !== 'composed') {
             // // If the chart type is not composed, reset series to only include the first dataKey
             if (config.series.length) {
-                setSeries([config.series[0]])
-                updateConfig({
+                // setSeries([config.series[0]])
+                setConfig({...config,
                     type: type,
+                    series: [config.series[0]]
                 });
                 return
             }
         }
 
-        updateConfig({ type });
+        setConfig({...config, type });
     }
-    const [seriesColumns, setSeriesColumns] = useState<Array<string>>([]);
-
-    useEffect(() => {
-        // extra series columns from columns props and filter out the column is already in config.xAxis
-        const index = series.findIndex(ser => ser.dataKey === config.xAxis);
-        if (index !== -1) {
-            removeSeries(index)
-            setSeriesColumns(columns.filter(col => col !== config.xAxis));
-        }
-    }, [columns, config.xAxis]);
-
-    const updateConfig = useCallback((updates: Partial<CustomChartConfig>) => {
-        onConfigChange({ ...config, ...updates });
-    }, [config, onConfigChange]);
-
-    const [series, setSeries] = useState(config.series || []);
-
-    useEffect(() => {
-        updateConfig({ series });
-    }, [series]);
+    const [seriesColumns] = useState<Array<string>>(columns.filter(col => col !== config.xAxis));
 
     const addSeries = (value: string) => {
-        if (series.some(sery => sery.dataKey === value)) {
+        if (config.series.some(sery => sery.dataKey === value)) {
             return;
         }
         if (config.type === 'composed') {
-            setSeries([...series, {
-                dataKey: value,
-                chartType: 'line',
-                fill: '#1221c8',
-                stroke: '#1221c8',
-            }]);
+            setConfig({
+                ...config,
+                series: [
+                    ...config.series,
+                    {
+                        dataKey: value,
+                        chartType: 'line',
+                        type: 'monotone',
+                        fill: '#1221c8',
+                        stroke: '#1221c8',
+                    }
+                ]
+            })
         } else {
-            setSeries([{
-                dataKey: value,
-                chartType: 'line',
-                fill: '#1221c8',
-                stroke: '#1221c8',
-            }]);
+            setConfig({
+                ...config,
+                series: [
+                    {
+                        dataKey: value,
+                        chartType: 'line',
+                        type: 'monotone',
+                        fill: '#1221c8',
+                        stroke: '#1221c8',
+                    }
+                ]
+            })
         }
     }
 
@@ -153,15 +147,21 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
             ...data.itemValue,
         };
 
-        setSeries([...updatedSeries]);
+        setConfig({
+            ...config,
+            series: updatedSeries
+        })
+
     };
 
     const removeSeries = (index: number) => {
         const updatedSeries = [...config.series];
         updatedSeries.splice(index, 1);
-        setSeries([...updatedSeries]);
+        setConfig({
+            ...config,
+            series: updatedSeries
+        })
     };
-
 
 
     return (
@@ -196,7 +196,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     <ToggleGroup
                         type="single"
                         value={config.theme}
-                        onValueChange={(val) => updateConfig({ theme: val as any })}
+                        onValueChange={(val) => setConfig({...config, theme: val as any })}
                         className="grid grid-cols-2 gap-2 sm:grid-cols-3"
                     >
                         {themes.map(({ value, label, icon: Icon }) => (
@@ -213,7 +213,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     <h4 className="mb-3 text-sm font-medium">Background Color</h4>
                     <RadioGroup
                         value={config.backgroundColor ?? 'default'}
-                        onValueChange={(value) => updateConfig({ backgroundColor: value as any })}
+                        onValueChange={(value) => setConfig({...config, backgroundColor: value as any })}
                     >
                         <div className="flex items-center gap-3">
                             <RadioGroupItem id="default" value="default"></RadioGroupItem>
@@ -236,10 +236,10 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     </RadioGroup>
                     {config.backgroundColor && !['default', 'transparent'].includes(config.backgroundColor) && (
                         <div className="flex items-center space-x-2 py-2">
-                            <ColorPicker value={config.backgroundColor} onChange={(val) => updateConfig({ backgroundColor: val })} />
+                            <ColorPicker value={config.backgroundColor} onChange={(val) => setConfig({...config, backgroundColor: val })} />
                             <Input
                                 value={config.backgroundColor}
-                                onChange={(e) => updateConfig({ backgroundColor: e.target.value })}
+                                onChange={(e) => setConfig({...config, backgroundColor: e.target.value })}
                                 placeholder="#ffffff"
                             />
                         </div>
@@ -251,13 +251,13 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     <h4 className="mb-3 text-sm font-medium">Title Settings</h4>
 
                     {/* Chart Title */}
-                    <Input value={config.title} onChange={(e) => updateConfig({ title: e.target.value })} placeholder="Enter chart title" />
+                    <Input value={config.title} onChange={(e) => setConfig({...config, title: e.target.value })} placeholder="Enter chart title" />
 
                     {/* Title Alignment */}
                     <ToggleGroup
                         type="single"
                         value={config.titleAlignment}
-                        onValueChange={(val) => updateConfig({ titleAlignment: val as any })}
+                        onValueChange={(val) => setConfig({...config, titleAlignment: val as any })}
                         className="grid grid-cols-2 gap-2 sm:grid-cols-3"
                     >
                         {alignments.map(({ value, label }) => (
@@ -269,15 +269,15 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
 
                     {/* Title Color */}
                     <div className="flex items-center space-x-3">
-                        <ColorPicker value={config.titleColor} onChange={(val) => updateConfig({ titleColor: val })} />
-                        <Input value={config.titleColor} onChange={(e) => updateConfig({ titleColor: e.target.value })} placeholder="#000000" />
+                        <ColorPicker value={config.titleColor} onChange={(val) => setConfig({...config, titleColor: val })} />
+                        <Input value={config.titleColor} onChange={(e) => setConfig({...config, titleColor: e.target.value })} placeholder="#000000" />
                     </div>
 
                     {/* Title Weight */}
                     <ToggleGroup
                         type="single"
                         value={config.titleWeight}
-                        onValueChange={(val) => updateConfig({ titleWeight: val as any })}
+                        onValueChange={(val) => setConfig({...config, titleWeight: val as any })}
                         className="grid grid-cols-2 gap-2 sm:grid-cols-2"
                     >
                         {fontWeights.map(({ value, label }) => (
@@ -290,12 +290,12 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     {/* Subtitle */}
                     <Input
                         value={config.subtitle}
-                        onChange={(e) => updateConfig({ subtitle: e.target.value })}
+                        onChange={(e) => setConfig({...config, subtitle: e.target.value })}
                         placeholder="Enter subtitle (optional)"
                     />
                     <div className="flex items-center space-x-3">
-                        <ColorPicker value={config.subtitleColor} onChange={(val) => updateConfig({ subtitleColor: val })} />
-                        <Input value={config.subtitleColor} onChange={(e) => updateConfig({ subtitleColor: e.target.value })} placeholder="#666666" />
+                        <ColorPicker value={config.subtitleColor} onChange={(val) => setConfig({...config, subtitleColor: val })} />
+                        <Input value={config.subtitleColor} onChange={(e) => setConfig({...config, subtitleColor: e.target.value })} placeholder="#666666" />
                     </div>
                 </div>
 
@@ -303,7 +303,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                 {!['pie', 'radar', 'radialBar', 'funnel', 'treemap'].includes(config.type) && (
                     <div className="space-y-4">
                         <h4 className="mb-3 text-sm font-medium">Axis Configuration</h4>
-                        <Select value={config.xAxis} onValueChange={(val) => updateConfig({ xAxis: val })}>
+                        <Select value={config.xAxis} onValueChange={(val) => setConfig({...config, xAxis: val })}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select X axis column" />
                             </SelectTrigger>
@@ -317,13 +317,13 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                         </Select>
                         <Input
                             value={config.xAxisLabel || ''}
-                            onChange={(e) => updateConfig({ xAxisLabel: e.target.value })}
+                            onChange={(e) => setConfig({...config, xAxisLabel: e.target.value })}
                             placeholder="Enter X-axis label (optional)"
                         />
 
                         <Input
                             value={config.yAxisLabel || ''}
-                            onChange={(e) => updateConfig({ yAxisLabel: e.target.value })}
+                            onChange={(e) => setConfig({...config, yAxisLabel: e.target.value })}
                             placeholder="Enter Y-axis label (optional)"
                         />
 
@@ -343,7 +343,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                                 </SelectContent>
                             </Select>
 
-                            {series.map((yaxis, yaxisIndex) => (
+                            {config.series.map((yaxis, yaxisIndex) => (
                                 <div className="flex flex-row items-center gap-4 relative pr-5">
                                     <div className={'m-0 space-y-2'}>
                                         <h4 className="text-sm font-medium capitalize"> {yaxis.dataKey} Type </h4>
@@ -396,7 +396,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                 {/* Padding Options */}
                 <div className="space-y-4">
                     <h4 className="mb-3 text-sm font-medium">Padding Options</h4>
-                    <RadioGroup value={config.paddingOption} onValueChange={(value) => updateConfig({ paddingOption: value as any })}>
+                    <RadioGroup value={config.paddingOption} onValueChange={(value) => setConfig({...config, paddingOption: value as any })}>
                         <div className="flex items-center gap-2">
                             <RadioGroupItem id="default" value="default" />
                             <label className="text-sm font-medium" htmlFor="default">
@@ -420,7 +420,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                         <Input
                             type="number"
                             value={config.customPaddingValue || 0}
-                            onChange={(e) => updateConfig({ customPaddingValue: parseInt(e.target.value) || 0 })}
+                            onChange={(e) => setConfig({...config, customPaddingValue: parseInt(e.target.value) || 0 })}
                             placeholder="Padding value (px)"
                         />
                     )}
@@ -429,7 +429,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                 {/* Tooltip Settings */}
                 <div className="space-y-4">
                     <h4 className="mb-3 text-sm font-medium">Tooltip Settings</h4>
-                    <Select value={config.tooltipFormat || 'default'} onValueChange={(val) => updateConfig({ tooltipFormat: val as any })}>
+                    <Select value={config.tooltipFormat || 'default'} onValueChange={(val) => setConfig({...config, tooltipFormat: val as any })}>
                         <SelectTrigger className="w-full">
                             <SelectValue />
                         </SelectTrigger>
@@ -444,7 +444,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     {config.tooltipFormat === 'custom' && (
                         <Input
                             value={config.tooltipCustomFormat || ''}
-                            onChange={(e) => updateConfig({ tooltipCustomFormat: e.target.value })}
+                            onChange={(e) => setConfig({...config, tooltipCustomFormat: e.target.value })}
                             placeholder="e.g., ${value} (use {value} as placeholder)"
                         />
                     )}
@@ -456,7 +456,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                     <ToggleGroup
                         type="single"
                         value={colorSchemes.findIndex((s) => JSON.stringify(s) === JSON.stringify(config.colors)).toString()}
-                        onValueChange={(val) => updateConfig({ colors: colorSchemes[parseInt(val, 10)] })}
+                        onValueChange={(val) => setConfig({...config, colors: colorSchemes[parseInt(val, 10)] })}
                         className="flex flex-1 flex-col space-y-2"
                     >
                         {colorSchemes.map((scheme, idx) => (
@@ -476,7 +476,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                 <div className="space-y-3">
                     <h4 className="mb-3 text-sm font-medium">Display Options</h4>
                     <div className="flex items-center gap-3">
-                        <Checkbox id="showGrid" checked={config.showGrid} onCheckedChange={(checked) => updateConfig({ showGrid: !!checked })} />
+                        <Checkbox id="showGrid" checked={config.showGrid} onCheckedChange={(checked) => setConfig({...config, showGrid: !!checked })} />
                         <label className="text-sm font-medium" htmlFor="showGrid">
                             Show Grid
                         </label>
@@ -485,7 +485,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                         <Checkbox
                             id="showLegend"
                             checked={config.showLegend}
-                            onCheckedChange={(checked) => updateConfig({ showLegend: !!checked })}
+                            onCheckedChange={(checked) => setConfig({...config, showLegend: !!checked })}
                         />
                         <label className="text-sm font-medium" htmlFor="showLegend">
                             Show Legend
@@ -497,7 +497,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                                 <Checkbox
                                     id="showXAxis"
                                     checked={config.showXAxis}
-                                    onCheckedChange={(checked) => updateConfig({ showXAxis: !!checked })}
+                                    onCheckedChange={(checked) => setConfig({...config, showXAxis: !!checked })}
                                 />
                                 <label className="text-sm font-medium" htmlFor="showXAxis">
                                     Show X-Axis Line
@@ -507,7 +507,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                                 <Checkbox
                                     id="showYAxis"
                                     checked={config.showYAxis}
-                                    onCheckedChange={(checked) => updateConfig({ showYAxis: !!checked })}
+                                    onCheckedChange={(checked) => setConfig({...config, showYAxis: !!checked })}
                                 />
                                 <label className="text-sm font-medium" htmlFor="showYAxis">
                                     Show Y-Axis Line
@@ -524,7 +524,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                         <Input
                             type="number"
                             value={config.width}
-                            onChange={(e) => updateConfig({ width: parseInt(e.target.value) || 800 })}
+                            onChange={(e) => setConfig({...config, width: parseInt(e.target.value) || 800 })}
                             min={300}
                             max={1200}
                         />
@@ -534,7 +534,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
                         <Input
                             type="number"
                             value={config.height}
-                            onChange={(e) => updateConfig({ height: parseInt(e.target.value) || 600 })}
+                            onChange={(e) => setConfig({...config, height: parseInt(e.target.value) || 600 })}
                             min={200}
                             max={800}
                         />
@@ -553,7 +553,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 {chartTypes.map(({ type, label, icon: Icon }) => (
         //                     <button
         //                         key={type}
-        //                         onClick={() => updateConfig({ type })}
+        //                         onClick={() => setConfig({...config, type })}
         //                         className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-200 ${
         //                             config.type === type
         //                                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
@@ -574,7 +574,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 {themes.map(({ value, label, icon: Icon }) => (
         //                     <button
         //                         key={value}
-        //                         onClick={() => updateConfig({ theme: value as 'light' | 'dark' | 'system' })}
+        //                         onClick={() => setConfig({...config, theme: value as 'light' | 'dark' | 'system' })}
         //                         className={`flex-1 flex items-center justify-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-200 ${
         //                             config.theme === value
         //                                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
@@ -597,7 +597,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         type="radio"
         //                         id="bgDefault"
         //                         checked={!config.backgroundColor || config.backgroundColor === 'default'}
-        //                         onChange={() => updateConfig({ backgroundColor: 'default' })}
+        //                         onChange={() => setConfig({...config, backgroundColor: 'default' })}
         //                         className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                     />
         //                     <label htmlFor="bgDefault" className="text-sm text-gray-700 dark:text-gray-300">Default (Theme Based)</label>
@@ -608,7 +608,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         type="radio"
         //                         id="bgTransparent"
         //                         checked={config.backgroundColor === 'transparent'}
-        //                         onChange={() => updateConfig({ backgroundColor: 'transparent' })}
+        //                         onChange={() => setConfig({...config, backgroundColor: 'transparent' })}
         //                         className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                     />
         //                     <label htmlFor="bgTransparent" className="text-sm text-gray-700 dark:text-gray-300">Transparent</label>
@@ -619,7 +619,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         type="radio"
         //                         id="bgCustom"
         //                         checked={config.backgroundColor !== 'default' && config.backgroundColor !== 'transparent' && !!config.backgroundColor}
-        //                         onChange={() => updateConfig({ backgroundColor: config.backgroundColor || '#ffffff' })}
+        //                         onChange={() => setConfig({...config, backgroundColor: config.backgroundColor || '#ffffff' })}
         //                         className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                     />
         //                     <label htmlFor="bgCustom" className="text-sm text-gray-700 dark:text-gray-300">Custom Color</label>
@@ -631,13 +631,13 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                             <input
         //                                 type="color"
         //                                 value={config.backgroundColor || '#ffffff'}
-        //                                 onChange={(e) => updateConfig({ backgroundColor: e.target.value })}
+        //                                 onChange={(e) => setConfig({...config, backgroundColor: e.target.value })}
         //                                 className="w-12 h-10 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer"
         //                             />
         //                             <input
         //                                 type="text"
         //                                 value={config.backgroundColor || '#ffffff'}
-        //                                 onChange={(e) => updateConfig({ backgroundColor: e.target.value })}
+        //                                 onChange={(e) => setConfig({...config, backgroundColor: e.target.value })}
         //                                 className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                                 placeholder="#ffffff"
         //                             />
@@ -657,7 +657,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 <input
         //                     type="text"
         //                     value={config.title}
-        //                     onChange={(e) => updateConfig({ title: e.target.value })}
+        //                     onChange={(e) => setConfig({...config, title: e.target.value })}
         //                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         //                     placeholder="Enter chart title"
         //                 />
@@ -670,7 +670,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     {alignments.map(({ value, label }) => (
         //                         <button
         //                             key={value}
-        //                             onClick={() => updateConfig({ titleAlignment: value as 'left' | 'center' | 'right' })}
+        //                             onClick={() => setConfig({...config, titleAlignment: value as 'left' | 'center' | 'right' })}
         //                             className={`flex-1 px-3 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${
         //                                 config.titleAlignment === value
         //                                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
@@ -690,13 +690,13 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <input
         //                         type="color"
         //                         value={config.titleColor}
-        //                         onChange={(e) => updateConfig({ titleColor: e.target.value })}
+        //                         onChange={(e) => setConfig({...config, titleColor: e.target.value })}
         //                         className="w-12 h-10 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer"
         //                     />
         //                     <input
         //                         type="text"
         //                         value={config.titleColor}
-        //                         onChange={(e) => updateConfig({ titleColor: e.target.value })}
+        //                         onChange={(e) => setConfig({...config, titleColor: e.target.value })}
         //                         className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                         placeholder="#000000"
         //                     />
@@ -710,7 +710,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     {fontWeights.map(({ value, label }) => (
         //                         <button
         //                             key={value}
-        //                             onClick={() => updateConfig({ titleWeight: value as 'normal' | 'bold' })}
+        //                             onClick={() => setConfig({...config, titleWeight: value as 'normal' | 'bold' })}
         //                             className={`flex-1 px-3 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${
         //                                 config.titleWeight === value
         //                                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
@@ -729,7 +729,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 <input
         //                     type="text"
         //                     value={config.subtitle}
-        //                     onChange={(e) => updateConfig({ subtitle: e.target.value })}
+        //                     onChange={(e) => setConfig({...config, subtitle: e.target.value })}
         //                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         //                     placeholder="Enter subtitle (optional)"
         //                 />
@@ -742,13 +742,13 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <input
         //                         type="color"
         //                         value={config.subtitleColor}
-        //                         onChange={(e) => updateConfig({ subtitleColor: e.target.value })}
+        //                         onChange={(e) => setConfig({ subtitleColor: e.target.value })}
         //                         className="w-12 h-10 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer"
         //                     />
         //                     <input
         //                         type="text"
         //                         value={config.subtitleColor}
-        //                         onChange={(e) => updateConfig({ subtitleColor: e.target.value })}
+        //                         onChange={(e) => setConfig({ subtitleColor: e.target.value })}
         //                         className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                         placeholder="#666666"
         //                     />
@@ -765,7 +765,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">X-Axis</label>
         //                     <select
         //                         value={config.xAxis}
-        //                         onChange={(e) => updateConfig({ xAxis: e.target.value })}
+        //                         onChange={(e) => setConfig({ xAxis: e.target.value })}
         //                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                     >
         //                         <option value="">Select column</option>
@@ -780,7 +780,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <input
         //                         type="text"
         //                         value={config.xAxisLabel || ''}
-        //                         onChange={(e) => updateConfig({ xAxisLabel: e.target.value })}
+        //                         onChange={(e) => setConfig({ xAxisLabel: e.target.value })}
         //                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         //                         placeholder="Enter X-axis label (optional)"
         //                     />
@@ -790,7 +790,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Y-Axis</label>
         //                     <select
         //                         value={config.yAxis}
-        //                         onChange={(e) => updateConfig({ yAxis: e.target.value })}
+        //                         onChange={(e) => setConfig({ yAxis: e.target.value })}
         //                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                     >
         //                         <option value="">Select column</option>
@@ -805,7 +805,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <input
         //                         type="text"
         //                         value={config.yAxisLabel || ''}
-        //                         onChange={(e) => updateConfig({ yAxisLabel: e.target.value })}
+        //                         onChange={(e) => setConfig({ yAxisLabel: e.target.value })}
         //                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         //                         placeholder="Enter Y-axis label (optional)"
         //                     />
@@ -823,7 +823,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         type="radio"
         //                         id="paddingDefault"
         //                         checked={config.paddingOption === 'default'}
-        //                         onChange={() => updateConfig({ paddingOption: 'default' })}
+        //                         onChange={() => setConfig({ paddingOption: 'default' })}
         //                         className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                     />
         //                     <label htmlFor="paddingDefault" className="text-sm text-gray-700 dark:text-gray-300">Default</label>
@@ -834,7 +834,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         type="radio"
         //                         id="paddingNone"
         //                         checked={config.paddingOption === 'none'}
-        //                         onChange={() => updateConfig({ paddingOption: 'none' })}
+        //                         onChange={() => setConfig({ paddingOption: 'none' })}
         //                         className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                     />
         //                     <label htmlFor="paddingNone" className="text-sm text-gray-700 dark:text-gray-300">None</label>
@@ -845,7 +845,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         type="radio"
         //                         id="paddingCustom"
         //                         checked={config.paddingOption === 'custom'}
-        //                         onChange={() => updateConfig({ paddingOption: 'custom' })}
+        //                         onChange={() => setConfig({ paddingOption: 'custom' })}
         //                         className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                     />
         //                     <label htmlFor="paddingCustom" className="text-sm text-gray-700 dark:text-gray-300">Custom</label>
@@ -857,7 +857,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                         <input
         //                             type="number"
         //                             value={config.customPaddingValue || 0}
-        //                             onChange={(e) => updateConfig({ customPaddingValue: parseInt(e.target.value) || 0 })}
+        //                             onChange={(e) => setConfig({ customPaddingValue: parseInt(e.target.value) || 0 })}
         //                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                             min="0"
         //                             max="100"
@@ -875,7 +875,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tooltip Format</label>
         //                 <select
         //                     value={config.tooltipFormat || 'default'}
-        //                     onChange={(e) => updateConfig({ tooltipFormat: e.target.value as CustomChartConfig['tooltipFormat'] })}
+        //                     onChange={(e) => setConfig({ tooltipFormat: e.target.value as CustomChartConfig['tooltipFormat'] })}
         //                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                 >
         //                     {tooltipFormats.map((format) => (
@@ -890,7 +890,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     <input
         //                         type="text"
         //                         value={config.tooltipCustomFormat || ''}
-        //                         onChange={(e) => updateConfig({ tooltipCustomFormat: e.target.value })}
+        //                         onChange={(e) => setConfig({ tooltipCustomFormat: e.target.value })}
         //                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         //                         placeholder="e.g., ${value} (use {value} as placeholder)"
         //                     />
@@ -908,7 +908,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 {colorSchemes.map((scheme, index) => (
         //                     <button
         //                         key={index}
-        //                         onClick={() => updateConfig({ colors: scheme })}
+        //                         onClick={() => setConfig({ colors: scheme })}
         //                         className={`flex items-center space-x-3 w-full p-3 rounded-lg border transition-all duration-200 ${
         //                             JSON.stringify(config.colors) === JSON.stringify(scheme)
         //                                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
@@ -939,7 +939,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     type="checkbox"
         //                     id="showGrid"
         //                     checked={config.showGrid}
-        //                     onChange={(e) => updateConfig({ showGrid: e.target.checked })}
+        //                     onChange={(e) => setConfig({ showGrid: e.target.checked })}
         //                     className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                 />
         //                 <label htmlFor="showGrid" className="text-sm text-gray-700 dark:text-gray-300">Show Grid</label>
@@ -950,7 +950,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                     type="checkbox"
         //                     id="showLegend"
         //                     checked={config.showLegend}
-        //                     onChange={(e) => updateConfig({ showLegend: e.target.checked })}
+        //                     onChange={(e) => setConfig({ showLegend: e.target.checked })}
         //                     className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                 />
         //                 <label htmlFor="showLegend" className="text-sm text-gray-700 dark:text-gray-300">Show Legend</label>
@@ -964,7 +964,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                             type="checkbox"
         //                             id="showXAxis"
         //                             checked={config.showXAxis}
-        //                             onChange={(e) => updateConfig({ showXAxis: e.target.checked })}
+        //                             onChange={(e) => setConfig({ showXAxis: e.target.checked })}
         //                             className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                         />
         //                         <label htmlFor="showXAxis" className="text-sm text-gray-700 dark:text-gray-300">Show X-Axis Line</label>
@@ -975,7 +975,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                             type="checkbox"
         //                             id="showYAxis"
         //                             checked={config.showYAxis}
-        //                             onChange={(e) => updateConfig({ showYAxis: e.target.checked })}
+        //                             onChange={(e) => setConfig({ showYAxis: e.target.checked })}
         //                             className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 bg-white dark:bg-gray-700"
         //                         />
         //                         <label htmlFor="showYAxis" className="text-sm text-gray-700 dark:text-gray-300">Show Y-Axis Line</label>
@@ -991,7 +991,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 <input
         //                     type="number"
         //                     value={config.width}
-        //                     onChange={(e) => updateConfig({ width: parseInt(e.target.value) || 800 })}
+        //                     onChange={(e) => setConfig({ width: parseInt(e.target.value) || 800 })}
         //                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                     min="300"
         //                     max="1200"
@@ -1002,7 +1002,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({config, columns, on
         //                 <input
         //                     type="number"
         //                     value={config.height}
-        //                     onChange={(e) => updateConfig({ height: parseInt(e.target.value) || 600 })}
+        //                     onChange={(e) => setConfig({ height: parseInt(e.target.value) || 600 })}
         //                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         //                     min="200"
         //                     max="1200"

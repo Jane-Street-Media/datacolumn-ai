@@ -15,10 +15,13 @@ import { Code, Copy, Eye, Link, Settings, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
-import { ChartControls } from '@/components/chart-editor/chartControls';
+import { ChartControls } from '@/components/chart-editor/chart-controls';
 import { Card, CardContent } from '@/components/ui/card';
+import { useChartEditor } from '@/contexts/chart-editor-context';
 
-export default function EmbedDialog({ chart, config, data, columns, handleConfigChange }) {
+export default function EmbedDialog() {
+    const { chart, config, data, columns } = useChartEditor();
+
     const embedScript = `<!-- DataColumn.ai Chart -->
 <div id="dc-chart-123" style="width: ${config.responsive ? '100%' : config.width}; height: ${config.height}; border-radius: 8px; overflow: hidden;"></div>
 <script>
@@ -145,7 +148,7 @@ export default function EmbedDialog({ chart, config, data, columns, handleConfig
                             </div>
                         </TabsContent>
                         <TabsContent value="settings">
-                            <ChartControls config={config} columns={columns} onConfigChange={handleConfigChange} cardContentClasses={'max-h-full'} />
+                            <ChartControls cardContentClasses={'max-h-full'} />
                         </TabsContent>
                     </Tabs>
 
