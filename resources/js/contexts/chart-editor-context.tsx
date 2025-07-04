@@ -40,9 +40,9 @@ interface ChartEditorProviderProps {
     chart: {
         config: CustomChartConfig;
         data: any[];
-        project_id: number | string;
-        uuid: string;
-        id: number | string;
+        project_id?: number | string;
+        uuid?: string;
+        id?: number | string;
     };
     children: React.ReactNode;
 }
@@ -85,22 +85,47 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
     useEffect(() => {
         if (data.length > 0) {
             setColumns(Object.keys(data[0]));
-            setConfig({
-                ...config,
-                xAxis: Object.keys(data[0])[0], // Default to the first column as xAxis
-                series: [{
-                    dataKey: Object.keys(data[0])[1], // Default series name to the second column
-                    chartType: 'line',
-                    type: 'monotone',
-                    fill: '#1221c8',
-                    stroke: '#1221c8',
+            if (config.type !== 'composed') {
+                setConfig({
+                    ...config,
+                    xAxis: Object.keys(data[0])[0], // Default to the first column as xAxis
+                    series: [{
+                        dataKey: Object.keys(data[0])[1], // Default series name to the second column
+                        chartType: 'line',
+                        type: 'monotone',
+                        fill: '#1221c8',
+                        stroke: '#1221c8',
 
-                }]
-            })
+                    }]
+                })
+            }
         } else {
             setColumns([]);
         }
     }, [data]);
+
+    useEffect(() => {
+        if (config.xAxis && config.series) {
+            const filteredSeries = config.series.filter(series => series.dataKey !== config.xAxis);
+            if (!filteredSeries.length) {
+                // if all series got empty, add a default series from data which is not xAxis
+                const defaultSeriesKey = columns.find(col => col !== config.xAxis);
+                if (defaultSeriesKey) {
+                    filteredSeries.push({
+                        dataKey: defaultSeriesKey,
+                        chartType: 'line',
+                        type: 'monotone',
+                        fill: '#1221c8',
+                        stroke: '#1221c8',
+                    });
+                }
+            }
+            setConfig({
+                ...config,
+                series: filteredSeries
+            });
+        }
+    }, [config.xAxis]);
 
     const updateChart = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
         setUpdating(true);

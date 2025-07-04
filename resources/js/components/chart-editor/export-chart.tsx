@@ -9,22 +9,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import * as React from 'react';
 import { useChartExport } from '@/hooks/use-chart-export';
-import { router, useForm } from '@inertiajs/react';
-import { useMemo, useRef, useState } from 'react';
+import { useForm } from '@inertiajs/react';
+import { useState } from 'react';
 
-export default function ExportChart({ title, chart }) {
+export default function ExportChart({ title }) {
 
     const { exportChart, exportChartAsSVG } = useChartExport();
 
-    const {data, setData, get} = useForm({})
+    const {get} = useForm({})
     const [exporting, setExporting] = useState(false)
     const handleExportChart = (format: 'png' | 'svg' = 'png', e) => {
         e.preventDefault()
         setExporting(true)
-        get(route('projects.charts.validate-export', {
-            project: chart.project_id,
-            chart: chart.id
-        }), {
+        get(route('projects.charts.validate-export'), {
             preserveState: true,
             preserveScroll: true,
             showProgress: false,

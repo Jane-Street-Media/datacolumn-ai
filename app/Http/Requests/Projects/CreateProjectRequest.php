@@ -27,7 +27,7 @@ class CreateProjectRequest extends BaseTeamRequest
         return [
             'name' => ['required', 'string'],
             'description' => ['nullable', 'string'],
-            'status' => ['required', 'string', Rule::enum(ProjectStatus::class)],
+            'status' => ['sometimes', 'string', Rule::enum(ProjectStatus::class)],
             'folder_id' => [
                 'nullable',
                 Rule::exists('folders', 'id')->where(function ($query) {

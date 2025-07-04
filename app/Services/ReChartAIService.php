@@ -101,15 +101,16 @@ class ReChartAIService
 Generate a fully-formed Recharts configuration object based on the user's natural-language request. If they dont provide data, use data from your knowledge base.
 Always include **series** attribute even if its just x and y so to keep consistency in response.
 The returned object must include:
-  • chartType: which Recharts component to render (e.g. 'bar', 'line', 'pie', etc.)
+  • chartType: which Recharts component to render (e.g. 'bar', 'line', 'area', 'composed', etc.).
   • title: a human-readable chart title
   • xAxis & yAxis: the data keys to map on each axis
   • data: an array of objects, each containing at least the xAxis and yAxis fields
   • series: an array of objects, each defining a series in the chart with:
-    • type: the series type (e.g. 'bar', 'line', etc.)
+    • chartType: the series type (e.g. 'bar', 'line', 'area' etc.)
+    • type: monotone
     • dataKey: the field in each data object to use for this series
-    • fill: the color to fill the series (for bar/area charts)
-    • stroke: the color to outline the series (for line charts)
+    • fill: the color to fill the series
+    • stroke: the color to outline the series
   • colors: an ordered list of color strings (hex codes or CSS names) for the series
 DESC,
                 'parameters' => [
@@ -118,12 +119,10 @@ DESC,
                         'chartType' => [
                             'type' => 'string',
                             'enum' => [
-                                'bar', 'line', 'area', 'pie',
-                                'scatter', 'radar', 'radialBar',
-                                'funnel', 'treemap', 'composed',
+                                'bar', 'line', 'bar', 'area', 'composed',
                             ],
                             'description' => 'The Recharts component to use when rendering the chart.',
-                            'examples' => ['bar', 'pie'],
+                            'examples' => ['bar', 'line', 'area', 'composed'],
                         ],
                         'title' => [
                             'type' => 'string',
@@ -151,13 +150,15 @@ DESC,
                             'minItems' => 1,
                             'examples' => [
                                 [
-                                    'type' => 'bar',
+                                    'chartType' => 'bar',
+                                    'type' => 'monotone',
                                     'dataKey' => 'salary',
                                     'fill' => '#8884d8',
                                     'stroke' => '#8884d8'
                                 ],
                                 [
-                                    'type' => 'line',
+                                    'chartType' => 'line',
+                                    'type' => 'monotone',
                                     'dataKey' =>  'revenue',
                                     'fill' => '#82ca9d',
                                     'stroke' => '#82ca9d'

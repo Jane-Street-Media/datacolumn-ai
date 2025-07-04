@@ -14,11 +14,11 @@ use LibDNS\Records\Types\Char;
 
 class ValidateChartExportController extends Controller
 {
-    public function __invoke(Project $project, Chart $chart): RedirectResponse
+    public function __invoke(): RedirectResponse
     {
         try {
             EnsurePlanLimitNotExceeded::handle(Auth::user()->currentTeam, PlanFeatureEnum::NO_OF_EXPORTS);
-            $chart->increment('total_exports');
+            Auth::user()->currentTeam()->increment('total_exports');
             return back()->with('success', 'Plan export limit not exceeded.');
         } catch (PackageLimitExceededException $e) {
             return back()->withErrors(['package_restriction' => $e->getMessage()]);

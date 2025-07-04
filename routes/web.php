@@ -68,9 +68,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{chart}', [ProjectChartsController::class, 'edit'])->name('projects.charts.edit');
             Route::patch('/{chart}', [ProjectChartsController::class, 'update'])->name('projects.charts.update');
             Route::delete('/{chart}/destroy', [ProjectChartsController::class, 'destroy'])->name('projects.charts.destroy');
-            Route::get('/{chart}/validate-export', ValidateChartExportController::class)->name('projects.charts.validate-export');
         });
-
+        Route::get('/validate-export', ValidateChartExportController::class)->name('projects.charts.validate-export');
     });
 
     Route::prefix('folder')->group(function () {

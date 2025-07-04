@@ -47,7 +47,7 @@ enum PlanFeatureEnum: string
             self::NO_OF_PROJECTS => $team->projects()->count(),
             self::NO_OF_TEAM_MEMBERS => $team->users()->count() + $team->invitations()->count(),
             self::NO_OF_CHARTS => $team->charts()->count(),
-            self::NO_OF_EXPORTS => GetChartQuery::handle()->sum('total_exports'),
+            self::NO_OF_EXPORTS => $team->total_exports,
         };
     }
 

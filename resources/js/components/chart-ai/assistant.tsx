@@ -12,6 +12,7 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import ExportChart from '@/components/chart-editor/export-chart';
+import { ChartEditorProvider } from '@/contexts/chart-editor-context';
 
 interface Message {
     id: string;
@@ -182,6 +183,12 @@ export const Assistant: React.FC = () => {
 
     const getInitials = useInitials();
 
+    const parseChartFromMessage = (message) => {
+        return {
+            data: message.generatedData,
+            config: message.chartConfig,
+        };
+    };
     return (
         <div className="bg-background flex h-full w-full flex-col">
             {/* Chat Messages */}
@@ -229,8 +236,9 @@ export const Assistant: React.FC = () => {
                                     {/* Generated Chart */}
                                     {message.chartConfig && message.generatedData && (
                                         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-                                            <ChartRenderer data={message.generatedData} config={message.chartConfig} />
-
+                                            <ChartEditorProvider chart={parseChartFromMessage(message)}>
+                                                <ChartRenderer />
+                                            </ChartEditorProvider>
                                             {/* Chart Actions */}
                                             <div className="mt-4 flex items-center justify-center space-x-3">
                                                 <Button onClick={() => handleEditInProject(message.chartConfig, message.generatedData)}>
