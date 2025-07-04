@@ -10,7 +10,6 @@ use App\Models\Team;
 use Chargebee\Cashier\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 

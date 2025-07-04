@@ -11,12 +11,11 @@ use App\Http\Controllers\Projects\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Projects\ValidateChartExportController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\SwitchUserTeamController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
-use Chargebee\Cashier\Http\Controllers\WebhookController;
-use Chargebee\Cashier\Http\Middleware\AuthenticateWebhook;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
