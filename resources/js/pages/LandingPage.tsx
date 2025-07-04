@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-// import { useNavigate } from 'react-router-dom';
 import Header from '@/components/header';
 
-import { AppearanceProvider, useAppearanceContext } from '@/contexts/appearance-context';
+import { AppearanceProvider } from '@/contexts/appearance-context';
 
 import {
   Play,
@@ -18,71 +17,16 @@ import {
   Tag,
   Globe,
   ArrowRight,
-  Check,
   Star,
-  Users,
   Zap,
-  Shield,
   Upload,
-  Menu,
-  X,
-  Sun,
-  Moon,
-  Monitor,
   FolderOpen,
   Quote
 } from 'lucide-react';
 import { Logo } from '@/components/Logo';
-// import { SEOHead } from '../components/SEOHead';
-// import { useThemeContext } from '../contexts/ThemeContext';
-// import { ConfirmDialog } from '../components/ui/Dialog';
-// import toast from 'react-hot-toast';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function LandingPage() {
-
-    // const { appearance, setAppearance } = useAppearanceContext();
-
-  // const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showThemeMenu, setShowThemeMenu] = useState(false);
-  // const { theme, applyTheme } = useThemeContext();
-
-  // Set the default theme to system on first load
-  // useEffect(() => {
-  //   if (!localStorage.getItem('theme')) {
-  //     applyTheme('system');
-  //   }
-  // }, [applyTheme]);
-
-  // const handleTryFree = () => {
-  //   navigate('/signup');
-  // };
-  // const handleSignIn = () => {
-  //   navigate('/login');
-  // };
-
-
-
-    const themeOptions = [
-    { id: 'light', label: 'Light', icon: Sun },
-    { id: 'dark', label: 'Dark', icon: Moon },
-    { id: 'system', label: 'System', icon: Monitor }
-  ];
-
-  const handleThemeChange = (newTheme: string) => {
-    // applyTheme(newTheme as any);
-    setShowThemeMenu(false);
-    // toast.success(`Theme changed to ${newTheme}`);
-  };
-
-  // const getCurrentThemeIcon = () => {
-  //   switch (theme) {
-  //     case 'light': return Sun;
-  //     case 'dark': return Moon;
-  //     case 'system': return Monitor;
-  //     default: return Monitor;
-  //   }
-  // };
 
   const chartTypes = [
     { name: 'Bar Chart', icon: BarChart3 },
@@ -188,18 +132,64 @@ export default function LandingPage() {
     }
   ];
 
+  const asset = (file) => {
+      const page = usePage()
+      return `${page.props.base_url}/${file}`
+  }
   // const CurrentThemeIcon = getCurrentThemeIcon();
 
   return (
       <AppearanceProvider>
 
-      {/*<SEOHead*/}
-      {/*  title="DataColumn.ai - AI-Powered Data Visualization for Journalists"*/}
-      {/*  description="Create professional data visualizations with AI assistance. Perfect for journalists, analysts, and content creators. Support for multiple chart types, CSV import, and intelligent insights."*/}
-      {/*  keywords="data visualization, AI charts, journalism tools, data analysis, business intelligence, infographics, data storytelling, chart maker"*/}
-      {/*  url="https://datacolumn.ai"*/}
-      {/*  type="website"*/}
-      {/*/>*/}
+          <Head>
+              {/* Basic Meta Tags */}
+              <title>DataColumn.ai - AI-Powered Data Visualization for Journalists</title>
+              <meta name="description" content="Create professional data visualizations with AI assistance. Perfect for journalists, analysts, and content creators. Support for multiple chart types, CSV import, and intelligent insights." />
+              <meta name="keywords" content="data visualization, AI charts, journalism tools, data analysis, business intelligence, infographics, data storytelling, chart maker" />
+
+              {/* Twitter Card */}
+              <meta name="twitter:card" content="summary_large_image" />
+              <meta name="twitter:title" content="DataColumn.ai - AI-Powered Data Visualization for Journalists" />
+              <meta name="twitter:description" content="Create professional data visualizations with AI assistance. Perfect for journalists, analysts, and content creators. Support for multiple chart types, CSV import, and intelligent insights." />
+              <meta name="twitter:image" content={asset('logo.svg')} />
+              <meta name="twitter:creator" content="@datacolumnai" />
+              <meta name="twitter:site" content="@datacolumnai" />
+
+              {/* Structured Data */}
+              <script type="application/ld+json">
+                  {JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "SoftwareApplication",
+                      "name": "DataColumn.ai",
+                      "description": "Create professional data visualizations with AI assistance. Perfect for journalists, analysts, and content creators. Support for multiple chart types, CSV import, and intelligent insights.",
+                      "url": "https://datacolumn.ai",
+                      "applicationCategory": "BusinessApplication",
+                      "operatingSystem": "Web",
+                      "offers": {
+                          "@type": "Offer",
+                          "price": "0",
+                          "priceCurrency": "USD",
+                          "availability": "https://schema.org/InStock"
+                      },
+                      "creator": {
+                          "@type": "Organization",
+                          "name": "DataColumn.ai",
+                          "url": "https://datacolumn.ai"
+                      },
+                      "screenshot": asset('logo.svg'),
+                      "featureList": [
+                          "AI-powered chart creation",
+                          "Multiple chart types",
+                          "CSV data import",
+                          "Real-time collaboration",
+                          "Professional exports",
+                          "Embed generation"
+                      ]
+                  })}
+              </script>
+          </Head>
+
+
 
       <div className="min-h-screen bg-background transition-colors duration-300 relative">
         {/* Animated Background Charts - FIXED Z-INDEX */}
@@ -523,7 +513,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 leading-tight"
             >
-              Turn data into story-ready charts.{' '}
+              Turn data into story-ready charts,{' '}
               <br className="hidden sm:block" />
               <span className="text-primary/90 dark:text-blue-400">In seconds.</span>
             </motion.h1>
@@ -544,20 +534,20 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4"
             >
-              <button
-                // onClick={handleTryFree}
+              <Link
+                href={route('pricing')}
                 className="flex items-center space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl backdrop-blur-sm"
               >
                 <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Get Started Free</span>
-              </button>
-              <button
-                // onClick={handleSignIn}
+              </Link>
+              <Link
+                href={route('login')}
                 className="flex items-center space-x-2 border border-border hover:border-muted-foreground text-foreground/90 hover:text-foreground bg-card px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 bg-background/50 backdrop-blur-sm"
               >
                 <span>Sign In</span>
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
+              </Link>
             </motion.div>
           </div>
         </section>
@@ -788,13 +778,13 @@ export default function LandingPage() {
               Start free — no credit card required.
             </p>
 
-            <button
-              // onClick={handleTryFree}
-              className="flex items-center space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 mx-auto shadow-lg hover:shadow-xl"
+            <Link
+              href={route('pricing')}
+              className="flex items-center w-fit space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 mx-auto shadow-lg hover:shadow-xl"
             >
               <Play className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Get Started Free</span>
-            </button>
+            </Link>
           </div>
         </section>
 
@@ -804,31 +794,32 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
               <div className="flex items-center space-x-3">
                 <Logo showText={false} className="w-8 h-8" />
-                <span className="text-lg sm:text-xl font-bold">DataColumn.ai</span>
+                <Link href={route('home')}><span className="text-lg sm:text-xl font-bold">DataColumn.ai</span></Link>
               </div>
               <div className="flex items-center space-x-4 sm:space-x-6">
-                <button
-                  // onClick={() => navigate('/pricing')}
+                <Link
+                    href={route('pricing')}
                   className="text-primary-foreground/80 dark:text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200"
                 >
                   Pricing
-                </button>
+                </Link>
                 <button
                   // onClick={() => navigate('/faq')}
                   className="text-primary-foreground/80 dark:text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200"
                 >
                   FAQ
                 </button>
-                <button
+                <Link
+                    href={route('login')}
                   // onClick={handleSignIn}
                   className="text-primary-foreground/80 dark:text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200"
                 >
                   Sign In
-                </button>
+                </Link>
               </div>
             </div>
             <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-border/10 dark:border-border text-center text-primary-foreground/80 text-sm">
-              <p>&copy; 2025 DataColumn.ai. All rights reserved.</p>
+                <p>&copy; 2025 <Link href={route('home')}>DataColumn.ai</Link>. All rights reserved.</p>
             </div>
           </div>
         </footer>
