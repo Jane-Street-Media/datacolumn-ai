@@ -6,6 +6,7 @@ use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmbeddedChartController;
 use App\Http\Controllers\Folders\FolderController;
+use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Projects\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\SubscriptionController;
@@ -24,13 +25,7 @@ Route::get('/forget-cache', function () {
     dd('cache forgot');
 });
 
-Route::get('/', function () {
-    return redirect()->route('dashboard');
-})->name('home');
-
-Route::get('/landing', function () {
-    return Inertia::render('LandingPage');
-})->name('landing');
+Route::get('/', [PagesController::class, 'home'])->name('home');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
