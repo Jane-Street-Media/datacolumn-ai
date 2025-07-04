@@ -1,11 +1,9 @@
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
 import { motion } from 'framer-motion';
-import { BarChart3, Bot, Code, Download, Edit, FileImage, Loader2, Send, Zap } from 'lucide-react';
+import { BarChart3, Bot, Edit, Loader2, Send, Zap } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-// import { EmbedCodeModal } from '../components/EmbedCodeModal';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useChartExport } from '@/hooks/use-chart-export';
 import { useInitials } from '@/hooks/use-initials';
 import { ChartConfig } from '@/types';
 import { router } from '@inertiajs/react';
@@ -39,23 +37,21 @@ export const Assistant: React.FC = () => {
             id: '1',
             type: 'assistant',
             content:
-                "Hello! I'm your AI assistant for data visualization. I can help you create charts from descriptions, analyze data patterns, and provide professional guidance. Try saying something like 'Create a bar chart showing monthly sales data' or upload a CSV file for analysis!",
+                "Hello! I'm your AI assistant for data visualization. I can help you create charts from descriptions. Try saying something like 'Create a bar chart showing monthly sales data'.",
             timestamp: new Date(),
             suggestions: [
                 'Create a line chart showing website traffic over time',
-                'Make a pie chart of market share by company',
-                'Analyze my CSV data for insights',
-                'Show me best practices for accessible charts',
+                'Generate a area chart for daily temperature variations',
+                'Visualize sales data with a area chart',
+                'Compare product performance with a composed bar chart',
             ],
         },
     ]);
     const [inputValue, setInputValue] = useState('create a bar chart with some sample data');
     const [isTyping, setIsTyping] = useState(false);
-    const [showEmbedModal, setShowEmbedModal] = useState(false);
-    const [selectedChart, setSelectedChart] = useState<{ config: ChartConfig; data: any[] } | null>(null);
-    const [showExportMenu, setShowExportMenu] = useState<string | null>(null);
+    const [setShowEmbedModal] = useState(false);
+    const [setSelectedChart] = useState<{ config: ChartConfig; data: any[] } | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const { exportChart, exportChartAsSVG } = useChartExport();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

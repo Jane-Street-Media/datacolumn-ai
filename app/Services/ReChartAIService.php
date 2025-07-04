@@ -101,7 +101,7 @@ class ReChartAIService
 Generate a fully-formed Recharts configuration object based on the user's natural-language request. If they dont provide data, use data from your knowledge base.
 Always include **series** attribute even if its just x and y so to keep consistency in response.
 The returned object must include:
-  • chartType: which Recharts component to render (e.g. 'bar', 'line', 'area', 'composed', etc.).
+  • chartType: which Recharts component to render (e.g. 'bar', 'line', 'area', 'composed', etc.).  Always use composed type when we have multiple series.
   • title: a human-readable chart title
   • xAxis & yAxis: the data keys to map on each axis
   • data: an array of objects, each containing at least the xAxis and yAxis fields
@@ -287,7 +287,7 @@ CHART TYPES AVAILABLE:
 - Radial Bar Charts: Circular progress bars, comparing values
 - Funnel Charts: Sequential process, conversion rates
 - Treemaps: Hierarchical data, part-to-whole relationships
-- Composed Charts: Combining multiple chart types
+- Composed Charts: Combining multiple chart types. Always use this when we have multiple series.
 
 DESIGN PRINCIPLES:
 - Accessibility first (colorblind-friendly, high contrast)
@@ -353,9 +353,9 @@ DESIGN PRINCIPLES:
             'generatedData' => $args['data'],
             'suggestions' => [
                 'Customize the chart colors',
-                'Change the chart title',
-                'Add your own data',
-                'Export for publication',
+                'Add more series for deeper insights',
+                'Adjust the chart dimensions for better fit',
+                'Consider adding tooltips for interactivity',
             ],
         ];
     }
