@@ -27,6 +27,7 @@ return new class extends Migration
             $table->jsonb('embed_settings');
             $table->integer('total_exports')->default(0);
             $table->string('status')->default(ChartStatus::ACTIVE->value);
+            $table->integer('total_visits')->default(0);
             $table->timestamps();
         });
     }
