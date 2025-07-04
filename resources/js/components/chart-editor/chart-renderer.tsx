@@ -31,11 +31,7 @@ import {
   TooltipProps,
 } from 'recharts';
 import { ChartConfig, DataPoint } from '../types';
-
-interface ChartRendererProps {
-  data: DataPoint[];
-  config: ChartConfig;
-}
+import { useChartEditor } from '@/contexts/chart-editor-context';
 
 // Custom tooltip formatter
 const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, string> & { config: ChartConfig }) => {
@@ -85,7 +81,10 @@ const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, 
   );
 };
 
-export const ChartRenderer: React.FC<ChartRendererProps> = ({ data, config }) => {
+export const ChartRenderer: React.FC = () => {
+
+    const { config, data } = useChartEditor();
+
   // Memoize the processed data to avoid unnecessary recalculations
   const chartData = useMemo(() => {
       if (!data.length || !config.xAxis) {
