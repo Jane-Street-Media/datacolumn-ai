@@ -12,7 +12,7 @@ class EmbeddedChartController extends Controller
 {
     public function __invoke(Chart $chart): Response
     {
-        if ($chart->status !== ChartStatus::ACTIVE || $chart->project->status !== ProjectStatus::PUBLISHED) {
+        if ($chart->status !== ChartStatus::ACTIVE || $chart->project->status !== ProjectStatus::ACTIVE) {
             abort(404, 'Chart not found or is not active.');
         }
         $chart->increment('total_visits');
