@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
 class ReChartAIService
@@ -79,8 +80,7 @@ class ReChartAIService
             // 5) Otherwise parse a plain‐text reply
             return $this->parseAIResponse($choice->content ?? '', $message, $context);
         } catch (\Throwable $e) {
-            dd($e);
-            \Log::error('AI service error: '.$e->getMessage());
+            Log::error('AI service error: '.$e->getMessage());
 
             return $this->getIntelligentFallbackResponse($message, $context);
         }
