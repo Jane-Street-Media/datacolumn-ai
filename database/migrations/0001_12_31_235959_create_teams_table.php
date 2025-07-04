@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->boolean('personal_team')->default(false);
+            $table->integer('total_exports')->default(0);
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ import {
     Layers
 } from 'lucide-react';
 import { CustomChartConfig } from '../../pages/charts/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
@@ -91,7 +91,11 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
         setConfig({...config, type });
     }
-    const [seriesColumns] = useState<Array<string>>(columns.filter(col => col !== config.xAxis));
+
+    const seriesColumns = useMemo(
+        () => columns.filter(col => col !== config.xAxis),
+        [columns, config.xAxis]
+    );
 
     const addSeries = (value: string) => {
         if (config.series.some(sery => sery.dataKey === value)) {
