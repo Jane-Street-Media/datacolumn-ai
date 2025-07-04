@@ -9,6 +9,7 @@ use App\Enums\PlanFeatureEnum;
 use App\Enums\ProjectStatus;
 use App\Models\TeamInvitation;
 use App\Models\User;
+use LibDNS\Records\Types\Char;
 
 class SyncSubscriptionPlanChanges
 {
@@ -20,29 +21,41 @@ class SyncSubscriptionPlanChanges
         $teamMembersLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
 
         if ($projectLimit !== -1) {
-            $totalProjectsCount = GetProjects::handle()->count();
+            $totalProjectsCount = GetProjects::handle()->where('status', ProjectStatus::ACTIVE)->count();
             if ($totalProjectsCount > $projectLimit) {
                 $excessProjectCount = $totalProjectsCount - $projectLimit;
-                defer(fn() => GetProjects::handle()
-                    ->latest()
+
+                $excessActiveProjectQuery = GetProjects::handle()
+                    ->with(['charts' => fn($q) => $q->where('status', ChartStatus::ACTIVE)])
+                    ->where('status', ProjectStatus::ACTIVE)
                     ->limit($excessProjectCount)
-                    ->update([
-                        'status' => ProjectStatus::INACTIVE,
-                    ]));
-            }
-        }
+                    ->latest();
 
+                $excessActiveProjectQuery->update([
+                    'status' => ProjectStatus::INACTIVE,
+                ]);
 
-        if ($chartLimit !== -1) {
-            $totalChartsCount = GetChartQuery::handle()->count();
-            if ($totalChartsCount > $chartLimit) {
-                $excessChartCount = $totalChartsCount - $chartLimit;
-                defer(fn() => GetChartQuery::handle()
-                    ->latest()
-                    ->limit($excessChartCount)
-                    ->update([
-                        'status' => ChartStatus::INACTIVE,
-                    ]));
+                if ($chartLimit !== -1) {
+                    $excessActiveProjects = $excessActiveProjectQuery->get();
+                    $totalActiveChartsInExcessProjects = $excessActiveProjects->sum('charts');
+                    $totalActiveChartsInOtherProjects = GetChartQuery::handle()
+                        ->where('status', ChartStatus::ACTIVE)
+                        ->whereNotIn('project_id', $excessActiveProjects->pluck('id'))
+                        ->count();
+                    if ($totalActiveChartsInExcessProjects > $chartLimit) {
+                        $excessChartCount = $totalActiveChartsInExcessProjects - $chartLimit;
+                        for ($i = 0; $i < $excessChartCount; $i++) {
+                            $excessActiveProjectQuery->each(function ($project) use ($excessChartCount) {
+                                $project->charts->limit($excessChartCount)->each(function ($chart) {
+                                    $chart->status = ChartStatus::INACTIVE;
+                                    $chart->save();
+                                });
+                            });
+                        }
+                    } elseif ($totalActiveChartsInOtherProjects > $chartLimit) {
+                        $excessChartCount = $totalActiveChartsInOtherProjects - $chartLimit;
+                    }
+                }
             }
         }
 
