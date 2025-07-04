@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu.js';
 import { Button } from '@/components/ui/button.js';
 import { useAppearanceContext } from '@/contexts/appearance-context.js';
+import { Link } from '@inertiajs/react';
 
 
 export default function Header(){
@@ -41,19 +42,18 @@ export default function Header(){
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
-                        <button
-                            // onClick={() => navigate('/pricing')}
-
+                        <Link
+                            href={route('pricing')}
                             className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
                         >
                             Pricing
-                        </button>
-                        <button
-                            // onClick={handleSignIn}
+                        </Link>
+                        <Link
+                            href={route('login')}
                             className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
                         >
                             Sign In
-                        </button>
+                        </Link>
 
                         {/* Theme Toggle */}
                         <DropdownMenu>
@@ -85,12 +85,12 @@ export default function Header(){
                         </DropdownMenu>
 
 
-                        <button
-                            // onClick={handleTryFree}
+                        <Link
+                            href={route('login')}
                             className="bg-primary/90 hover:bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                         >
                             Get Started
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Mobile menu button */}
@@ -143,33 +143,24 @@ export default function Header(){
                         exit={{ opacity: 0, y: -10 }}
                         className="md:hidden border-t border-border py-4 space-y-4"
                     >
-                        <button
-                            onClick={() => {
-                                // navigate('/pricing');
-                                setMobileMenuOpen(false);
-                            }}
+                        <Link
+                            href={route('pricing')}
                             className="block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
                         >
                             Pricing
-                        </button>
-                        <button
-                            onClick={() => {
-                                // handleSignIn();
-                                setMobileMenuOpen(false);
-                            }}
+                        </Link>
+                        <Link
+                            href={route('login')}
                             className="block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
                         >
                             Sign In
-                        </button>
-                        <button
-                            onClick={() => {
-                                // handleTryFree();
-                                setMobileMenuOpen(false);
-                            }}
+                        </Link>
+                        <Link
+                            href={route('pricing')}
                             className="w-full bg-primary/90 hover:bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                         >
                             Get Started
-                        </button>
+                        </Link>
                     </motion.div>
                 )}
             </div>
