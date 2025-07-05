@@ -20,8 +20,12 @@ class ProjectChartsController extends Controller
 {
     public function index(Project $project, ChartFilterRequest $request): Response
     {
+        $params = $request->validated();
+        $analyticsEnabled = Auth::user()->currentTeam->isAnalyticsEnabled();
+        $params['analyticsEnabled'] = $analyticsEnabled;
+
         return Inertia::render('charts/chart-index', [
-            'charts' => Inertia::defer(fn () => GetProjectCharts::handle($project, ChartFilterData::from($request->validated()))),
+            'charts' => Inertia::defer(fn () => GetProjectCharts::handle($project, ChartFilterData::from($params))),
             'project' => $project,
         ]);
     }

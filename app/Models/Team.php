@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\PlanLimitations\GetSubscribedPlanFeatures;
 use App\Enums\SubscriptionStatus;
 use Chargebee\Cashier\Billable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,5 +58,11 @@ class Team extends Model
         return (object)[
             'plan' => Plan::query()->where('chargebee_id', 'free-monthly')->first()
         ];
+    }
+
+    public function isAnalyticsEnabled(): bool
+    {
+        $features = GetSubscribedPlanFeatures::handle($this);
+        return $features['usage_analytics'] ?? false;
     }
 }

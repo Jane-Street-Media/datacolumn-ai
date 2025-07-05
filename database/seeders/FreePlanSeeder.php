@@ -35,6 +35,7 @@ class FreePlanSeeder extends Seeder
                     'community_support' => true,
                     'watermark' => true,
                     'basic_export_options' => true,
+                    'usage_analytics' => false,
                 ],
                 'limitations' => [
                     'Limited chart types',
