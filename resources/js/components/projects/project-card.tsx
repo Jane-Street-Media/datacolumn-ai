@@ -126,7 +126,9 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${
                         project.status === 'active'
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                            : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
+                            : project.status === 'draft'
+                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200'
+                                : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
                     }`}
                 >
                     {project.status}

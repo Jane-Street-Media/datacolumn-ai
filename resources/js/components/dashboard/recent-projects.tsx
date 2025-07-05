@@ -61,9 +61,11 @@ export default function RecentProjects({ projects, folders, projectStatuses }) {
                                 <div className="ml-4 flex-shrink-0 text-right">
                                     <div
                                         className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                                            project.status === 'published'
+                                            project.status === 'active'
                                                 ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                                                : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                                                : project.status === 'draft'
+                                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200'
+                                                    : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
                                         }`}
                                     >
                                         {project.status}
