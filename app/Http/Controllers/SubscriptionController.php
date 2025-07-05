@@ -30,7 +30,7 @@ class SubscriptionController extends Controller
         try {
             $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
             if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::CANCELLED->value && $subscription->cancelNow()) {
-                SyncSubscriptionPlanChanges::handle(Auth::user());
+                SyncSubscriptionPlanChanges::handle(Auth::user()->currentTeam);
                 return back()->with('success', 'Switched to free plan successfully.');
             }
 

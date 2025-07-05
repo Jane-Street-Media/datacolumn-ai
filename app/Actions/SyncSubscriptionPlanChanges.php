@@ -8,29 +8,33 @@ use App\Enums\ChartStatus;
 use App\Enums\PlanFeatureEnum;
 use App\Enums\ProjectStatus;
 use App\Enums\TeamUserStatus;
+use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SyncSubscriptionPlanChanges
 {
-    public static function handle(User $user): void
+    public static function handle(Team $team): void
     {
-        $currentPlanFeatures = $user->currentTeam->subscriptionWithProductDetails()->plan->features;
+        $currentPlanFeatures = $team->subscriptionWithProductDetails()->plan->features;
         $projectLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_PROJECTS->value];
         $chartLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
         $teamMembersLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
 
-        DB::transaction(function () use ($user, $projectLimit, $chartLimit, $teamMembersLimit) {
+        DB::transaction(function () use ($team, $projectLimit, $chartLimit, $teamMembersLimit) {
             // Enforce subscription limits:
             // 1. Fetch active projects; if count exceeds project limit, deactivate oldest excess projects.
             // 2. If chart limit is set:
             //    a. Within deactivated projects, deactivate oldest excess charts over chart limit.
             //    b. Then for all remaining active charts, deactivate oldest until within chart limit.
-            $projectsQuery = GetProjects::handle()->notInActive()->where('team_id', $user->currentTeam->id);
+            $projectsQuery = GetProjects::handle()->notInActive()->where('team_id', $team->id);
             $totalActiveProjectsCount = $projectsQuery->count();
 
+            Log::info($totalActiveProjectsCount);
+            Log::info($projectLimit);
             if ($projectLimit !== -1 && $totalActiveProjectsCount > $projectLimit) {
                 $excessActiveProjectCount = $totalActiveProjectsCount - $projectLimit;
                 $excessProjectsQuery = $projectsQuery->latest()->limit($excessActiveProjectCount);
@@ -40,7 +44,7 @@ class SyncSubscriptionPlanChanges
                 ]);
 
                 if ($chartLimit !== -1) {
-                    $chartsQuery = GetChartQuery::handle()->active()->where('team_id', $user->currentTeam->id);
+                    $chartsQuery = GetChartQuery::handle()->active()->where('team_id', $team->id);
 
                     $excessChartsCount = $chartsQuery
                         ->whereIn('project_id', $excessProjectIds)
@@ -60,7 +64,7 @@ class SyncSubscriptionPlanChanges
             }
 
             if ($chartLimit !== -1) {
-                $chartsQuery = GetChartQuery::handle()->active()->where('team_id', $user->currentTeam->id);
+                $chartsQuery = GetChartQuery::handle()->active()->where('team_id', $team->id);
                 $remainingChartsCount = $chartsQuery->count();
                 if ($remainingChartsCount > $chartLimit) {
                     $remainingExcessChartsCount = $remainingChartsCount - $chartLimit;
@@ -74,7 +78,6 @@ class SyncSubscriptionPlanChanges
             }
 
             if ($teamMembersLimit !== -1) {
-                $team = $user->currentTeam;
                 $invitationsCount = $team->invitations()->count();
                 $usersCount = $team->users()->count();
                 $totalCount = $invitationsCount + $usersCount;
@@ -90,8 +93,11 @@ class SyncSubscriptionPlanChanges
                     $remainingExcess = $excess - $deletedInvitations;
 
                     if ($remainingExcess > 0) {
+                        // use spatie to get team owner
+                        setPermissionsTeamId($team->id);
+                        $owners = User::query()->role('owner')->pluck('id');
                         $userIdsToRemove = $team->users()
-                            ->where('user_id', '!=', $user->id) // Exclude the current user
+                            ->whereNotIn('user_id', $owners) // Exclude the owners
                             ->orderBy('team_user.created_at')
                             ->limit($remainingExcess)
                             ->pluck('users.id')

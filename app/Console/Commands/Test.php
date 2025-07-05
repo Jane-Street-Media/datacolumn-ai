@@ -27,6 +27,6 @@ class Test extends Command
      */
     public function handle()
     {
-        SyncSubscriptionPlanChanges::handle(User::first());
+        SyncSubscriptionPlanChanges::handle(User::first()->currentTeam);
     }
 }
