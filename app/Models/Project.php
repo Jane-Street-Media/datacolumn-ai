@@ -34,6 +34,12 @@ class Project extends TeamBootModel
         return $query->where('status', ProjectStatus::ACTIVE);
     }
 
+    #[Scope]
+    public function notInActive(Builder $query): Builder
+    {
+        return $query->where('status', '!=', ProjectStatus::INACTIVE);
+    }
+
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);

@@ -22,7 +22,7 @@ class Team extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps()->withPivot('status');
+        return $this->belongsToMany(User::class)->withTimestamps()->withPivot('status')->wherePivot('status', SubscriptionStatus::ACTIVE);
     }
 
     public function owner(): BelongsTo
