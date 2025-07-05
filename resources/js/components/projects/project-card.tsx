@@ -38,7 +38,12 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
     }
 
     return (
-        <MotionCard className="hover:border-primary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard
+            className="hover:border-primary"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+        >
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
@@ -115,7 +120,8 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
             </CardContent>
             <CardFooter className="flex items-center justify-between">
                 <div
-                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${project.status === 'published'
+                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${
+                        project.status === 'active'
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
                             : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
                     }`}
@@ -125,7 +131,7 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
 
                 <div className="text-secondary-foreground flex items-center text-sm">
                     <Users className="h-4 w-4" />
-                    <span className="ml-1">2</span>
+                    <span className="ml-1">{ project.charts_sum_total_visits }</span>
                 </div>
             </CardFooter>
         </MotionCard>
