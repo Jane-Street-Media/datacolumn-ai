@@ -11,6 +11,7 @@ use App\Enums\TeamUserStatus;
 use App\Models\TeamInvitation;
 use App\Models\TeamUser;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class SyncSubscriptionPlanChanges
 {
@@ -21,41 +22,45 @@ class SyncSubscriptionPlanChanges
         $chartLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
         $teamMembersLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
 
+        DB::transaction(function () use ($user, $projectLimit, $chartLimit, $teamMembersLimit) {
+            // Enforce subscription limits:
+            // 1. Fetch active projects; if count exceeds project limit, deactivate oldest excess projects.
+            // 2. If chart limit is set:
+            //    a. Within deactivated projects, deactivate oldest excess charts over chart limit.
+            //    b. Then for all remaining active charts, deactivate oldest until within chart limit.
+            $projectsQuery = GetProjects::handle()->notInActive()->where('team_id', $user->currentTeam->id);
+            $totalActiveProjectsCount = $projectsQuery->count();
 
-        // Enforce subscription limits:
-        // 1. Fetch active projects; if count exceeds project limit, deactivate oldest excess projects.
-        // 2. If chart limit is set:
-        //    a. Within deactivated projects, deactivate oldest excess charts over chart limit.
-        //    b. Then for all remaining active charts, deactivate oldest until within chart limit.
-        $projectsQuery = GetProjects::handle()->active();
-        $totalActiveProjectsCount = $projectsQuery->count();
+            if ($totalActiveProjectsCount > $projectLimit) {
+                $excessActiveProjectCount = $totalActiveProjectsCount - $projectLimit;
+                $excessProjectsQuery = $projectsQuery->latest()->limit($excessActiveProjectCount);
+                $excessProjectIds = $excessProjectsQuery->pluck('id')->toArray();
+                $excessProjectsQuery->update([
+                    'status' => ProjectStatus::INACTIVE,
+                ]);
 
-        if ($totalActiveProjectsCount > $projectLimit) {
-            $excessActiveProjectCount = $totalActiveProjectsCount - $projectLimit;
+                if ($chartLimit !== -1) {
+                    $chartsQuery = GetChartQuery::handle()->active()->where('team_id', $user->currentTeam->id);
 
-            $excessProjectsQuery = $projectsQuery->latest()->limit($excessActiveProjectCount);
-            $excessProjectIds = $excessProjectsQuery->pluck('id')->toArray();
-            $excessProjectsQuery->update([
-                'status' => ProjectStatus::INACTIVE,
-            ]);
+                    $excessChartsCount = $chartsQuery
+                        ->whereIn('project_id', $excessProjectIds)
+                        ->count();
+
+                    if ($excessChartsCount > $chartLimit) {
+                        $excessChartsToDeactivate = $excessChartsCount - $chartLimit;
+                        $chartsQuery
+                            ->whereIn('project_id', $excessProjectIds)
+                            ->latest()
+                            ->limit($excessChartsToDeactivate)
+                            ->update([
+                                'status' => ChartStatus::INACTIVE,
+                            ]);
+                    }
+                }
+            }
 
             if ($chartLimit !== -1) {
-                $chartsQuery = GetChartQuery::handle()->active();
-
-                $excessChartsCount = $chartsQuery
-                    ->whereIn('project_id', $excessProjectIds)
-                    ->count();
-                if ($excessChartsCount > $chartLimit) {
-                    $excessChartsToDeactivate = $excessChartsCount - $chartLimit;
-                    $chartsQuery
-                        ->whereIn('project_id', $excessProjectIds)
-                        ->latest()
-                        ->limit($excessChartsToDeactivate)
-                        ->update([
-                            'status' => ChartStatus::INACTIVE,
-                        ]);
-                }
-
+                $chartsQuery = GetChartQuery::handle()->active()->where('team_id', $user->currentTeam->id);
                 $remainingChartsCount = $chartsQuery->count();
                 if ($remainingChartsCount > $chartLimit) {
                     $remainingExcessChartsCount = $remainingChartsCount - $chartLimit;
@@ -67,35 +72,40 @@ class SyncSubscriptionPlanChanges
                         ]);
                 }
             }
-        }
 
-        if ($teamMembersLimit !== -1) {
-            $team = $user->currentTeam;
-            $invitationsCount = $team->invitations()->count();
-            $usersCount = $team->users()->count();
-            $totalCount = $invitationsCount + $usersCount;
-            if ($totalCount > $teamMembersLimit) {
-                $excess = $totalCount - $teamMembersLimit;
-                $deletedInvitations = TeamInvitation::query()
-                    ->where('team_id', $team->id)
-                    ->oldest('created_at')
-                    ->limit($excess)
-                    ->delete();
-                $remainingExcess = $excess - $deletedInvitations;
-                if ($remainingExcess > 0) {
-                    $userIdsToRemove = $team->users()
-                        ->orderBy('team_user.created_at')
-                        ->limit($remainingExcess)
-                        ->pluck('users.id')
-                        ->toArray();
-                    TeamUser::query()->where('team_id', $team->id)
-                        ->whereIn('user_id', $userIdsToRemove)
-                        ->where('status', TeamUserStatus::INACTIVE)
-                        ->update([
-                            'status' => TeamUserStatus::INACTIVE,
-                        ]);
+            if ($teamMembersLimit !== -1) {
+                $team = $user->currentTeam;
+                $invitationsCount = $team->invitations()->count();
+                $usersCount = $team->users()->count();
+                $totalCount = $invitationsCount + $usersCount;
+
+                if ($totalCount > $teamMembersLimit) {
+                    $excess = $totalCount - $teamMembersLimit;
+                    $deletedInvitations = TeamInvitation::query()
+                        ->where('team_id', $team->id)
+                        ->oldest('created_at')
+                        ->limit($excess)
+                        ->delete();
+
+                    $remainingExcess = $excess - $deletedInvitations;
+
+                    if ($remainingExcess > 0) {
+                        $userIdsToRemove = $team->users()
+                            ->where('user_id', '!=', $user->id) // Exclude the current user
+                            ->orderBy('team_user.created_at')
+                            ->limit($remainingExcess)
+                            ->pluck('users.id')
+                            ->toArray();
+
+                        TeamUser::query()->where('team_id', $team->id)
+                            ->whereIn('user_id', $userIdsToRemove)
+                            ->where('status', TeamUserStatus::ACTIVE)
+                            ->update([
+                                'status' => TeamUserStatus::INACTIVE,
+                            ]);
+                    }
                 }
             }
-        }
+        });
     }
 }

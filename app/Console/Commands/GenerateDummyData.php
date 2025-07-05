@@ -51,7 +51,7 @@ class GenerateDummyData extends Command
                 // Attach auth user + 3 dummy users
                 $team->users()->attach($user->id);
                 $user->assignRole('owner');
-                $dummyUsers = User::factory()->count(3)->create([
+                $dummyUsers = User::factory()->count(7)->create([
                     'current_team_id' => $team->id,
                 ]);
                 foreach ($dummyUsers as $du) {
@@ -75,7 +75,7 @@ class GenerateDummyData extends Command
                 $this->info('Creating projects, datasets, and charts...');
                 foreach ($folders as $folder) {
                     $projects = Project::factory()
-                        ->count(2)
+                        ->count(7)
                         ->create([
                             'user_id' => $user->id,
                             'team_id' => $team->id,
@@ -85,7 +85,7 @@ class GenerateDummyData extends Command
                     foreach ($projects as $project) {
                         // Datasets (2 per project)
                         Dataset::factory()
-                            ->count(2)
+                            ->count(7)
                             ->create([
                                 'user_id' => $user->id,
                                 'team_id' => $team->id,
@@ -94,7 +94,7 @@ class GenerateDummyData extends Command
 
                         // Charts (2 per project)
                         Chart::factory()
-                            ->count(2)
+                            ->count(7)
                             ->create([
                                 'user_id' => $user->id,
                                 'team_id' => $team->id,
