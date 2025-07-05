@@ -15,9 +15,13 @@ class EmbeddedChartController extends Controller
         if ($chart->status !== ChartStatus::ACTIVE || $chart->project->status !== ProjectStatus::ACTIVE) {
             abort(404, 'Chart not found or is not active.');
         }
+
+        $watermark = $chart->team->isWaterMarkEnabled();
+
         $chart->increment('total_visits');
         return Inertia::render('charts/chart-embed', [
             'chart' => $chart,
+            'watermark' => $watermark,
         ]);
     }
 }
