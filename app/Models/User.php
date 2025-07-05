@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\TeamUserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class)->withTimestamps()->withPivot('status');
+        return $this->belongsToMany(Team::class)->withTimestamps()->withPivot('status')->wherePivot('status', TeamUserStatus::ACTIVE);
     }
 
     public function currentTeam(): BelongsTo

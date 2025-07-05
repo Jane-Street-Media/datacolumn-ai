@@ -7,7 +7,9 @@ use App\Actions\Queries\Dashboard\GetChartQuery;
 use App\Enums\ChartStatus;
 use App\Enums\PlanFeatureEnum;
 use App\Enums\ProjectStatus;
+use App\Enums\TeamUserStatus;
 use App\Models\TeamInvitation;
+use App\Models\TeamUser;
 use App\Models\User;
 
 class SyncSubscriptionPlanChanges
@@ -68,10 +70,31 @@ class SyncSubscriptionPlanChanges
         }
 
         if ($teamMembersLimit !== -1) {
-            $totalTeamMembersCount = $user->currentTeam->invitations()->count() + $user->currentTeam->users()->count();
-            if ($totalTeamMembersCount > $teamMembersLimit) {
-                $excessTeamMembersCount = $totalTeamMembersCount - $teamMembersLimit;
-                TeamInvitation::query()->latest()->limit($excessTeamMembersCount)->delete();
+            $team = $user->currentTeam;
+            $invitationsCount = $team->invitations()->count();
+            $usersCount = $team->users()->count();
+            $totalCount = $invitationsCount + $usersCount;
+            if ($totalCount > $teamMembersLimit) {
+                $excess = $totalCount - $teamMembersLimit;
+                $deletedInvitations = TeamInvitation::query()
+                    ->where('team_id', $team->id)
+                    ->oldest('created_at')
+                    ->limit($excess)
+                    ->delete();
+                $remainingExcess = $excess - $deletedInvitations;
+                if ($remainingExcess > 0) {
+                    $userIdsToRemove = $team->users()
+                        ->orderBy('team_user.created_at')
+                        ->limit($remainingExcess)
+                        ->pluck('users.id')
+                        ->toArray();
+                    TeamUser::query()->where('team_id', $team->id)
+                        ->whereIn('user_id', $userIdsToRemove)
+                        ->where('status', TeamUserStatus::INACTIVE)
+                        ->update([
+                            'status' => TeamUserStatus::INACTIVE,
+                        ]);
+                }
             }
         }
     }
