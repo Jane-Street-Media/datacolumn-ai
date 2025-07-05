@@ -65,4 +65,10 @@ class Team extends Model
         $features = GetSubscribedPlanFeatures::handle($this);
         return $features['usage_analytics'] ?? false;
     }
+
+    public function isWaterMarkEnabled(): bool
+    {
+        $features = GetSubscribedPlanFeatures::handle($this);
+        return $features['watermark'] ?? false;
+    }
 }
