@@ -19,30 +19,51 @@ class SyncSubscriptionPlanChanges
         $chartLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_CHARTS->value];
         $teamMembersLimit = $currentPlanFeatures[PlanFeatureEnum::NO_OF_TEAM_MEMBERS->value];
 
-        if ($projectLimit !== -1) {
-            $totalProjectsCount = GetProjects::handle()->count();
-            if ($totalProjectsCount > $projectLimit) {
-                $excessProjectCount = $totalProjectsCount - $projectLimit;
-                defer(fn() => GetProjects::handle()
-                    ->latest()
-                    ->limit($excessProjectCount)
-                    ->update([
-                        'status' => ProjectStatus::INACTIVE,
-                    ]));
-            }
-        }
 
+        // Enforce subscription limits:
+        // 1. Fetch active projects; if count exceeds project limit, deactivate oldest excess projects.
+        // 2. If chart limit is set:
+        //    a. Within deactivated projects, deactivate oldest excess charts over chart limit.
+        //    b. Then for all remaining active charts, deactivate oldest until within chart limit.
+        $projectsQuery = GetProjects::handle()->active();
+        $totalActiveProjectsCount = $projectsQuery->count();
 
-        if ($chartLimit !== -1) {
-            $totalChartsCount = GetChartQuery::handle()->count();
-            if ($totalChartsCount > $chartLimit) {
-                $excessChartCount = $totalChartsCount - $chartLimit;
-                defer(fn() => GetChartQuery::handle()
-                    ->latest()
-                    ->limit($excessChartCount)
-                    ->update([
-                        'status' => ChartStatus::INACTIVE,
-                    ]));
+        if ($totalActiveProjectsCount > $projectLimit) {
+            $excessActiveProjectCount = $totalActiveProjectsCount - $projectLimit;
+
+            $excessProjectsQuery = $projectsQuery->latest()->limit($excessActiveProjectCount);
+            $excessProjectIds = $excessProjectsQuery->pluck('id')->toArray();
+            $excessProjectsQuery->update([
+                'status' => ProjectStatus::INACTIVE,
+            ]);
+
+            if ($chartLimit !== -1) {
+                $chartsQuery = GetChartQuery::handle()->active();
+
+                $excessChartsCount = $chartsQuery
+                    ->whereIn('project_id', $excessProjectIds)
+                    ->count();
+                if ($excessChartsCount > $chartLimit) {
+                    $excessChartsToDeactivate = $excessChartsCount - $chartLimit;
+                    $chartsQuery
+                        ->whereIn('project_id', $excessProjectIds)
+                        ->latest()
+                        ->limit($excessChartsToDeactivate)
+                        ->update([
+                            'status' => ChartStatus::INACTIVE,
+                        ]);
+                }
+
+                $remainingChartsCount = $chartsQuery->count();
+                if ($remainingChartsCount > $chartLimit) {
+                    $remainingExcessChartsCount = $remainingChartsCount - $chartLimit;
+                    $chartsQuery
+                        ->latest()
+                        ->limit($remainingExcessChartsCount)
+                        ->update([
+                            'status' => ChartStatus::INACTIVE,
+                        ]);
+                }
             }
         }
 
@@ -50,7 +71,7 @@ class SyncSubscriptionPlanChanges
             $totalTeamMembersCount = $user->currentTeam->invitations()->count() + $user->currentTeam->users()->count();
             if ($totalTeamMembersCount > $teamMembersLimit) {
                 $excessTeamMembersCount = $totalTeamMembersCount - $teamMembersLimit;
-                defer(fn() => TeamInvitation::query()->latest()->limit($excessTeamMembersCount)->delete());
+                TeamInvitation::query()->latest()->limit($excessTeamMembersCount)->delete();
             }
         }
     }

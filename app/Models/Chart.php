@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\ChartStatus;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +38,12 @@ class Chart extends TeamBootModel
     public function uniqueIds(): array
     {
         return ['uuid'];
+    }
+
+    #[Scope]
+    public function active(Builder $query): Builder
+    {
+        return $query->where('status', ChartStatus::ACTIVE);
     }
 
     public function project(): BelongsTo
