@@ -62,6 +62,7 @@ export const Assistant: React.FC = () => {
     }, [messages]);
 
     interface AIResponse {
+        identifier: null;
         content: string;
         suggestions?: string[];
         chartRecommendation?: {
@@ -76,6 +77,8 @@ export const Assistant: React.FC = () => {
         chartConfig?: any;
         generatedData?: any[];
     }
+
+    const [identifier, setIdentifier] = useState<string | null>(null);
 
     const handleSendMessage = async (messageText?: string) => {
         const text = messageText || inputValue;
@@ -96,6 +99,7 @@ export const Assistant: React.FC = () => {
             const response = (
                 await axios.post(route('chart-ai.conversation'), {
                     message: text,
+                    identifier: identifier
                 })
             ).data as AIResponse;
 
@@ -113,10 +117,8 @@ export const Assistant: React.FC = () => {
                 generatedData: response.generatedData,
             };
 
-            console.log('aiMessageaiMessageaiMessage');
-            console.log(aiMessage);
-
             setMessages((prev) => [...prev, aiMessage]);
+            setIdentifier(response.identifier || null);
 
             // If a chart was generated, show success message
             if (response.chartConfig) {
@@ -125,8 +127,11 @@ export const Assistant: React.FC = () => {
                 });
             }
         } catch (error) {
-            console.error('AI Error:', error);
-            toast.error(error.message);
+            if(error.response) {
+                toast.error(error.response.data.message)
+            } else {
+                toast.error(error.message);
+            }
         } finally {
             setIsTyping(false);
         }

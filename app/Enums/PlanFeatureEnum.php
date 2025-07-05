@@ -48,6 +48,7 @@ enum PlanFeatureEnum: string
             self::NO_OF_TEAM_MEMBERS => $team->users()->count() + $team->invitations()->count(),
             self::NO_OF_CHARTS => $team->charts()->count(),
             self::NO_OF_EXPORTS => $team->total_exports,
+            self::NO_OF_AI_GENERATIONS => $team->total_ai_chart_generations ?? 0,
         };
     }
 
@@ -58,6 +59,7 @@ enum PlanFeatureEnum: string
             self::NO_OF_TEAM_MEMBERS => 'You have reached the maximum number of invitations allowed by your plan.',
             self::NO_OF_CHARTS => 'You have reached the maximum number of charts allowed by your plan.',
             self::NO_OF_EXPORTS => 'You have reached the maximum number of exports allowed by your plan.',
+            self::NO_OF_AI_GENERATIONS => 'You have reached the maximum number of AI generations allowed by your plan.',
         };
     }
 }

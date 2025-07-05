@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
+use App\Enums\PlanFeatureEnum;
 use App\Services\ReChartAIService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,8 +12,19 @@ class ChartAIConversationController extends Controller
 {
     public function __invoke(Request $request, ReChartAIService $reChartAIService): JsonResponse
     {
+        $team = auth()->user()->currentTeam;
+
+        EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_AI_GENERATIONS);
+
+        $conversationIdentifier = $request->identifier;
+        if (is_null($conversationIdentifier)) {
+            $conversationIdentifier = 'chart_ai_' . uniqid();
+        }
+
+        $conversationSessionKey = 'chart_ai_conversation_' . $conversationIdentifier;
+
         // Pull history and any uploaded data out of session or DB
-        $history = session('chart_ai_history', []);
+        $history = session($conversationSessionKey, []);
         $data = session('uploaded_data', []);
 
         $message = $request->input('message');
@@ -25,16 +38,23 @@ class ChartAIConversationController extends Controller
             ['previousMessages' => $history, 'data' => $data]
         );
 
+        $chartConfig = $response['chartConfig'] ?? null;
+
+        if ($chartConfig) {
+            $team->increment('total_ai_chart_generations');
+        }
+
         // Save history + pass back only the last exchange
-        session(['chart_ai_history' => $history]);
+        session([$conversationSessionKey => $history]);
 
         return response()->json([
             'reply' => $response['content'] ?? '',
-            'chartConfig' => $response['chartConfig'] ?? null,
+            'chartConfig' => $chartConfig,
             'generatedData' => $response['generatedData'] ?? null,
             'dataInsights' => $response['dataInsights'] ?? null,
             'chartRecommendation' => $response['chartRecommendation'] ?? null,
             'suggestions' => $response['suggestions'] ?? [],
+            'identifier' => $conversationIdentifier
         ]);
     }
 }
