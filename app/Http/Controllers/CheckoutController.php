@@ -74,7 +74,7 @@ class CheckoutController extends Controller
             $newPlanName
         );
 
-        SyncSubscriptionPlanChanges::handle(Auth::user());
+        SyncSubscriptionPlanChanges::handle(Auth::user()->currentTeam);
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }

@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Actions\Notifications\SendNotification;
 use App\Enums\NotificationType;
+use App\Actions\SyncSubscriptionPlanChanges;
 use App\Helpers\SubscriptionLockHelper;
 use App\Models\User;
 use Carbon\Carbon;
@@ -85,6 +86,8 @@ class HandleWebhookReceived extends \Chargebee\Cashier\Listeners\HandleWebhookRe
                 'chargebee_status' => $status,
                 'ends_at' => Carbon::now(),
             ]);
+
+            SyncSubscriptionPlanChanges::handle($team);
 
             Log::info('Subscription cancelled successfully.', [
                 'subscription_id' => $subscription->id,
