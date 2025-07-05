@@ -9,8 +9,12 @@ class GetProjects
 {
     public static function handle(?array $data = null): Builder
     {
+        if (!isset($data['analyticsEnabled'])) {
+            $data['analyticsEnabled'] = false; // Default to false if not set
+        }
+
         return Project::query()->withCount('charts')
-            ->withSum('charts', 'total_visits')
+            ->when($data['analyticsEnabled'], fn ($q) => $q->withSum('charts', 'total_visits'))
             ->when(isset($data['folder']), fn ($q) => $q->whereRelation('folder', 'id', $data['folder']))
             ->when(isset($data['search']), fn ($query) => $query->where('name', 'like', '%'.$data['search'].'%'));
     }

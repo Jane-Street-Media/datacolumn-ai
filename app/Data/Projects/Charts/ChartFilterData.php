@@ -8,5 +8,6 @@ class ChartFilterData extends Data
 {
     public function __construct(
         public ?string $search = null,
+        public bool $analyticsEnabled = false,
     ) {}
 }

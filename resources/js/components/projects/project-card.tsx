@@ -13,11 +13,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useForm, Link } from '@inertiajs/react';
+import { useForm, Link, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { BarChart3, Calendar, Delete, Edit, Eye, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useMemo } from 'react';
 import { toast } from 'sonner';
 
 const MotionCard = motion(Card);
@@ -36,6 +36,9 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
             },
         });
     }
+
+    const page = usePage();
+    const showVisits = useMemo(() => page.props.auth.subscription.plan.features['usage_analytics'], [page])
 
     return (
         <MotionCard
@@ -129,10 +132,10 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                     {project.status}
                 </div>
 
-                <div className="text-secondary-foreground flex items-center text-sm">
-                    <Users className="h-4 w-4" />
-                    <span className="ml-1">{ project.charts_sum_total_visits }</span>
-                </div>
+                { showVisits && (<div className="text-secondary-foreground flex items-center text-sm">
+                    <span>{ project.charts_sum_total_visits }</span>
+                    <Users className="h-4 w-4 ml-1" />
+                </div>) }
             </CardFooter>
         </MotionCard>
     );

@@ -10,8 +10,13 @@ class GetProjectCharts
 {
     public static function handle(Project $project, ?ChartFilterData $data = null): Collection
     {
-        return $project->charts()
+        $charts = $project->charts()
             ->when($data?->search, fn ($query) => $query->whereAny(['title', 'description'], 'like', '%'.$data->search.'%'))
             ->get();
+
+        if (!$data->analyticsEnabled) {
+            $charts->makeHidden('total_visits');
+        }
+        return $charts;
     }
 }

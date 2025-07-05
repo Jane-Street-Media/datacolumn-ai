@@ -24,8 +24,12 @@ class ProjectsController extends Controller
 {
     public function index(ProjectFilterRequest $request): Response
     {
+        $params = $request->validated();
+        $analyticsEnabled = Auth::user()->currentTeam->isAnalyticsEnabled();
+        $params['analyticsEnabled'] = $analyticsEnabled;
+
         return Inertia::render('projects', [
-            'projects' => Inertia::defer(fn() => GetProjects::handle($request->validated())->latest()->get()),
+            'projects' => Inertia::defer(fn() => GetProjects::handle($params)->latest()->get()),
             'folders' => Inertia::defer(fn() => GetFolders::handle()),
             'statuses' => ProjectStatus::getFormattedValues()
         ]);

@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
@@ -26,7 +26,7 @@ import {
     MoreHorizontal,
     Users
 } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useMemo } from 'react';
 import { toast } from 'sonner';
 import ProjectDialog from '@/components/projects/project-dialog';
 import { Badge } from '@/components/ui/badge';
@@ -56,6 +56,9 @@ export default function ChartCard({ index = 1, chart }) {
             },
         });
     };
+
+    const page = usePage();
+    const showVisits = useMemo(() => page.props.auth.subscription.plan.features['usage_analytics'], [page])
 
     return (
         <MotionCard
@@ -152,10 +155,10 @@ export default function ChartCard({ index = 1, chart }) {
                 >
                     {chart.status}
                 </div>
-                <div className="text-secondary-foreground flex items-center text-sm">
-                    <Users className="h-4 w-4" />
-                    <span className="ml-1">{ chart.total_visits }</span>
-                </div>
+                { showVisits && <div className="text-secondary-foreground flex items-center text-sm">
+                    <span>{ chart.total_visits }</span>
+                    <Users className="h-4 w-4 ml-1" />
+                </div> }
             </CardFooter>
         </MotionCard>
     );

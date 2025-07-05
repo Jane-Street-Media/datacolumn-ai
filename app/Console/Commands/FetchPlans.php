@@ -86,6 +86,7 @@ class FetchPlans extends Command
                                 'Custom embed domain',
                                 'Advanced customization',
                                 'SVG/PNG exports',
+                                'Usage analytics',
                                 'Email support',
                             ],
                             'features' => [
@@ -103,6 +104,7 @@ class FetchPlans extends Command
                                 'png_exports' => true,
                                 'email_support' => true,
                                 'ai_assistant' => false,
+                                'usage_analytics' => true,
                             ],
                             'cta' => 'Start Pro Trial',
                             'popular' => true,
