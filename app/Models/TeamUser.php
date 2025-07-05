@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TeamUserStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeamUser extends TeamBootModel
@@ -13,6 +14,10 @@ class TeamUser extends TeamBootModel
     protected $fillable = [
         'team_id',
         'user_id',
+    ];
+
+    protected $casts = [
+        'status' => TeamUserStatus::class,
     ];
 
     public function user(): BelongsTo
