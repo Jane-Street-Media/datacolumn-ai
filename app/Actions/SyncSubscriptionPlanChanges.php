@@ -31,7 +31,7 @@ class SyncSubscriptionPlanChanges
             $projectsQuery = GetProjects::handle()->notInActive()->where('team_id', $user->currentTeam->id);
             $totalActiveProjectsCount = $projectsQuery->count();
 
-            if ($totalActiveProjectsCount > $projectLimit) {
+            if ($projectLimit !== -1 && $totalActiveProjectsCount > $projectLimit) {
                 $excessActiveProjectCount = $totalActiveProjectsCount - $projectLimit;
                 $excessProjectsQuery = $projectsQuery->latest()->limit($excessActiveProjectCount);
                 $excessProjectIds = $excessProjectsQuery->pluck('id')->toArray();
