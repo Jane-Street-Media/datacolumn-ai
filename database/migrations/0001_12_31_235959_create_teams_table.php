@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('personal_team')->default(false);
             $table->integer('total_exports')->default(0);
+            $table->integer('total_ai_chart_generations')->default(0);
             $table->timestamps();
         });
     }
