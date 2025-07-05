@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ChartStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -60,6 +61,7 @@ class ChartFactory extends Factory
                 ['month' => 'Apr', 'Apples' => 278, 'Oranges' => 390, 'Bananas' => 200],
             ],
             'embed_settings' => ['responsive' => true],
+            'status' => ChartStatus::ACTIVE,
         ];
     }
 }

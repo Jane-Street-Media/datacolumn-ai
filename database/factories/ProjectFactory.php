@@ -20,7 +20,7 @@ class ProjectFactory extends Factory
         return [
             'name' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'status' => ProjectStatus::DRAFT,
+            'status' => ProjectStatus::ACTIVE,
             'tags' => [],
         ];
     }
