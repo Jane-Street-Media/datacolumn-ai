@@ -58,18 +58,27 @@ export default function ChartCard({ index = 1, chart }) {
     };
 
     return (
-        <MotionCard className="hover:border-primary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+        <MotionCard
+            className="hover:border-primary"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+        >
             <CardHeader>
                 <CardTitle>
                     <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
-                        {ChartIcon ? <ChartIcon/> : <BarChart3/>}
+                        {ChartIcon ? <ChartIcon /> : <BarChart3 />}
                     </div>
                 </CardTitle>
                 <CardAction className="flex space-x-2">
-                    <Link href={route('projects.charts.edit', {
-                        project: chart.project_id,
-                        chart: chart.id
-                    })} className="hover:text-primary" prefetch>
+                    <Link
+                        href={route('projects.charts.edit', {
+                            project: chart.project_id,
+                            chart: chart.id,
+                        })}
+                        className="hover:text-primary"
+                        prefetch
+                    >
                         <Eye />
                     </Link>
                     <Popover>
@@ -130,19 +139,22 @@ export default function ChartCard({ index = 1, chart }) {
                         <Calendar className="h-4 w-4" />
                         <span className="ml-1">{chart.created_at ? format(new Date(chart.created_at), 'dd MMM, yyyy') : ''}</span>
                     </div>
-                    <div className="text-secondary-foreground flex items-center text-sm">
-                        {ChartIcon ? <ChartIcon/> : <BarChart3/>}
-                    </div>
+                    <div className="text-secondary-foreground flex items-center text-sm">{ChartIcon ? <ChartIcon /> : <BarChart3 />}</div>
                 </div>
             </CardContent>
             <CardFooter className="flex items-center justify-between">
                 <div
-                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${chart.status === 'active'
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                        : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
+                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium uppercase ${
+                        chart.status === 'active'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
+                            : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
                     }`}
                 >
                     {chart.status}
+                </div>
+                <div className="text-secondary-foreground flex items-center text-sm">
+                    <Users className="h-4 w-4" />
+                    <span className="ml-1">{ chart.total_visits }</span>
                 </div>
             </CardFooter>
         </MotionCard>
