@@ -81,6 +81,7 @@ class FetchPlans extends Command
                             'details' => [
                                 'Unlimited charts & exports',
                                 'No watermark',
+                                '50 AI chart generations per month',
                                 'Priority rendering',
                                 'Chart presets',
                                 'Custom embed domain',
@@ -115,7 +116,9 @@ class FetchPlans extends Command
                         $plan->update([
                             'description' => 'For newsrooms and content teams',
                             'details' => [
+                                'everything from Pro plan',
                                 '5 seats included',
+                                '500 AI chart generations per month',
                                 'Shared folders & styles',
                                 'Access controls',
                                 'Priority support',

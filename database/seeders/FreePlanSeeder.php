@@ -19,7 +19,10 @@ class FreePlanSeeder extends Seeder
                 'chargebee_product' => 'free',
                 'description' => 'Perfect for trying out DataColumn',
                 'details' => [
-                    '3 charts per month',
+                    '3 active projects',
+                    '3 active charts',
+                    '3 exports per month',
+                    '5 AI chart generations per month',
                     'Basic customization',
                     'Branded embeds',
                     'Community support',
