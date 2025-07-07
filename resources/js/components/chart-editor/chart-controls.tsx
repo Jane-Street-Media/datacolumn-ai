@@ -221,19 +221,19 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                     >
                         <div className="flex items-center gap-3">
                             <RadioGroupItem id="default" value="default"></RadioGroupItem>
-                            <label className="text-sm font-medium" htmlFor="default">
+                            <label className="text-sm font-medium cursor-pointer" htmlFor="default">
                                 Default (Theme Based)
                             </label>
                         </div>
                         <div className="flex items-center gap-3">
                             <RadioGroupItem id="transparent" value="transparent" />
-                            <label className="text-sm font-medium" htmlFor="transparent">
+                            <label className="text-sm font-medium cursor-pointer" htmlFor="transparent">
                                 Transparent
                             </label>
                         </div>
                         <div className="flex items-center gap-3">
                             <RadioGroupItem id="custom" value="custom" />
-                            <label className="text-sm font-medium" htmlFor="custom">
+                            <label className="text-sm font-medium cursor-pointer" htmlFor="custom">
                                 Custom Color
                             </label>
                         </div>
@@ -403,19 +403,19 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                     <RadioGroup value={config.paddingOption} onValueChange={(value) => setConfig({...config, paddingOption: value as any })}>
                         <div className="flex items-center gap-2">
                             <RadioGroupItem id="default" value="default" />
-                            <label className="text-sm font-medium" htmlFor="default">
+                            <label className="text-sm font-medium cursor-pointer" htmlFor="default">
                                 Default
                             </label>
                         </div>
                         <div className="flex items-center gap-2">
                             <RadioGroupItem id="none" value="none" />
-                            <label className="text-sm font-medium" htmlFor="none">
+                            <label className="text-sm font-medium cursor-pointer" htmlFor="none">
                                 None
                             </label>
                         </div>
                         <div className="flex items-center gap-2">
                             <RadioGroupItem id="custom" value="custom" />
-                            <label className="text-sm font-medium" htmlFor="custom">
+                            <label className="text-sm font-medium cursor-pointer" htmlFor="custom">
                                 Custom
                             </label>
                         </div>
@@ -481,7 +481,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                     <h4 className="mb-3 text-sm font-medium">Display Options</h4>
                     <div className="flex items-center gap-3">
                         <Checkbox id="showGrid" checked={config.showGrid} onCheckedChange={(checked) => setConfig({...config, showGrid: !!checked })} />
-                        <label className="text-sm font-medium" htmlFor="showGrid">
+                        <label className="text-sm font-medium cursor-pointer" htmlFor="showGrid">
                             Show Grid
                         </label>
                     </div>
@@ -491,7 +491,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                             checked={config.showLegend}
                             onCheckedChange={(checked) => setConfig({...config, showLegend: !!checked })}
                         />
-                        <label className="text-sm font-medium" htmlFor="showLegend">
+                        <label className="text-sm font-medium cursor-pointer" htmlFor="showLegend">
                             Show Legend
                         </label>
                     </div>
@@ -503,7 +503,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                                     checked={config.showXAxis}
                                     onCheckedChange={(checked) => setConfig({...config, showXAxis: !!checked })}
                                 />
-                                <label className="text-sm font-medium" htmlFor="showXAxis">
+                                <label className="text-sm font-medium cursor-pointer" htmlFor="showXAxis">
                                     Show X-Axis Line
                                 </label>
                             </div>
@@ -513,7 +513,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                                     checked={config.showYAxis}
                                     onCheckedChange={(checked) => setConfig({...config, showYAxis: !!checked })}
                                 />
-                                <label className="text-sm font-medium" htmlFor="showYAxis">
+                                <label className="text-sm font-medium cursor-pointer" htmlFor="showYAxis">
                                     Show Y-Axis Line
                                 </label>
                             </div>

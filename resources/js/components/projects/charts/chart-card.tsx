@@ -86,7 +86,7 @@ export default function ChartCard({ index = 1, chart }) {
                     </Link>
                     <Popover>
                         <PopoverTrigger>
-                            <MoreHorizontal />
+                            <MoreHorizontal className="cursor-pointer"  />
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className="flex flex-col space-y-2">
