@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Actions\SyncSubscriptionPlanChanges;
 use App\Enums\SubscriptionStatus;
+use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionController extends Controller
 {
@@ -39,7 +41,8 @@ class SubscriptionController extends Controller
         try {
             $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
             if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::CANCELLED->value && $subscription->cancelNow()) {
-                SyncSubscriptionPlanChanges::handle(Auth::user()->currentTeam);
+                $team = Team::query()->find($request->user()->current_team_id);
+                SyncSubscriptionPlanChanges::handle($team);
                 return back()->with('success', 'Switched to free plan successfully.');
             }
 
