@@ -6,6 +6,7 @@ use App\Actions\Notifications\SendNotification;
 use App\Enums\NotificationType;
 use App\Actions\SyncSubscriptionPlanChanges;
 use App\Helpers\SubscriptionLockHelper;
+use App\Models\Team;
 use Chargebee\Cashier\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -74,7 +75,8 @@ class CheckoutController extends Controller
             $newPlanName
         );
 
-        SyncSubscriptionPlanChanges::handle(Auth::user()->currentTeam);
+        $team = Team::query()->find($request->user()->current_team_id);
+        SyncSubscriptionPlanChanges::handle($team);
 
         return redirect()->back()->with('success', 'Swapped successfully');
     }
