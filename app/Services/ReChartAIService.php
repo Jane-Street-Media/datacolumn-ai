@@ -24,6 +24,12 @@ class ReChartAIService
             $systemPrompt = $this->buildAdvancedSystemPrompt($context);
 
             $previousMessages = $context['previousMessages'] ?? [];
+
+            // Reset conversation if "start again"
+            if (strtolower(trim($message)) === 'start again') {
+                $previousMessages = [];
+            }
+
             $recentMessages = array_slice($previousMessages, -10);
 
             $formattedMessages = array_map(function (array $turn) {
