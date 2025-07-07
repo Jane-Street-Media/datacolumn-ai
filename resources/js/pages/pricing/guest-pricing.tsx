@@ -193,7 +193,7 @@ export default function Pricing({ plans }) {
 
                     <a
                         href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
-                        className="w-1/4 m-auto from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8"
+                        className="w-1/4 min-w-fit m-auto from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8"
                     >
                         Get in touch
                     </a>
