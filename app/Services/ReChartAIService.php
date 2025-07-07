@@ -55,7 +55,7 @@ class ReChartAIService
                 'max_tokens' => 1000,
                 'temperature' => 0.2,
                 'functions' => $this->getFunctionSchemas(),
-                'function_call' => 'auto', // Important: allow auto instead of forced
+                'function_call' => $forceCreateChart ? ['name' => 'create_chart'] : 'auto',
             ]);
 
             $messageResponse = $response->choices[0]->message;
@@ -143,10 +143,26 @@ DESC,
                 empty($args['data']) ||
                 empty($args['series'])
             ) {
-                return [
-                    'content' => 'I tried to create a chart, but the configuration was incomplete. Please rephrase or try again.',
-                    'suggestions' => $this->defaultSuggestions(),
-                ];
+                // Fallback to dummy chart
+                return $this->createSampleChart('bar', [
+                    'title' => 'Example Chart',
+                    'xAxis' => 'Category',
+                    'yAxis' => 'Value',
+                    'data' => [
+                        ['Category' => 'A', 'Value' => 100],
+                        ['Category' => 'B', 'Value' => 200],
+                    ],
+                    'series' => [
+                        [
+                            'chartType' => 'bar',
+                            'type' => 'monotone',
+                            'dataKey' => 'Value',
+                            'fill' => '#8884d8',
+                            'stroke' => '#8884d8',
+                        ],
+                    ],
+                    'colors' => ['#8884d8'],
+                ]);
             }
 
             $result = $this->createSampleChart($args['chartType'], $args);
