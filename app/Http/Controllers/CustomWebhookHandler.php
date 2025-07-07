@@ -125,7 +125,6 @@ class CustomWebhookHandler extends HandleWebhookReceived
         $team = Cashier::findBillable($payload['content']['subscription']['customer_id']);
         if ($team && $team->user_id) {
             $user = User::find($team->user_id);
-            Log::info('subscription is created for the user', ['user_id' => $team->user_id]);
             SendNotification::handle($user, NotificationType::WELCOME);
             SubscriptionLockHelper::unlock($team->user_id);
         }

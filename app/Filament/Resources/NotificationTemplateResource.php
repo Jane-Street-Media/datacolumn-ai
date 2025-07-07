@@ -93,6 +93,10 @@ class NotificationTemplateResource extends Resource
     {
         return [
             'index' => Pages\ListNotificationTemplates::route('/'),
+<<<<<<< HEAD
+=======
+//            'create' => Pages\CreateNotificationTemplate::route('create'),
+>>>>>>> c8dc76e (Now when user subscribes, swap subscription, user will be notify via email and also admin can edit notification templates for emails and also can view and edit plans)
             'edit' => Pages\EditNotificationTemplate::route('/{record}/edit'),
         ];
     }
