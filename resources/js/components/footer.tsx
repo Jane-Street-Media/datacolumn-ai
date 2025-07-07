@@ -37,7 +37,7 @@ export default function Footer(){
                             rel="noopener noreferrer"
                             className="text-primary-foreground/80 dark:text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200"
                         >
-                            FAQ
+                            Docs
                         </a>
                         {user ? (
                             <Link
