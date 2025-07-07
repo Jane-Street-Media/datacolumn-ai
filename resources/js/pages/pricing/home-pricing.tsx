@@ -1,10 +1,10 @@
-import Pricing from '@/pages/pricing/pricing';
+import GuestPricing from '@/pages/pricing/guest-pricing';
 import HomeLayout from '@/layouts/home-layout';
 
 export default function HomePricing({ plans }) {
     return (
         <HomeLayout>
-            <Pricing plans={plans}/>
+            <GuestPricing plans={plans}/>
         </HomeLayout>
     );
 };
