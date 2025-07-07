@@ -58,7 +58,7 @@ class FetchPlans extends Command
                     ],
                     'limit' => 30,
                 ]);
-                foreach ($response->list as $entry) {
+                foreach ($response->list as $k => $entry) {
                     $itemPrice = $entry->item_price;
                     if (! $itemPrice?->price || $itemPrice->price === 0) {
                         continue;
@@ -109,6 +109,7 @@ class FetchPlans extends Command
                             ],
                             'cta' => 'Start Pro Trial',
                             'popular' => true,
+                            'order' => 1,
                         ]);
                     }
 
@@ -144,6 +145,7 @@ class FetchPlans extends Command
                             ],
                             'cta' => 'Start Team Trial',
                             'popular' => false,
+                            'order' => 2,
                         ]);
                     }
 

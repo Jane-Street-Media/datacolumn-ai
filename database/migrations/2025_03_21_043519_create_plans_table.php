@@ -23,6 +23,7 @@ return new class extends Migration
             $table->json('limitations')->nullable();
             $table->string('cta')->nullable();
             $table->boolean('popular')->default(false);
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

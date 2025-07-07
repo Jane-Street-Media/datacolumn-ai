@@ -25,6 +25,7 @@ class Plan extends Model
         'limitations',
         'cta',
         'popular',
+        'order',
     ];
 
     protected $casts = [
@@ -32,4 +33,11 @@ class Plan extends Model
         'details' => 'array',
         'limitations' => 'array',
     ];
+
+    public static function booted(): void
+    {
+        static::addGlobalScope(function ($builder) {
+            $builder->orderBy('order', 'asc');
+        });
+    }
 }

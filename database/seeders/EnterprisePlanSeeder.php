@@ -45,6 +45,7 @@ class EnterprisePlanSeeder extends Seeder
                 ],
                 'cta' => 'Contact Sales',
                 'popular' => false,
+                'order' => 3,
             ]
         );
 
@@ -82,6 +83,7 @@ class EnterprisePlanSeeder extends Seeder
                 ],
                 'cta' => 'Contact Sales',
                 'popular' => false,
+                'order' => 3,
             ]
         );
     }
