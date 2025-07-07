@@ -24,7 +24,6 @@ class TeamController extends Controller
 {
     public function index(TeamUserFilterRequest $request): Response
     {
-
         return Inertia::render('team', [
             'statistics' => GetTeamStats::handle(),
             'roles' => Inertia::defer(fn () => Role::all()),
