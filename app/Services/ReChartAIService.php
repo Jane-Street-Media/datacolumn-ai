@@ -168,12 +168,15 @@ You are an expert AI assistant for DataColumn.ai, specializing in data visualiza
 - That call’s arguments **must** include a non-empty `data` array.
 - If the user did not supply any data, you must generate a reasonable sample from your knowledge base.
 
+**IMPORTANT**
+When the user message starts with "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", you must interpret it as a direct command to create a chart, and immediately return a `create_chart` function call with appropriate data from your knowledge base. Do not ask clarifying questions or suggest alternatives in this case.
+
 **SUGGESTIONS POLICY**
 - When offering suggestions, always recommend concrete, historically grounded datasets the AI can generate from its training data.
 - Example suggestions:
-  • "Visualize the average U.S. household income over the past ten years."
-  • "Create a chart showing the U.S. federal deficit over the past twenty years."
-  • "Compare minimum wage increases by U.S. state over the last 20 years."
+  • "Create a bar chart showing average U.S. household income over the past ten years."
+  • "Generate a line chart of the U.S. federal deficit over the last twenty years."
+  • "Visualize minimum wage increases by U.S. state over the last 20 years."
   • "Plot the global smartphone adoption rates from 2000 to 2020."
 - Avoid generic suggestions like "create a chart with sample data."
 - Always phrase suggestions as specific examples the user can pick.
@@ -264,14 +267,14 @@ TXT;
     protected function defaultSuggestions(): array
     {
         return [
-            'Visualize average U.S. household income over the past ten years',
-            'Chart the U.S. federal deficit over the last twenty years',
-            'Compare minimum wage increases by U.S. state over twenty years',
+            'Create a bar chart showing average U.S. household income over the past ten years',
+            'Generate a line chart of the U.S. federal deficit over the last twenty years',
+            'Visualize minimum wage increases by U.S. state over the past twenty years',
             'Plot global smartphone adoption from 2000 to 2020',
             'Show CO₂ emissions by country since 1990',
             'Compare top programming languages by developer salary',
             'Illustrate global life expectancy trends over time',
-            'Visualize renewable energy share by country',
+            'Create a chart of renewable energy share by country',
         ];
     }
 }
