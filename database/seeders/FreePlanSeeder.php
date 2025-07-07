@@ -47,6 +47,7 @@ class FreePlanSeeder extends Seeder
                 ],
                 'cta' => 'Get Started',
                 'popular' => false,
+                'order' => 0,
             ]
         );
 
@@ -83,6 +84,7 @@ class FreePlanSeeder extends Seeder
                 ],
                 'cta' => 'Get Started',
                 'popular' => false,
+                'order' => 0,
             ]
         );
     }
