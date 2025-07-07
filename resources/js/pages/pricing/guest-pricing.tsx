@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import { Check, OctagonX } from 'lucide-react';
+import { Check, OctagonX, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Pricing({ plans }) {
@@ -179,6 +179,25 @@ export default function Pricing({ plans }) {
                         </div>
                     );
                 })}
+            </div>
+
+            <div className="py-10 sm:py-10 relative z-20 rounded-lg bg-background dark:bg-gray-800 transition-colors duration-300">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">
+                        Need more than just a plan?
+                    </h2>
+                    <p className="text-lg sm:text-lg text-secondary-foreground dark:text-primary-foreground/80 mb-6 sm:mb-8">
+                        Our team is here to help you find the perfect solution for your needs. Whether you're a startup, a growing business, or an enterprise,
+                        we can tailor our services to fit your requirements.
+                    </p>
+
+                    <a
+                        href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
+                        className="w-fit m-auto from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+                    >
+                        Get in touch
+                    </a>
+                </div>
             </div>
         </section>
     );
