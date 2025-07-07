@@ -55,7 +55,7 @@ class ReChartAIService
                 'max_tokens' => 1000,
                 'temperature' => 0.2,
                 'functions' => $this->getFunctionSchemas(),
-                'function_call' => $forceCreateChart ? ['name' => 'create_chart'] : 'auto',
+                'function_call' => 'auto', // Important: allow auto instead of forced
             ]);
 
             $messageResponse = $response->choices[0]->message;
@@ -63,11 +63,11 @@ class ReChartAIService
             if ($messageResponse->functionCall) {
                 $fn = $messageResponse->functionCall;
                 $parsed = json_decode($fn->arguments, true);
+
                 return $this->handleFunctionCall($fn->name, $parsed, $messageResponse->content ?? '');
             }
 
             return $this->parseAIResponse($messageResponse->content ?? '', $message, $context);
-
         } catch (\Throwable $e) {
             Log::error('AI service error: ' . $e->getMessage());
 
@@ -82,7 +82,7 @@ class ReChartAIService
                 'name' => 'create_chart',
                 'description' => <<<'DESC'
 Generate a fully-formed Recharts configuration object based on the user's natural-language request.
-Always include **series** attribute even if it's just x and y to keep consistency.
+Always include the "series" attribute, even if it's just x and y, to keep consistency.
 DESC,
                 'parameters' => [
                     'type' => 'object',
@@ -91,15 +91,9 @@ DESC,
                             'type' => 'string',
                             'enum' => ['bar', 'line', 'area', 'composed'],
                         ],
-                        'title' => [
-                            'type' => 'string',
-                        ],
-                        'xAxis' => [
-                            'type' => 'string',
-                        ],
-                        'yAxis' => [
-                            'type' => 'string',
-                        ],
+                        'title' => ['type' => 'string'],
+                        'xAxis' => ['type' => 'string'],
+                        'yAxis' => ['type' => 'string'],
                         'series' => [
                             'type' => 'array',
                             'items' => [
@@ -131,9 +125,7 @@ DESC,
                 'parameters' => [
                     'type' => 'object',
                     'properties' => [
-                        'reason' => [
-                            'type' => 'string',
-                        ],
+                        'reason' => ['type' => 'string'],
                     ],
                     'required' => ['reason'],
                     'additionalProperties' => false,
@@ -179,65 +171,40 @@ DESC,
     protected function buildAdvancedSystemPrompt(array $context): string
     {
         $prompt = <<<'TXT'
-You are an expert AI data visualization assistant for DataColumn.ai, specializing in creating Recharts configurations from user instructions.
+You are an expert AI assistant for DataColumn.ai, specializing in data visualization for journalists and content creators.
 
-**MANDATORY BEHAVIOR**
+**MANDATORY REQUIREMENTS**
 - When creating a chart, you MUST return a `create_chart` function call.
-- That function call MUST include:
-  • `chartType`
-  • `title`
-  • a non-empty `data` array
-  • at least one `series` definition
-- If the user did not supply data, you MUST generate realistic sample data from your knowledge base or public data examples.
+- That call’s arguments MUST include a non-empty `data` array.
+- If the user did not supply any data, you MUST generate a reasonable sample from your knowledge base.
 
 **IMPORTANT**
-When the user message starts with words like "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", treat it as a direct instruction to create a chart.
-- You MUST respond ONLY by returning a `create_chart` function call with all required fields.
-- DO NOT respond with any other text, markdown, explanations, or disclaimers outside the `title` field.
-- DO NOT ask questions or offer further suggestions in this case.
+When the user message starts with "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", you MUST treat it as a direct instruction to create a chart. You MUST respond ONLY by returning a `create_chart` function call with appropriate data. Avoid text replies.
 
 **DATA GENERATION POLICY**
-- If the user requests real-world historical data, you MUST attempt to recall accurate data or approximate the trend based on your training knowledge.
-- If you cannot recall exact figures, you MUST still generate plausible sample data that reflects typical values and trends.
-- If any data is approximate, clearly indicate this in the `title` field, e.g., "Approximate Data – U.S. Federal Deficit Over Time".
-- NEVER leave the `data` array empty.
-
-**RESPONSE FORMAT**
-- You MUST always return only the `create_chart` function call.
-- All required fields must be complete.
-- Never return plain text or explanations outside of the function call.
+If the requested data is real-world historical data, you MUST attempt to recall accurate data from your training knowledge. If you cannot recall exact figures, generate realistic, approximate sample data that represents plausible trends. Label in the chart title that data is approximate.
 
 **SUGGESTIONS POLICY**
-- When offering suggestions, always recommend concrete, historically grounded datasets you can generate.
-- Example suggestions:
-  • "Create a bar chart showing average U.S. household income over the past ten years."
-  • "Generate a line chart of the U.S. federal deficit over the last twenty years."
-  • "Visualize minimum wage increases by U.S. state over the last 20 years."
-  • "Plot the global smartphone adoption rates from 2000 to 2020."
-- Avoid generic suggestions like "create a chart with sample data."
+When offering suggestions, always recommend concrete, historically grounded datasets the AI can generate from its training data:
+- "Create a bar chart showing average U.S. household income over the past ten years."
+- "Generate a line chart of the U.S. federal deficit over the last twenty years."
+- "Visualize minimum wage increases by U.S. state over the last 20 years."
+- "Plot the global smartphone adoption rates from 2000 to 2020."
 
-**YOUR CAPABILITIES**
+Avoid generic suggestions.
+
 You can:
-1. Create charts from descriptions.
-2. Analyze and visualize data.
-3. Generate sample datasets.
+1. CREATE CHARTS FROM DESCRIPTIONS
+2. PROVIDE GUIDANCE
+3. GENERATE SAMPLE DATA
 
-**AVAILABLE CHART TYPES**
-- Bar Charts
-- Line Charts
-- Area Charts
-- Pie Charts (max 5 categories)
-- Scatter Plots
-- Radar Charts
-- Radial Bar Charts
-- Funnel Charts
-- Treemaps
-- Composed Charts
+CHART TYPES AVAILABLE:
+- Bar, Line, Area, Pie, Scatter, Radar, Radial Bar, Funnel, Treemap, Composed
 
-**DESIGN PRINCIPLES**
-- Accessibility first (colorblind-friendly)
-- Mobile responsive layouts
-- Clear, descriptive titles and labels
+DESIGN PRINCIPLES:
+- Accessibility first
+- Mobile responsive
+- Clear, descriptive titles
 - Minimal cognitive load
 TXT;
 
@@ -256,14 +223,12 @@ TXT;
     private function ensureColorCount(array $existingColors, int $requiredCount): array
     {
         $colors = array_values(array_unique($existingColors));
-
         while (count($colors) < $requiredCount) {
             $new = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             if (! in_array($new, $colors, true)) {
                 $colors[] = $new;
             }
         }
-
         return array_slice($colors, 0, $requiredCount);
     }
 
