@@ -55,7 +55,7 @@ class ReChartAIService
                 'max_tokens' => 1000,
                 'temperature' => 0.2,
                 'functions' => $this->getFunctionSchemas(),
-                'function_call' => $forceCreateChart ? ['name' => 'create_chart'] : 'auto',
+                'function_call' => 'auto',
             ]);
 
             $messageResponse = $response->choices[0]->message;
@@ -100,7 +100,6 @@ DESC,
                                 'type' => 'object',
                                 'additionalProperties' => true,
                             ],
-                            'minItems' => 1,
                         ],
                         'data' => [
                             'type' => 'array',
@@ -108,14 +107,14 @@ DESC,
                                 'type' => 'object',
                                 'additionalProperties' => true,
                             ],
-                            'minItems' => 1,
                         ],
                         'colors' => [
                             'type' => 'array',
                             'items' => ['type' => 'string'],
                         ],
                     ],
-                    'required' => ['chartType', 'title', 'data', 'series'],
+                    // Allow incomplete payloads to avoid failure
+                    'required' => ['chartType', 'title'],
                     'additionalProperties' => false,
                 ],
             ],
@@ -137,15 +136,10 @@ DESC,
     protected function handleFunctionCall(string $name, array $args, string $aiContent): array
     {
         if ($name === 'create_chart') {
-            if (
-                empty($args['chartType']) ||
-                empty($args['title']) ||
-                empty($args['data']) ||
-                empty($args['series'])
-            ) {
+            if (empty($args['data']) || empty($args['series'])) {
                 // Fallback to dummy chart
                 return $this->createSampleChart('bar', [
-                    'title' => 'Example Chart',
+                    'title' => $args['title'] ?? 'Example Chart',
                     'xAxis' => 'Category',
                     'yAxis' => 'Value',
                     'data' => [
@@ -165,9 +159,7 @@ DESC,
                 ]);
             }
 
-            $result = $this->createSampleChart($args['chartType'], $args);
-
-            return array_merge($result, ['content' => $aiContent]);
+            return $this->createSampleChart($args['chartType'], $args);
         }
 
         return [
@@ -191,7 +183,7 @@ You are an expert AI assistant for DataColumn.ai, specializing in data visualiza
 
 **MANDATORY REQUIREMENTS**
 - When creating a chart, you MUST return a `create_chart` function call.
-- That call’s arguments MUST include a non-empty `data` array.
+- That call’s arguments MUST include at least chartType, title, and some example data.
 - If the user did not supply any data, you MUST generate a reasonable sample from your knowledge base.
 
 **IMPORTANT**
@@ -208,6 +200,31 @@ When offering suggestions, always recommend concrete, historically grounded data
 - "Plot the global smartphone adoption rates from 2000 to 2020."
 
 Avoid generic suggestions.
+
+**EXAMPLE FUNCTION CALL**
+If the user says: "Create a bar chart showing programming language popularity", respond like this:
+
+{
+  "chartType": "bar",
+  "title": "Programming Language Popularity (Approximate Data)",
+  "xAxis": "Language",
+  "yAxis": "Popularity",
+  "data": [
+    {"Language": "Python", "Popularity": 85},
+    {"Language": "JavaScript", "Popularity": 80},
+    {"Language": "Java", "Popularity": 70}
+  ],
+  "series": [
+    {
+      "chartType": "bar",
+      "type": "monotone",
+      "dataKey": "Popularity",
+      "fill": "#8884d8",
+      "stroke": "#8884d8"
+    }
+  ],
+  "colors": ["#8884d8"]
+}
 
 You can:
 1. CREATE CHARTS FROM DESCRIPTIONS
@@ -254,8 +271,8 @@ TXT;
             'chartConfig' => [
                 'type' => $type,
                 'title' => $args['title'],
-                'xAxis' => $args['xAxis'],
-                'yAxis' => $args['yAxis'],
+                'xAxis' => $args['xAxis'] ?? 'Category',
+                'yAxis' => $args['yAxis'] ?? 'Value',
                 'series' => $args['series'] ?? [],
                 'colors' => $this->ensureColorCount($args['colors'] ?? [], count($args['series'] ?? [])),
                 'showGrid' => $args['showGrid'] ?? true,
@@ -263,7 +280,7 @@ TXT;
                 'width' => $args['width'] ?? 800,
                 'height' => $args['height'] ?? 400,
             ],
-            'generatedData' => $args['data'],
+            'generatedData' => $args['data'] ?? [],
             'suggestions' => $this->defaultSuggestions(),
         ];
     }
