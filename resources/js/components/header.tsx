@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button.js';
 import { useAppearanceContext } from '@/contexts/appearance-context.js';
 import { Link, usePage } from '@inertiajs/react';
+import AppLogo from '@/components/app-logo';
 
 
 export default function Header(){
@@ -40,8 +41,9 @@ export default function Header(){
         <header className="bg-background backdrop-blur-sm border-b border-border sticky top-0 z-50 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <Logo />
-
+                    <Link href="/" prefetch>
+                        <Logo />
+                    </Link>
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
                         <Link
@@ -53,6 +55,7 @@ export default function Header(){
                         {user ? (
                             <Link
                                 href={route('dashboard')}
+                                prefetch
                                 className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
                             >
                                 Dashboard

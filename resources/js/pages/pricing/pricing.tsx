@@ -283,13 +283,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 </span>
                                             ) : plan.name.toLowerCase() === 'enterprise' ? (
                                                 <a href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
-                                                   className="absolute bottom-4 text-white bg-gradient-to-r from-gradient-from h-9 px-4 py-2 has-[>svg]:px-3 to-gradient-to cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring"
+                                                   className="absolute bottom-4 right-5 left-5 text-white bg-gradient-to-r from-gradient-from h-9 px-4 py-2 has-[>svg]:px-3 to-gradient-to cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring"
                                                 >Get in touch</a>
                                             ) : (
                                                 <Button
                                                     onClick={(e) => handleCheckoutClick(e, planId, plan)}
                                                     variant="gradient"
-                                                    className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4`}
+                                                    className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4 right-5 left-5`}
                                                 >
                                                     {isLoading ? (
                                                         <span className="flex items-center justify-center">
@@ -305,13 +305,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                             )
                                         ) : subscription.chargebee_price !== planId ? plan.name.toLowerCase() === 'enterprise' ? (
                                             <a href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
-                                               className="absolute bottom-4 text-white bg-gradient-to-r from-gradient-from h-9 px-4 py-2 has-[>svg]:px-3 to-gradient-to cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring"
+                                               className="absolute bottom-4 right-5 left-5 text-white bg-gradient-to-r from-gradient-from h-9 px-4 py-2 has-[>svg]:px-3 to-gradient-to cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring"
                                             >Get in touch</a>
                                         ) : (
                                             <Button
                                                 onClick={(e) => handleSwapSubscription(e, planId, plan)}
                                                 variant="gradient"
-                                                className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4`}
+                                                className={`${loading ? 'cursor-not-allowed' : ''} absolute bottom-4 right-5 left-5`}
                                             >
                                                 {isLoading ? (
                                                     <span className="flex items-center justify-center">

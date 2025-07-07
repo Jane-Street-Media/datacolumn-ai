@@ -128,7 +128,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 {teams?.map((team) => (
-                                    <DropdownMenuItem key={team.id} asChild>
+                                    <DropdownMenuItem key={team.id} asChild className="cursor-pointer">
                                         <Button
                                             variant="ghost"
                                             className="w-full justify-start"
