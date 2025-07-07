@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Listeners\HandleWebhookReceived;
+use App\Actions\Notifications\SendNotification;
+use App\Actions\SyncSubscriptionPlanChanges;
+use App\Enums\NotificationType;
+use App\Helpers\SubscriptionLockHelper;
 use App\Models\Plan;
+use App\Models\User;
 use Carbon\Carbon;
 use Chargebee\Cashier\Cashier;
+use Chargebee\Cashier\Listeners\HandleWebhookReceived;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Exception;
 
@@ -109,6 +114,85 @@ class CustomWebhookHandler extends HandleWebhookReceived
         } catch (Exception $ex) {
             Log::info('Exception while handling item_price_updated webhook from Chargebee', [
                 'message' => $ex->getMessage(),
+            ]);
+        }
+    }
+
+    protected function handleSubscriptionCreated(array $payload): void
+    {
+        parent::handleSubscriptionCreated($payload);
+        Log::info('In the listener');
+        $team = Cashier::findBillable($payload['content']['subscription']['customer_id']);
+        if ($team && $team->user_id) {
+            $user = User::find($team->user_id);
+            Log::info('subscription is created for the user', ['user_id' => $team->user_id]);
+            SendNotification::handle($user, NotificationType::WELCOME);
+            SubscriptionLockHelper::unlock($team->user_id);
+        }
+    }
+
+    protected function handleSubscriptionCancellationScheduled(array $payload): void
+    {
+        if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+            $currentTermEnd = $payload['content']['subscription']['current_term_end'];
+            $status = $payload['content']['subscription']['status'];
+            $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription->update([
+                'chargebee_status' => $status,
+                'ends_at' => Carbon::createFromTimestamp($currentTermEnd),
+            ]);
+
+            Log::info('Subscription cancel scheduled successfully.', [
+                'subscription_id' => $subscription->id,
+                'chargebee_subscription_id' => $payload['content']['subscription']['id'],
+            ]);
+        } else {
+            Log::info('Subscription cancel scheduled attempted, but no matching user found.', [
+                'customer_id' => $payload['content']['subscription']['customer_id'],
+            ]);
+        }
+    }
+
+    protected function handleSubscriptionScheduledCancellationRemoved(array $payload): void
+    {
+        if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+            $status = $payload['content']['subscription']['status'];
+            $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription->update([
+                'chargebee_status' => $status,
+                'ends_at' => null,
+            ]);
+
+            Log::info('Subscription cancel scheduled removed successfully.', [
+                'subscription_id' => $subscription->id,
+                'chargebee_subscription_id' => $payload['content']['subscription']['id'],
+            ]);
+        } else {
+            Log::info('Subscription cancel scheduled removed attempted, but no matching user found.', [
+                'customer_id' => $payload['content']['subscription']['customer_id'],
+            ]);
+        }
+    }
+
+    protected function handleSubscriptionCancelled(array $payload): void
+    {
+        if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
+            $status = $payload['content']['subscription']['status'];
+            $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
+            $subscription->update([
+                'chargebee_status' => $status,
+                'ends_at' => Carbon::now(),
+            ]);
+
+            SyncSubscriptionPlanChanges::handle($team);
+
+            Log::info('Subscription cancelled successfully.', [
+                'subscription_id' => $subscription->id,
+                'chargebee_subscription_id' => $payload['content']['subscription']['id'],
+            ]);
+        } else {
+            Log::info('Subscription cancelled attempted, but no matching user found.', [
+                'customer_id' => $payload['content']['subscription']['customer_id'],
             ]);
         }
     }
