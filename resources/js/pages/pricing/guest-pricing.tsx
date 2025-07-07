@@ -181,10 +181,10 @@ export default function Pricing({ plans }) {
                 })}
             </div>
 
-            <div className="py-10 sm:py-10 relative z-20 rounded-lg bg-background dark:bg-gray-800 transition-colors duration-300">
+            <div className="py-10 bg-card relative flex h-full flex-col overflow-hidden rounded-xl border-2 shadow-md border-card">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">
-                        Need more than just a plan?
+                        Need more?
                     </h2>
                     <p className="text-lg sm:text-lg text-secondary-foreground dark:text-primary-foreground/80 mb-6 sm:mb-8">
                         Our team is here to help you find the perfect solution for your needs. Whether you're a startup, a growing business, or an enterprise,
