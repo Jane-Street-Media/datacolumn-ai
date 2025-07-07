@@ -60,7 +60,7 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                     </Link>
                     <Popover>
                         <PopoverTrigger>
-                            <MoreHorizontal />
+                            <MoreHorizontal className="cursor-pointer" />
                         </PopoverTrigger>
                         <PopoverContent>
                             <div className="flex flex-col space-y-2">

@@ -277,13 +277,13 @@ export const Assistant: React.FC = () => {
                                     {message.suggestions && (
                                         <div className="mt-3 flex flex-wrap gap-2">
                                             {message.suggestions.map((suggestion, idx) => (
-                                                <button
+                                                <Button
                                                     key={idx}
                                                     onClick={() => handleSuggestionClick(suggestion)}
                                                     className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                                                 >
                                                     {suggestion}
-                                                </button>
+                                                </Button>
                                             ))}
                                         </div>
                                     )}
@@ -331,13 +331,13 @@ export const Assistant: React.FC = () => {
                             className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 pr-12 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
                             disabled={isTyping}
                         />
-                        <button
+                        <Button
                             onClick={() => handleSendMessage()}
                             disabled={!inputValue.trim() || isTyping}
                             className="absolute top-1/2 right-2 -translate-y-1/2 transform rounded-lg bg-blue-600 p-2 text-white transition-colors duration-200 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600"
                         >
                             <Send className="h-4 w-4" />
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
