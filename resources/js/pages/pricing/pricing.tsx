@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { Check, Hourglass, Loader2, OctagonX } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Pricing({ plans, subscription, isSubscribed }) {
@@ -14,6 +14,8 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     const monthlyRef = useRef(null);
     const yearlyRef = useRef(null);
     const [switchFreePlanModalOpen, setswitchFreePlanModalOpen] = useState(false);
+    const page = usePage()
+    const isAuthenticated = useMemo(() => page.props.auth.user, [page])
 
     const SwitchFreePlanButton = () => {
         const handleClick = (e: React.MouseEvent) => {
@@ -277,7 +279,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     </ul>
                                     <div className="mt-6">
                                         {!isSubscribed ? (
-                                            plan.name.toLowerCase() === 'free' ?  (
+                                            plan.name.toLowerCase() === 'free' && isAuthenticated ?  (
                                                 <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
                                                     Current Plan
                                                 </span>
