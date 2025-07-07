@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { Logo } from '@/components/Logo';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     Menu,
     X
@@ -15,13 +15,15 @@ import {
 } from '@/components/ui/dropdown-menu.js';
 import { Button } from '@/components/ui/button.js';
 import { useAppearanceContext } from '@/contexts/appearance-context.js';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 
 export default function Header(){
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showThemeMenu, setShowThemeMenu] = useState(false);
     const { appearance, setAppearance } = useAppearanceContext();
+    const page = usePage()
+    const user = useMemo(() => page.props.auth.user, [page])
 
     const getCurrentThemeIcon = () => {
         switch (appearance) {
@@ -48,12 +50,22 @@ export default function Header(){
                         >
                             Pricing
                         </Link>
-                        <Link
-                            href={route('login')}
-                            className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
-                        >
-                            Sign In
-                        </Link>
+                        {user ? (
+                            <Link
+                                href={route('dashboard')}
+                                className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
+                            >
+                                Dashboard
+                            </Link>
+                        ) : (
+                            <Link
+                                href={route('login')}
+                                className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
+                            >
+                                Sign In
+                            </Link>
+                        )}
+
 
                         {/* Theme Toggle */}
                         <DropdownMenu>
