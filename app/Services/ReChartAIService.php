@@ -145,6 +145,19 @@ DESC,
     protected function handleFunctionCall(string $name, array $args, string $aiContent): array
     {
         if ($name === 'create_chart') {
+            // Validate args
+            if (
+                empty($args['chartType']) ||
+                empty($args['title']) ||
+                empty($args['data']) ||
+                empty($args['series'])
+            ) {
+                return [
+                    'content' => 'I tried to create a chart, but the configuration was incomplete. Please rephrase or try again.',
+                    'suggestions' => $this->defaultSuggestions(),
+                ];
+            }
+
             $result = $this->createSampleChart($args['chartType'], $args);
 
             return array_merge($result, ['content' => $aiContent]);
@@ -178,7 +191,7 @@ You are an expert AI assistant for DataColumn.ai, specializing in data visualiza
 When the user message starts with "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", you MUST treat it as a direct instruction to create a chart. You MUST respond ONLY by returning a `create_chart` function call with appropriate data. DO NOT reply with any conversational text or disclaimers. DO NOT offer further suggestions or ask questions. Only respond with the function call.
 
 **DATA GENERATION POLICY**
-If the requested data is real-world historical data and you do not have the exact figures in your training data, you MUST generate realistic, approximate sample data that represents plausible trends. You MUST still return a `create_chart` function call with this sample data. Clearly label in the chart title that the data is approximate.
+If the requested data is real-world historical data, you MUST attempt to recall accurate data from your training knowledge. Use well-known, historically accurate trends if available. If you cannot recall the precise values, you MUST generate realistic, approximate sample data that represents plausible trends, and clearly label in the chart title that the data is approximate. You MUST still return a `create_chart` function call with this data.
 
 **SUGGESTIONS POLICY**
 - When offering suggestions, always recommend concrete, historically grounded datasets the AI can generate from its training data.
