@@ -76,7 +76,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <div className="flex items-center space-x-2 md:space-x-4">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <CurrentThemeIcon className="w-5 h-5" />
+                            <CurrentThemeIcon className="w-5 h-5 cursor-pointer" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" align="end">
                             <DropdownMenuGroup>
@@ -102,7 +102,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                         </DropdownMenuContent>
                     </DropdownMenu>
 
-                    <Link href={route('profile.edit')} as="button" prefetch>
+                    <Link href={route('profile.edit')} as="button" className="cursor-pointer" prefetch>
                         <Settings className="w-5 h-5">
                                 Settings
                         </Settings>

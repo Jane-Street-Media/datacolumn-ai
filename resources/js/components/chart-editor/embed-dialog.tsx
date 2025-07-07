@@ -107,26 +107,6 @@ export default function EmbedDialog() {
                         <TabsContent value="embed_code">
                             <div className="flex flex-col gap-7">
                                 <div>
-                                    <h3 className="text-lg font-medium">Script Embed</h3>
-                                    <p className="text-sm text-muted-foreground mb-3">
-                                        Embed the chart using a script and container div.
-                                    </p>
-                                    <div className="space-y-3">
-                                        <Button variant="outline" onClick={() => handleCopy(embedScript)}>
-                                            <Copy />
-                                            Copy Code
-                                        </Button>
-                                        <Card>
-                                            <CardContent>
-                                                <pre className="text-sm text-green-400 w-full overflow-auto">
-                                                  <code className="w-full overflow-auto">{embedScript}</code>
-                                                </pre>
-                                            </CardContent>
-                                        </Card>
-                                    </div>
-                                </div>
-
-                                <div>
                                     <h3 className="text-lg font-medium">Iframe Embed</h3>
                                     <p className="text-sm text-muted-foreground mb-3">
                                         Embed the chart directly using an iframe.
@@ -140,6 +120,26 @@ export default function EmbedDialog() {
                                             <CardContent>
                                                 <pre className="text-sm text-green-400 w-full overflow-auto">
                                                   <code className="w-full overflow-auto">{embedIframe}</code>
+                                                </pre>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-lg font-medium">Script Embed</h3>
+                                    <p className="text-sm text-muted-foreground mb-3">
+                                        Embed the chart using a script and container div.
+                                    </p>
+                                    <div className="space-y-3">
+                                        <Button variant="outline" onClick={() => handleCopy(embedScript)}>
+                                            <Copy />
+                                            Copy Code
+                                        </Button>
+                                        <Card>
+                                            <CardContent>
+                                                <pre className="text-sm text-green-400 w-full overflow-auto">
+                                                  <code className="w-full overflow-auto">{embedScript}</code>
                                                 </pre>
                                             </CardContent>
                                         </Card>
