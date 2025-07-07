@@ -11,7 +11,6 @@ use App\Http\Controllers\Projects\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Projects\ValidateChartExportController;
-use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\SwitchUserTeamController;
 use App\Http\Controllers\Team\TeamController;

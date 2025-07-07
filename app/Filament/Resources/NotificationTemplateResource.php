@@ -10,12 +10,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 
 class NotificationTemplateResource extends Resource
 {
@@ -37,6 +35,7 @@ class NotificationTemplateResource extends Resource
                         TextInput::make('subject')
                             ->label('Subject')
                             ->required()
+
                             ->maxValue(255)
                             ->placeholder('Email Subject'),
                         Select::make('type')
@@ -93,10 +92,7 @@ class NotificationTemplateResource extends Resource
     {
         return [
             'index' => Pages\ListNotificationTemplates::route('/'),
-<<<<<<< HEAD
-=======
 //            'create' => Pages\CreateNotificationTemplate::route('create'),
->>>>>>> c8dc76e (Now when user subscribes, swap subscription, user will be notify via email and also admin can edit notification templates for emails and also can view and edit plans)
             'edit' => Pages\EditNotificationTemplate::route('/{record}/edit'),
         ];
     }
