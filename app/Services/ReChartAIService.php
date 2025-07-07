@@ -14,7 +14,7 @@ class ReChartAIService
         $this->apiKey = config('services.openai.key');
     }
 
-    public function sendMessage(string $message, array $context = []): array
+    public function sendMessage(string $message, array $context = [], bool $forceCreateChart = false): array
     {
         if (! $this->apiKey) {
             return $this->getIntelligentFallbackResponse($message, $context);
@@ -47,9 +47,9 @@ class ReChartAIService
                 'model' => 'gpt-4o',
                 'messages' => $formattedMessages,
                 'max_tokens' => 1000,
-                'temperature' => 0.7,
+                'temperature' => 0.2,
                 'functions' => $this->getFunctionSchemas(),
-                'function_call' => 'auto',
+                'function_call' => $forceCreateChart ? ['name' => 'create_chart'] : 'auto',
             ]);
 
             $messageResponse = $response->choices[0]->message;
@@ -164,12 +164,15 @@ DESC,
 You are an expert AI assistant for DataColumn.ai, specializing in data visualization for journalists and content creators.
 
 **MANDATORY REQUIREMENTS**
-- When creating a chart, you **must** return a `create_chart` function call.
-- That call’s arguments **must** include a non-empty `data` array.
-- If the user did not supply any data, you must generate a reasonable sample from your knowledge base.
+- When creating a chart, you MUST return a `create_chart` function call.
+- That call’s arguments MUST include a non-empty `data` array.
+- If the user did not supply any data, you MUST generate a reasonable sample from your knowledge base.
 
 **IMPORTANT**
-When the user message starts with "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", you must interpret it as a direct command to create a chart, and immediately return a `create_chart` function call with appropriate data from your knowledge base. Do not ask clarifying questions or suggest alternatives in this case.
+When the user message starts with "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", you MUST treat it as a direct instruction to create a chart. You MUST respond ONLY by returning a `create_chart` function call with appropriate data. DO NOT reply with any conversational text or disclaimers. DO NOT offer further suggestions or ask questions. Only respond with the function call.
+
+**DATA GENERATION POLICY**
+If the requested data is real-world historical data and you do not have the exact figures in your training data, you MUST generate realistic, approximate sample data that represents plausible trends. You MUST still return a `create_chart` function call with this sample data. Clearly label in the chart title that the data is approximate.
 
 **SUGGESTIONS POLICY**
 - When offering suggestions, always recommend concrete, historically grounded datasets the AI can generate from its training data.
