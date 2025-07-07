@@ -152,7 +152,7 @@ export default function LandingPage({ plans }) {
                   >
                       Turn data into story-ready charts,{' '}
                       <br className="hidden sm:block" />
-                      <span className="text-primary/90 dark:text-blue-400">In seconds.</span>
+                      <span className="text-primary/90 dark:text-blue-400">in seconds.</span>
                   </motion.h1>
 
                   <motion.p
@@ -161,7 +161,7 @@ export default function LandingPage({ plans }) {
                       transition={{ duration: 0.6, delay: 0.2 }}
                       className="text-lg sm:text-xl text-secondary-foreground dark:text-primary-foreground/80 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4"
                   >
-                      DataColumn.ai helps journalists create clean, embeddable visualizations using AI.
+                      DataColumn helps journalists create clean, embeddable visualizations with AI.
                       No clutter. No code. Just clarity.
                   </motion.p>
 
