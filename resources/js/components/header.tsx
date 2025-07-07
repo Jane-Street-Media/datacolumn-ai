@@ -167,24 +167,24 @@ export default function Header(){
                         exit={{ opacity: 0, y: -10 }}
                         className="md:hidden border-t border-border py-4 space-y-4"
                     >
-                        <Link
-                            href={route('pricing')}
-                            className="block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
+                        <a
+                            onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                            className="cursor-pointer block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
                         >
                             Pricing
-                        </Link>
+                        </a>
                         <Link
                             href={route('login')}
                             className="block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
                         >
                             Sign In
                         </Link>
-                        <Link
-                            href={route('pricing')}
-                            className="w-full bg-primary/90 hover:bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                        <a
+                            onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                            className="cursor-pointer w-full bg-primary/90 hover:bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                         >
                             Get Started
-                        </Link>
+                        </a>
                     </motion.div>
                 )}
             </div>

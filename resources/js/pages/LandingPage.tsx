@@ -129,6 +129,16 @@ const testimonials = [
 
 export default function LandingPage({ plans }) {
 
+    const scrollTo = (selector) => {
+        const el = document.querySelector(selector)
+        if (el) {
+            const yOffset = -120 // Adjust for any fixed header height
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+
+            window.scrollTo({ top: y, behavior: 'smooth' })
+        }
+    }
+
   return (
       <HomeLayout>
           {/* Hero Section */}
@@ -161,13 +171,13 @@ export default function LandingPage({ plans }) {
                       transition={{ duration: 0.6, delay: 0.4 }}
                       className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4"
                   >
-                      <Link
-                          href={route('pricing')}
-                          className="flex items-center space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl backdrop-blur-sm"
+                      <a
+                          onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                          className="cursor-pointer flex items-center space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl backdrop-blur-sm"
                       >
                           <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                           <span>Get Started Free</span>
-                      </Link>
+                      </a>
                       <Link
                           href={route('login')}
                           className="flex items-center space-x-2 border border-border hover:border-muted-foreground text-foreground/90 hover:text-foreground bg-card px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 bg-background/50 backdrop-blur-sm"
@@ -407,13 +417,13 @@ export default function LandingPage({ plans }) {
                       Start free — no credit card required.
                   </p>
 
-                  <Link
-                      href={route('pricing')}
-                      className="flex items-center w-fit space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 mx-auto shadow-lg hover:shadow-xl"
+                  <a
+                      onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                      className="cursor-pointer flex items-center w-fit space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 mx-auto shadow-lg hover:shadow-xl"
                   >
                       <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span>Get Started Free</span>
-                  </Link>
+                  </a>
               </div>
           </section>
       </HomeLayout>
