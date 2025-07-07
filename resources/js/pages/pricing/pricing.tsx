@@ -89,19 +89,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         setHoveredCard(null);
     };
 
-    const comingSoonToast = () => {
-        return (
-            toast('Contact Support', {
-                description: () => 'Coming Soon!',
-                icon: <Hourglass className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-            })
-        )
-    }
     const handleCheckoutClick = (e, planId, plan) => {
-        if (plan.name.toLowerCase() === 'enterprise') {
-            comingSoonToast()
-            return;
-        }
         if (loading) {
             e.preventDefault();
             return;
@@ -133,11 +121,6 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
     const handleSwapSubscription = (e, planId, plan) => {
         if (loading) {
             e.preventDefault();
-            return;
-        }
-
-        if (plan.name.toLowerCase() === 'enterprise') {
-            comingSoonToast()
             return;
         }
 
