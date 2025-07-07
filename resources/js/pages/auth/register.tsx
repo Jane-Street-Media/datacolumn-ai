@@ -41,7 +41,7 @@ export default function Register() {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <Button
                     type="button"
-                    className="w-full flex items-center justify-center gap-2 dark:bg-white dark:text-black bg-gray-800 text-white hover:bg-gray-900"
+                    className="w-full curso flex items-center justify-center gap-2 dark:bg-white dark:text-black bg-gray-800 text-white hover:bg-gray-900"
                     tabIndex={1}
                     onClick={() => handleSocialLogin('github')}
 

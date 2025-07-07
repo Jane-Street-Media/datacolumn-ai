@@ -58,7 +58,7 @@ export default function Header(){
                         {/* Theme Toggle */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <CurrentThemeIcon className="w-5 h-5" />
+                                <CurrentThemeIcon className="w-5 h-5 cursor-pointer" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56" align="end">
                                 <DropdownMenuGroup>

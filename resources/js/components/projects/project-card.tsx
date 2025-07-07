@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { BarChart3, Calendar, Delete, Edit, Eye, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
 import { FormEventHandler, useMemo } from 'react';
 import { toast } from 'sonner';
+import AppLogo from '@/components/app-logo';
 
 const MotionCard = motion(Card);
 export default function ProjectCard({ index = 1, project, folders, statuses }) {
@@ -49,8 +50,8 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
         >
             <CardHeader>
                 <CardTitle>
-                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
-                        <BarChart3 className="h-5 w-5" />
+                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-4xl bg-gradient-to-r">
+                        <AppLogo className="h-5 w-5" showText={false}/>
                     </div>
                 </CardTitle>
                 <CardAction className="flex space-x-2">
