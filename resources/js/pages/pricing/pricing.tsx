@@ -294,10 +294,14 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     </ul>
                                     <div className="mt-6">
                                         {!isSubscribed ? (
-                                            plan.name.toLowerCase() === 'free' ? (
+                                            plan.name.toLowerCase() === 'free' ?  (
                                                 <span className="absolute top-2 right-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 shadow-sm ring-1 ring-green-300 ring-inset">
                                                     Current Plan
                                                 </span>
+                                            ) : plan.name.toLowerCase() === 'enterprise' ? (
+                                                <a href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
+                                                   className="absolute bottom-4 text-white bg-gradient-to-r from-gradient-from h-9 px-4 py-2 has-[>svg]:px-3 to-gradient-to cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring"
+                                                >Get in touch</a>
                                             ) : (
                                                 <Button
                                                     onClick={(e) => handleCheckoutClick(e, planId, plan)}
@@ -311,14 +315,16 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                                 Processing...
                                                             </>
                                                         </span>
-                                                    ) : plan.cta ? (
-                                                        plan.cta
-                                                    ) : (
+                                                    ) : plan.cta ?? (
                                                         'Get Started'
                                                     )}
                                                 </Button>
                                             )
-                                        ) : subscription.chargebee_price !== planId ? (
+                                        ) : subscription.chargebee_price !== planId ? plan.name.toLowerCase() === 'enterprise' ? (
+                                            <a href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
+                                               className="absolute bottom-4 text-white bg-gradient-to-r from-gradient-from h-9 px-4 py-2 has-[>svg]:px-3 to-gradient-to cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring"
+                                            >Get in touch</a>
+                                        ) : (
                                             <Button
                                                 onClick={(e) => handleSwapSubscription(e, planId, plan)}
                                                 variant="gradient"
@@ -331,8 +337,6 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                             Processing...
                                                         </>
                                                     </span>
-                                                ) : plan.name.toLowerCase() === 'enterprise' ? (
-                                                    (plan.cta ?? 'Contact Sales')
                                                 ) : (
                                                     'Swap Subscription'
                                                 )}
