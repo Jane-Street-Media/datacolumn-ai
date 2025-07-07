@@ -31,12 +31,14 @@ export default function Footer(){
                         >
                             Pricing
                         </a>
-                        <button
-                            // onClick={() => navigate('/faq')}
+                            <a
+                            href="https://docs.datacolumn.ai"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-primary-foreground/80 dark:text-primary-foreground/90 hover:text-primary-foreground transition-colors duration-200"
                         >
                             FAQ
-                        </button>
+                        </a>
                         {user ? (
                             <Link
                                 href={route('dashboard')}
