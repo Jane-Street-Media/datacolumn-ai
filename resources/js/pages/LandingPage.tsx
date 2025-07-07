@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import HomeLayout from '@/layouts/home-layout';
+import Pricing from '@/pages/pricing/guest-pricing';
 
 const chartTypes = [
     { name: 'Bar Chart', icon: BarChart3 },
@@ -126,7 +127,7 @@ const testimonials = [
 ];
 // const CurrentThemeIcon = getCurrentThemeIcon();
 
-export default function LandingPage() {
+export default function LandingPage({ plans }) {
 
   return (
       <HomeLayout>
@@ -393,6 +394,8 @@ export default function LandingPage() {
                   </div>
               </div>
           </section>
+
+          <Pricing plans={plans} />
 
           {/* CTA */}
           <section className="py-16 sm:py-20 relative z-20 bg-background dark:bg-gray-800 transition-colors duration-300">

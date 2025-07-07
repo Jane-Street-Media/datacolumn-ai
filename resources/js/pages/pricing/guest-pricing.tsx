@@ -45,7 +45,7 @@ export default function Pricing({ plans }) {
         return false;
     });
     return (
-        <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <section id="pricing" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
                 <h2 className="mb-3 text-3xl font-bold text-zinc-900 dark:text-zinc-50">Chart Your Course</h2>
                 <p className="text-lg text-zinc-600 dark:text-zinc-300">Set sail and discover the riches of our value-packed plans.</p>

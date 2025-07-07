@@ -37,6 +37,15 @@ export default function Header(){
 
     const CurrentThemeIcon = getCurrentThemeIcon();
 
+    const scrollTo = (selector) => {
+        const el = document.querySelector(selector)
+        if (el) {
+            const yOffset = -120 // Adjust for any fixed header height
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+
+            window.scrollTo({ top: y, behavior: 'smooth' })
+        }
+    }
     return (
         <header className="bg-background backdrop-blur-sm border-b border-border sticky top-0 z-50 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,12 +55,12 @@ export default function Header(){
                     </Link>
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
-                        <Link
-                            href={route('pricing')}
-                            className="text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
+                        <a
+                            onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                            className="cursor-pointer text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
                         >
                             Pricing
-                        </Link>
+                        </a>
                         {user ? (
                             <Link
                                 href={route('dashboard')}
