@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\NotificationTemplateResource\Pages;
+namespace App\Filament\Resources\PlanResource\Pages;
 
-use App\Filament\Resources\NotificationTemplateResource;
+use App\Filament\Resources\PlanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditNotificationTemplate extends EditRecord
+class EditPlan extends EditRecord
 {
-    protected static string $resource = NotificationTemplateResource::class;
+    protected static string $resource = PlanResource::class;
 
     protected function getHeaderActions(): array
     {

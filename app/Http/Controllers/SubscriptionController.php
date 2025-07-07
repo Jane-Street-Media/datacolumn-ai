@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Notifications\SendNotification;
-use App\Enums\NotificationType;
 use App\Enums\SubscriptionStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,7 +13,6 @@ class SubscriptionController extends Controller
 
     public function success(): Response
     {
-        App::make(SendNotification::class)->handle(NotificationType::WELCOME);
         return Inertia::render('banners/successfulSubscription');
     }
 
