@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Zap } from 'lucide-react';
+import { Grid3X3, List, Search, Zap } from 'lucide-react';
 import * as React from 'react';
 import {
     PageHeader,
@@ -10,8 +10,12 @@ import {
     PageHeaderHead,
     PageHeaderTitle
 } from '@/components/page-header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import ProjectCard from '@/components/projects/project-card';
 import { Assistant } from '@/components/chart-ai/assistant';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -42,6 +46,8 @@ export default function Projects() {
                         </PageHeaderAction>
                     </PageHeaderHead>
                 </PageHeader>
+
+                {/* Removed the grid of feature cards here */}
 
                 <Card className="h-fit">
                     <CardContent>
