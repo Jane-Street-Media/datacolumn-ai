@@ -41,7 +41,7 @@ class BillingController extends Controller
 
     public function pricing(): Response
     {
-        return Inertia::render('pricing/pricing', [
+        return Inertia::render('pricing/home-pricing', [
             'plans' => $this->getAllPlans(),
         ]);
     }
