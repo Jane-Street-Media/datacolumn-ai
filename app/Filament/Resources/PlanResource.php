@@ -122,16 +122,21 @@ class PlanResource extends Resource
                                         } elseif (in_array(strtolower($value), ['true', 'false'])) {
                                             $value = strtolower($value) === 'true';
                                         }
+
                                         return [$item['key'] => $value];
                                     })->toArray();
                             })
                             ->afterStateHydrated(function ($component, $state) {
                                 $component->state(
                                     collect($state)->map(function ($value, $key) {
+                                        if (is_bool($value)) {
+                                            $value = $value ? 'true' : 'false';
+                                        }
                                         return ['key' => $key, 'value' => (string)$value];
                                     })->values()->toArray()
                                 );
                             }),
+
                     ]),
             ]);
     }
