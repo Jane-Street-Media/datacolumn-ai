@@ -35,7 +35,6 @@ class TeamResource extends Resource
 
     public static function table(Table $table): Table
     {
-
         return $table
             ->columns([
                 TextColumn::make('name')
@@ -54,7 +53,6 @@ class TeamResource extends Resource
                 //
             ])
             ->actions([
-//                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -74,8 +72,6 @@ class TeamResource extends Resource
     {
         return [
             'index' => Pages\ListTeams::route('/'),
-//            'create' => Pages\CreateTeam::route('/create'),
-//            'edit' => Pages\EditTeam::route('/{record}/edit'),
         ];
     }
 }

@@ -35,7 +35,6 @@ class NotificationTemplateResource extends Resource
                         TextInput::make('subject')
                             ->label('Subject')
                             ->required()
-
                             ->maxValue(255)
                             ->placeholder('Email Subject'),
                         Select::make('type')
@@ -92,7 +91,6 @@ class NotificationTemplateResource extends Resource
     {
         return [
             'index' => Pages\ListNotificationTemplates::route('/'),
-//            'create' => Pages\CreateNotificationTemplate::route('create'),
             'edit' => Pages\EditNotificationTemplate::route('/{record}/edit'),
         ];
     }
