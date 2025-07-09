@@ -391,7 +391,7 @@ export const ChartRenderer: React.FC = () => {
       {config.title && (
         <div className={`px-10 mb-4 ${getTitleAlignment()}`}>
           <h2
-            className={`text-2xl mb-2 ${config.titleWeight === 'bold' ? 'font-bold' : 'font-normal'}`}
+            className={`text-2xl mb-0.5 ${config.titleWeight === 'bold' ? 'font-bold' : 'font-normal'}`}
             style={{ color: config.titleColor }}
           >
             {config.title}
