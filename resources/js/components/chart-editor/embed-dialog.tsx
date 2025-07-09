@@ -20,14 +20,16 @@ import { useChartEditor } from '@/contexts/chart-editor-context';
 export default function EmbedDialog() {
     const { chart, config, data } = useChartEditor();
 
+    const iframeHeight = config.height + 121; // Default height for the iframe
+
     const embedScript = `<!-- DataColumn.ai Chart -->
-<div id="dc-chart-123" style="width: 100%; height: ${config.height}; border-radius: 8px; overflow: hidden;"></div>
+<div id="dc-chart-123" style="width: 100%; height: ${iframeHeight}; border-radius: 8px; overflow: hidden;"></div>
 <script>
 (function() {
   const container = document.getElementById('dc-chart-123');
   const iframe = document.createElement('iframe');
   iframe.style.width = '100%';
-  iframe.style.height = "${config.height}";
+  iframe.style.height = "${iframeHeight}px";
   iframe.style.border = 'none';
   iframe.style.borderRadius = '8px';
   iframe.src = "${route('chart.embed', chart.uuid)}";
@@ -36,7 +38,7 @@ export default function EmbedDialog() {
 </script>`;
 
     const embedIframe = `<!-- DataColumn.ai Chart -->
-<iframe src="${route('chart.embed', chart.uuid)}" style="width: 100%; height: ${config.height}; border-radius: 8px; overflow: hidden;"></iframe>`;
+<iframe src="${route('chart.embed', chart.uuid)}" style="width: 100%; height: ${iframeHeight}; border-radius: 8px; overflow: hidden;"></iframe>`;
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);
