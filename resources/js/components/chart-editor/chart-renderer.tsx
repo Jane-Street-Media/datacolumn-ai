@@ -383,7 +383,7 @@ export const ChartRenderer: React.FC = () => {
 
   return (
     <div
-      className={`rounded-lg border py-8 px-4 ${isDarkTheme ? 'border-gray-700' : 'border-gray-200'} ${bgColorClass}`}
+      className={`rounded-lg py-8 px-4 ${bgColorClass}`}
       id="chart-container"
       style={bgColorStyle}
     >
