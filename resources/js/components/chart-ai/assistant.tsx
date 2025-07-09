@@ -72,6 +72,7 @@ export const Assistant: React.FC = () => {
   }, [messages]);
 
   interface AIResponse {
+    error: null;
     identifier: null;
     content: string;
     suggestions?: string[];
@@ -123,6 +124,13 @@ export const Assistant: React.FC = () => {
           forceCreateChart: forceCreateChart,
         })
       ).data as AIResponse;
+
+      if (response.error) {
+          toast.error(response.error);
+          // pop last message if error occurs
+          setMessages((prev) => prev.slice(0, -1));
+          return;
+      }
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
