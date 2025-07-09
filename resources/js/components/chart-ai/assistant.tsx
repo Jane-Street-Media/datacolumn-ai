@@ -288,19 +288,20 @@ export const Assistant: React.FC = () => {
                   )}
 
                   {/* Suggestions */}
-                  {message.suggestions && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {message.suggestions.map((suggestion, idx) => (
-                        <Button
-                          key={idx}
-                          onClick={() => handleSendMessage(suggestion, true)}
-                          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
-                          {suggestion}
-                        </Button>
-                      ))}
-                    </div>
-                  )}
+                    {message.suggestions && (
+                        <div className="mt-3 flex flex-wrap gap-2 w-full">
+                            {message.suggestions.map((suggestion, idx) => (
+                                <Button
+                                    key={idx}
+                                    onClick={() => handleSendMessage(suggestion, true)}
+                                    className="rounded-full border border-gray-200 bg-white px-2 sm:px-3 py-5 sm:py-1.5 text-xs text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 break-words min-w-0 max-w-full"
+                                    style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}
+                                >
+                                    {suggestion}
+                                </Button>
+                            ))}
+                        </div>
+                    )}
 
                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     {message.timestamp.toLocaleTimeString([], {
