@@ -12,6 +12,7 @@
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
+        <script defer data-domain="datacolumn.ai" src="https://plausible.io/js/script.js"></script>
     </head>
     <body class="font-sans antialiased">
         @inertia
