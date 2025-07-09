@@ -34,7 +34,6 @@ export default function FolderDialog() {
         post(route('folder.store'), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                console.log(response);
                 reset('name','description');
                 setOpen(false);
                 toast(response.props.flash.success, {
@@ -78,7 +77,6 @@ export default function FolderDialog() {
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            required
                             autoFocus
                             tabIndex={2}
                             autoComplete="description"

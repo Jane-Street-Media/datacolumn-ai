@@ -108,7 +108,6 @@ export default function ProjectDialog({ folders, project = null, trigger, status
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            required
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
                             disabled={processing}
