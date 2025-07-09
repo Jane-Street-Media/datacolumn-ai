@@ -60,7 +60,7 @@ export default function FolderDialog() {
 
                 <form onSubmit={submit} className="grid gap-4">
                     <div className="grid gap-3">
-                        <Label htmlFor="name-1">Name</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input
                             id="name"
                             type="name"
@@ -77,7 +77,6 @@ export default function FolderDialog() {
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            autoFocus
                             tabIndex={2}
                             autoComplete="description"
                             value={data.description}
