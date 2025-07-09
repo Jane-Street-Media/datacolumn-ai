@@ -454,28 +454,6 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                     )}
                 </div>
 
-                {/* Color Schemes */}
-                <div className="space-y-4">
-                    <h4 className="mb-3 text-sm font-medium">Color Scheme</h4>
-                    <ToggleGroup
-                        type="single"
-                        value={colorSchemes.findIndex((s) => JSON.stringify(s) === JSON.stringify(config.colors)).toString()}
-                        onValueChange={(val) => setConfig({...config, colors: colorSchemes[parseInt(val, 10)] })}
-                        className="flex flex-1 flex-col space-y-2"
-                    >
-                        {colorSchemes.map((scheme, idx) => (
-                            <ToggleGroupItem key={idx} value={idx.toString()} className="flex w-full items-center space-x-2 rounded-lg border py-2">
-                                <div className="flex space-x-1">
-                                    {scheme.map((color, i) => (
-                                        <div key={i} className="h-6 w-6 rounded-full border" style={{ backgroundColor: color }} />
-                                    ))}
-                                </div>
-                                <span>Scheme {idx + 1}</span>
-                            </ToggleGroupItem>
-                        ))}
-                    </ToggleGroup>
-                </div>
-
                 {/* Display Options */}
                 <div className="space-y-3">
                     <h4 className="mb-3 text-sm font-medium">Display Options</h4>
