@@ -363,7 +363,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                                                 <SelectValue placeholder="Select Y Sery" />
                                             </SelectTrigger>
                                             <SelectContent className="w-full">
-                                                {chartTypes.map(({ type, label, icon: Icon }) => (
+                                                {chartTypes.filter(chartType => chartType.type !== 'composed').map(({ type, label, icon: Icon }) => (
                                                     <SelectItem key={type} value={type}>
                                                         {label}
                                                     </SelectItem>
