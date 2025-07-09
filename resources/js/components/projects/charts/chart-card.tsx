@@ -80,7 +80,6 @@ export default function ChartCard({ index = 1, chart }) {
                             chart: chart.id,
                         })}
                         className="hover:text-primary"
-                        prefetch
                     >
                         <Eye />
                     </Link>
