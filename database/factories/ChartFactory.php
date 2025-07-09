@@ -17,7 +17,7 @@ class ChartFactory extends Factory
      */
     public function definition(): array
     {
-        $type = $this->faker->randomElement(['line', 'bar', 'area']);
+        $type = 'composed';
         $colors = ['#8884d8', '#82ca9d', '#ffc658'];
 
         return [

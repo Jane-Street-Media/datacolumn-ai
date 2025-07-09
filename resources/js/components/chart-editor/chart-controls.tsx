@@ -77,6 +77,9 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
     const { config, setConfig, columns} = useChartEditor();
 
     const handleChartTypeChange = (type: CustomChartConfig['type']) => {
+        if (type === '') {
+            return;
+        }
         if (type !== 'composed') {
             // // If the chart type is not composed, reset series to only include the first dataKey
             if (config.series.length) {
