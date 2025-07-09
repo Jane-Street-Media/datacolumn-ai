@@ -14,6 +14,8 @@ export default function ChartEmbed({ chart, watermark }){
 
     if (config.backgroundColor === 'transparent') {
         bgColorClass = 'bg-transparent';
+        // add transparent background style to body
+        document.body.style.background = 'transparent';
     } else if (config.backgroundColor && config.backgroundColor !== 'default') {
         bgColorClass = '';
         bgColorStyle = { backgroundColor: config.backgroundColor };
