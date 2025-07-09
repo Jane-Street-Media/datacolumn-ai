@@ -36,7 +36,7 @@ export default function EmbedDialog() {
 </script>`;
 
     const embedIframe = `<!-- DataColumn.ai Chart -->
-<iframe src="${route('chart.embed', chart.uuid)}"></iframe>`;
+<iframe src="${route('chart.embed', chart.uuid)}" style="width: 100%; height: ${config.height}; border-radius: 8px; overflow: hidden;"></iframe>`;
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);
