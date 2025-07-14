@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('cta')->nullable();
             $table->boolean('popular')->default(false);
             $table->integer('order')->default(0);
-            $table->boolean('displayable')->default(false);
+            $table->boolean('is_visible')->default(false);
             $table->timestamps();
         });
     }
