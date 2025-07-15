@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Models\Scopes\TeamScope;
 use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -10,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserResource extends Resource
 {
@@ -35,6 +37,9 @@ class UserResource extends Resource
                     ->label('Provider')
                     ->getStateUsing(fn($record) => $record->provider_name ?? 'N/A'),
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->role('member')->withoutGlobalScope(TeamScope::class);
+            })
             ->filters([
                 SelectFilter::make('teams')
                     ->relationship('teams', 'name')
