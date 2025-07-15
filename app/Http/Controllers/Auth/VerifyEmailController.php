@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Notifications\SendNotification;
+use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -19,10 +21,10 @@ class VerifyEmailController extends Controller
         }
 
         if ($request->user()->markEmailAsVerified()) {
-            /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
             $user = $request->user();
 
             event(new Verified($user));
+            SendNotification::handle($request->user(), NotificationType::WELCOME);
         }
 
         return redirect()->intended(route('dashboard', absolute: false).'?verified=1');

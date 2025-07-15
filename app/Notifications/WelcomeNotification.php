@@ -26,15 +26,16 @@ class WelcomeNotification extends Notification
         $user = $notifiable;
         $type = $this->type;
         $notificationTemplate = $type->getNotificationTemplate();
-        $subscription = $user->currentTeam->subscriptionWithProductDetails();
-        $planName = $subscription?->plan?->display_name;
         $text = $this->refineMessage($notificationTemplate->message, [
             'user_name' => $user->name,
-            'plan_name' => $planName,
+            'app_name' => config('app.name'),
+        ]);
+        $subject = $this->refineMessage($notificationTemplate->subject, [
+            'app_name' => config('app.name'),
         ]);
         return $type->getNotificationEmail()
             ->with(['text' => $text])
-            ->subject($notificationTemplate->subject)
+            ->subject($subject)
             ->to($user->email);
     }
 
