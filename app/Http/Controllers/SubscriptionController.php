@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Notifications\SendNotification;
 use App\Actions\SyncSubscriptionPlanChanges;
+use App\Enums\NotificationType;
 use App\Enums\SubscriptionStatus;
+use App\Models\Plan;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,6 +44,9 @@ class SubscriptionController extends Controller
             if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::CANCELLED->value && $subscription->cancelNow()) {
                 $team = Team::query()->find($request->user()->current_team_id);
                 SyncSubscriptionPlanChanges::handle($team);
+                $oldPlan = $subscription->plan->display_name;
+                $newPlan = Plan::query()->where('chargebee_id', 'free-monthly')->first()?->display_name ?? 'Free';
+                SendNotification::handle($request->user(), NotificationType::DOWNGRADE, $oldPlan, $newPlan);
                 return back()->with('success', 'Switched to free plan successfully.');
             }
 

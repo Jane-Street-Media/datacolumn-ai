@@ -121,11 +121,12 @@ class CustomWebhookHandler extends HandleWebhookReceived
     protected function handleSubscriptionCreated(array $payload): void
     {
         parent::handleSubscriptionCreated($payload);
-        Log::info('In the listener');
         $team = Cashier::findBillable($payload['content']['subscription']['customer_id']);
         if ($team && $team->user_id) {
             $user = User::find($team->user_id);
-            SendNotification::handle($user, NotificationType::WELCOME);
+            $newPlan = $user->currentTeam->subscriptionWithProductDetails()->plan->display_name;
+            $oldPlan = Plan::query()->where('chargebee_id', 'free-monthly')->first()?->display_name ?? 'Free';
+            SendNotification::handle($user, NotificationType::UPGRADE, $oldPlan, $newPlan);
             SubscriptionLockHelper::unlock($team->user_id);
         }
     }
