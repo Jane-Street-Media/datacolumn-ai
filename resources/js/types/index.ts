@@ -63,6 +63,7 @@ export interface ChartConfig {
     tooltipCustomFormat?: string;
     colors: string[];
     showGrid: boolean;
+    grid: ChartGrid;
     showLegend: boolean;
     showXAxis: boolean;
     showYAxis: boolean;
@@ -72,4 +73,13 @@ export interface ChartConfig {
     customPaddingValue?: number;
     theme: 'light' | 'dark' | 'system';
     backgroundColor?: 'default' | 'transparent' | string;
+}
+
+export interface ChartGrid {
+    vertical: true,
+    horizontal: true,
+    stroke: '#e0e0e0',
+    strokeDasharray: '3 3',
+    fill: '#fafafa',
+    strokeWidth: 1,
 }
