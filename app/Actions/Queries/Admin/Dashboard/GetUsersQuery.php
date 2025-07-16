@@ -9,6 +9,6 @@ class GetUsersQuery
 {
     public static function handle(): Builder
     {
-        return User::query()->where('name', '!=', 'admin');
+        return User::query()->whereNot('email','curtis@datacolumn.ai');
     }
 }
