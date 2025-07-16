@@ -1,10 +1,8 @@
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger
@@ -20,16 +18,17 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useChartEditor } from '@/contexts/chart-editor-context';
 
 export default function EmbedDialog() {
-    const { chart, config, data, columns } = useChartEditor();
+    const { chart, config, data } = useChartEditor();
+    const iframeHeight = config.height; // Default height for the iframe
 
     const embedScript = `<!-- DataColumn.ai Chart -->
-<div id="dc-chart-123" style="width: ${config.responsive ? '100%' : config.width}; height: ${config.height}; border-radius: 8px; overflow: hidden;"></div>
+<div id="dc-chart-123" style="width: 100%; height: ${iframeHeight}px; border-radius: 8px; overflow: hidden;"></div>
 <script>
 (function() {
   const container = document.getElementById('dc-chart-123');
   const iframe = document.createElement('iframe');
   iframe.style.width = '100%';
-  iframe.style.height = '100%';
+  iframe.style.height = "${iframeHeight}px";
   iframe.style.border = 'none';
   iframe.style.borderRadius = '8px';
   iframe.src = "${route('chart.embed', chart.uuid)}";
@@ -38,7 +37,7 @@ export default function EmbedDialog() {
 </script>`;
 
     const embedIframe = `<!-- DataColumn.ai Chart -->
-<iframe src="${route('chart.embed', chart.uuid)}"></iframe>`;
+<iframe src="${route('chart.embed', chart.uuid)}" style="width: 100%; height: ${iframeHeight}px; border-radius: 8px; overflow: hidden;"></iframe>`;
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text);

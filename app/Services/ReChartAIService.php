@@ -14,31 +14,24 @@ class ReChartAIService
         $this->apiKey = config('services.openai.key');
     }
 
-    /**
-     * Orchestrates the full exchange: builds prompts, calls OpenAI,
-     * handles function calls (create_chart / analyze_data), and
-     * returns a structured array exactly matching your AIResponse.
-     */
-    public function sendMessage(string $message, array $context = []): array
+    public function sendMessage(string $message, array $context = [], bool $forceCreateChart = false): array
     {
-        // 1) If no API key, go straight to fallback
         if (! $this->apiKey) {
             return $this->getIntelligentFallbackResponse($message, $context);
         }
 
         try {
-            // 2) Build system prompt + history + user message
-
-            // 2.1) Generate our “system” instructions using the full context
             $systemPrompt = $this->buildAdvancedSystemPrompt($context);
 
-            // 2.2) Pull out the previous conversation (or start fresh)
             $previousMessages = $context['previousMessages'] ?? [];
 
-            // 2.3) Keep only the last 10 turns to avoid sending too much history
+            // Reset conversation if "start again"
+            if (strtolower(trim($message)) === 'start again') {
+                $previousMessages = [];
+            }
+
             $recentMessages = array_slice($previousMessages, -10);
 
-            // 2.4) Reformat each turn into the {role, content} shape OpenAI expects
             $formattedMessages = array_map(function (array $turn) {
                 return [
                     'role' => $turn['role'],
@@ -46,177 +39,93 @@ class ReChartAIService
                 ];
             }, $recentMessages);
 
-            // 2.5) Make sure the system prompt comes first
             array_unshift($formattedMessages, [
                 'role' => 'system',
                 'content' => $systemPrompt,
             ]);
 
-            // 2.6) Append the user’s new message at the end
             $formattedMessages[] = [
                 'role' => 'user',
                 'content' => $message,
             ];
 
-            // 3) Call OpenAI chat/completions
             $response = OpenAI::chat()->create([
                 'model' => 'gpt-4o',
                 'messages' => $formattedMessages,
                 'max_tokens' => 1000,
-                'temperature' => 0.7,
+                'temperature' => 0.2,
                 'functions' => $this->getFunctionSchemas(),
                 'function_call' => 'auto',
             ]);
 
             $messageResponse = $response->choices[0]->message;
 
-            // 4) If it chose a function, handle it
             if ($messageResponse->functionCall) {
                 $fn = $messageResponse->functionCall;
                 $parsed = json_decode($fn->arguments, true);
+
                 return $this->handleFunctionCall($fn->name, $parsed, $messageResponse->content ?? '');
             }
 
-            // 5) Otherwise parse a plain‐text reply
-            return $this->parseAIResponse($choice->content ?? '', $message, $context);
+            return $this->parseAIResponse($messageResponse->content ?? '', $message, $context);
         } catch (\Throwable $e) {
-            Log::error('AI service error: '.$e->getMessage());
+            Log::error('AI service error: ' . $e->getMessage());
 
             return $this->getIntelligentFallbackResponse($message, $context);
         }
     }
 
-    /**
-     * Return the JSON-Schema definitions for our two AI-triggerable functions.
-     * These schemas include clear descriptions, examples, and strict property rules
-     * so GPT knows exactly how to format its function calls.
-     */
     protected function getFunctionSchemas(): array
     {
         return [
-            // 1) create_chart: build a complete Recharts configuration
             [
                 'name' => 'create_chart',
                 'description' => <<<'DESC'
-Generate a fully-formed Recharts configuration object based on the user's natural-language request. If they dont provide data, use data from your knowledge base.
-Always include **series** attribute even if its just x and y so to keep consistency in response.
-The returned object must include:
-  • chartType: which Recharts component to render (e.g. 'bar', 'line', 'area', 'composed', etc.).  Always use composed type when we have multiple series.
-  • title: a human-readable chart title
-  • xAxis & yAxis: the data keys to map on each axis
-  • data: an array of objects, each containing at least the xAxis and yAxis fields
-  • series: an array of objects, each defining a series in the chart with:
-    • chartType: the series type (e.g. 'bar', 'line', 'area' etc.)
-    • type: monotone
-    • dataKey: the field in each data object to use for this series
-    • fill: the color to fill the series
-    • stroke: the color to outline the series
-  • colors: an ordered list of color strings (hex codes or CSS names) for the series
+Generate a fully-formed Recharts configuration object based on the user's natural-language request.
+Always include the "series" attribute, even if it's just x and y, to keep consistency.
 DESC,
                 'parameters' => [
                     'type' => 'object',
                     'properties' => [
                         'chartType' => [
                             'type' => 'string',
-                            'enum' => [
-                                'bar', 'line', 'bar', 'area', 'composed',
-                            ],
-                            'description' => 'The Recharts component to use when rendering the chart.',
-                            'examples' => ['bar', 'line', 'area', 'composed'],
+                            'enum' => ['bar', 'line', 'area', 'composed'],
                         ],
-                        'title' => [
-                            'type' => 'string',
-                            'description' => 'Text to display above the chart as its title.',
-                            'examples' => ['Top 10 Programming Languages by Salary'],
-                        ],
-                        'xAxis' => [
-                            'type' => 'string',
-                            'description' => 'Field name in each data object to use for the X-axis values.',
-                            'examples' => ['language', 'month'],
-                        ],
-                        'yAxis' => [
-                            'type' => 'string',
-                            'description' => 'Field name in each data object to use for the Y-axis values.',
-                            'examples' => ['salary', 'revenue'],
-                        ],
+                        'title' => ['type' => 'string'],
+                        'xAxis' => ['type' => 'string'],
+                        'yAxis' => ['type' => 'string'],
                         'series' => [
                             'type' => 'array',
-                            'description' => 'Field name in each data object to use for the series values. This field is **mandatory** even if it contains only x and y axis data. My represent all they Y axis data is different objects.',
                             'items' => [
                                 'type' => 'object',
                                 'additionalProperties' => true,
                             ],
-                            'default' => [],
-                            'minItems' => 1,
-                            'examples' => [
-                                [
-                                    'chartType' => 'bar',
-                                    'type' => 'monotone',
-                                    'dataKey' => 'salary',
-                                    'fill' => '#8884d8',
-                                    'stroke' => '#8884d8'
-                                ],
-                                [
-                                    'chartType' => 'line',
-                                    'type' => 'monotone',
-                                    'dataKey' =>  'revenue',
-                                    'fill' => '#82ca9d',
-                                    'stroke' => '#82ca9d'
-                                ]
-                            ]
+
                         ],
                         'data' => [
                             'type' => 'array',
-                            'description' => 'An array of data objects, each one containing at least the keys specified in xAxis and yAxis.',
                             'items' => [
                                 'type' => 'object',
                                 'additionalProperties' => true,
-                            ],
-                            'default' => [],      // hints that an empty array is OK
-                            'minItems' => 1,       // forces at least one item when possible
-                            'examples' => [
-                                [
-                                    'language' => 'JavaScript',
-                                    'salary' => 120000,
-                                ],
-                                [
-                                    'language' => 'Python',
-                                    'salary' => 115000,
-                                ],
                             ],
                         ],
                         'colors' => [
                             'type' => 'array',
-                            'description' => '<<<DESC
-A list of color strings (hex or CSS names).
-**MUST** have exactly one color per row of `data`.
-If you can’t determine the length, wait for data to be formed and then generate colors.
-DESC',
                             'items' => ['type' => 'string'],
-                            'examples' => ['#8884d8', '#82ca9d', '#ffc658'],
                         ],
                     ],
-                    'required' => ['chartType', 'title', 'data', 'series'],
+                    // Allow incomplete payloads to avoid failure
+                    'required' => ['chartType', 'title'],
                     'additionalProperties' => false,
                 ],
             ],
-
-            // 2) chart_not_feasible: explain why chart generation failed
             [
                 'name' => 'chart_not_feasible',
-                'description' => <<<'DESC'
-Return when the user's request cannot be fulfilled as a valid Recharts configuration.
-Provide a single field:
-  • reason: a concise, human-readable explanation of why generating the chart is not possible.
-DESC,
+                'description' => 'Explain why chart generation is not possible.',
                 'parameters' => [
                     'type' => 'object',
                     'properties' => [
-                        'reason' => [
-                            'type' => 'string',
-                            'description' => 'Short explanation for why chart creation failed (e.g. unsupported data structure).',
-                            'examples' => ['Data contains nested objects not supported by Recharts.'],
-                        ],
+                        'reason' => ['type' => 'string'],
                     ],
                     'required' => ['reason'],
                     'additionalProperties' => false,
@@ -225,83 +134,113 @@ DESC,
         ];
     }
 
-    /** Routes the function call to your handlers */
     protected function handleFunctionCall(string $name, array $args, string $aiContent): array
     {
         if ($name === 'create_chart') {
-            $result = $this->createSampleChart($args['chartType'], $args);
+            if (empty($args['data']) || empty($args['series'])) {
+                // Fallback to dummy chart
+                return $this->createSampleChart('bar', [
+                    'title' => $args['title'] ?? 'Example Chart',
+                    'xAxis' => 'Category',
+                    'yAxis' => 'Value',
+                    'data' => [
+                        ['Category' => 'A', 'Value' => 100],
+                        ['Category' => 'B', 'Value' => 200],
+                    ],
+                    'series' => [
+                        [
+                            'chartType' => 'bar',
+                            'type' => 'monotone',
+                            'dataKey' => 'Value',
+                            'fill' => '#8884d8',
+                            'stroke' => '#8884d8',
+                        ],
+                    ],
+                    'colors' => ['#8884d8'],
+                ]);
+            }
 
-            return array_merge($result, ['content' => $aiContent]);
+            return $this->createSampleChart($args['chartType'], $args);
         }
 
-        if ($name === 'analyze_data') {
-            $result = $this->analyzeUploadedData($args['data'] ?? []);
-
-            return array_merge($result, ['content' => $aiContent]);
-        }
-
-        // Fallback
-        return ['content' => $aiContent ?: 'Unable to process function.', 'suggestions' => []];
-    }
-
-    /** Fallback when API key is missing or call fails */
-    protected function getIntelligentFallbackResponse(string $message, array $context): array
-    {
         return [
-            'content' => "I can't reach the AI service right now, but let me know how I can help!",
-            'suggestions' => ['Try again later', 'Create a sample chart', 'Help with chart types'],
+            'content' => $aiContent ?: 'Unable to process function.',
+            'suggestions' => $this->defaultSuggestions(),
         ];
     }
 
-    /** Builds the big system prompt */
+    protected function getIntelligentFallbackResponse(string $message, array $context): array
+    {
+        return [
+            'content' => "I can't reach the AI service right now, but here are some ideas you could explore:",
+            'suggestions' => $this->defaultSuggestions(),
+        ];
+    }
+
     protected function buildAdvancedSystemPrompt(array $context): string
     {
         $prompt = <<<'TXT'
 You are an expert AI assistant for DataColumn.ai, specializing in data visualization for journalists and content creators.
 
 **MANDATORY REQUIREMENTS**
-- When creating a chart, you **must** return a `create_chart` function call.
-- That call’s arguments **must** include a non-empty `data` array.
-  - If the user did not supply any data, you must generate a reasonable sample from your knowledge base.
-TXT;
-        $prompt .= 'You can:
+- When creating a chart, you MUST return a `create_chart` function call.
+- That call’s arguments MUST include at least chartType, title, and some example data.
+- If the user did not supply any data, you MUST generate a reasonable sample from your knowledge base.
 
-1. CREATE CHARTS FROM DESCRIPTIONS: When users describe what they want to visualize, create complete chart configurations along with data from your knowledge base if user doesnt provide any.
-2. ANALYZE DATA: Examine uploaded data to find patterns, insights, and recommend optimal visualizations
-3. PROVIDE GUIDANCE: Offer professional advice on design, accessibility, and best practices
-4. GENERATE SAMPLE DATA: Create realistic sample datasets when users need examples
+**IMPORTANT**
+When the user message starts with "Create", "Generate", "Visualize", "Plot", "Show", or "Compare", you MUST treat it as a direct instruction to create a chart. You MUST respond ONLY by returning a `create_chart` function call with appropriate data. Avoid text replies.
 
-CORE CAPABILITIES:
-- Chart Creation: Generate complete chart configs from natural language descriptions along with data from your knowledge base if user doesnt provide any
-- Data Analysis: Find patterns, outliers, trends in user data
-- Design Guidance: Suggest colors, layouts, accessibility improvements
-- Journalism Focus: Prioritize clarity, accuracy, and reader comprehension
+**DATA GENERATION POLICY**
+If the requested data is real-world historical data, you MUST attempt to recall accurate data from your training knowledge. If you cannot recall exact figures, generate realistic, approximate sample data that represents plausible trends. Label in the chart title that data is approximate.
+
+**SUGGESTIONS POLICY**
+When offering suggestions, always recommend concrete, historically grounded datasets the AI can generate from its training data:
+- "Create a bar chart showing average U.S. household income over the past ten years."
+- "Generate a line chart of the U.S. federal deficit over the last twenty years."
+- "Visualize minimum wage increases by U.S. state over the last 20 years."
+- "Plot the global smartphone adoption rates from 2000 to 2020."
+
+Avoid generic suggestions.
+
+**EXAMPLE FUNCTION CALL**
+If the user says: "Create a bar chart showing programming language popularity", respond like this:
+
+{
+  "chartType": "bar",
+  "title": "Programming Language Popularity (Approximate Data)",
+  "xAxis": "Language",
+  "yAxis": "Popularity",
+  "data": [
+    {"Language": "Python", "Popularity": 85},
+    {"Language": "JavaScript", "Popularity": 80},
+    {"Language": "Java", "Popularity": 70}
+  ],
+  "series": [
+    {
+      "chartType": "bar",
+      "type": "monotone",
+      "dataKey": "Popularity",
+      "fill": "#8884d8",
+      "stroke": "#8884d8"
+    }
+  ],
+  "colors": ["#8884d8"]
+}
+
+You can:
+1. CREATE CHARTS FROM DESCRIPTIONS
+2. PROVIDE GUIDANCE
+3. GENERATE SAMPLE DATA
 
 CHART TYPES AVAILABLE:
-- Bar Charts: Comparing categories, rankings, discrete values
-- Line Charts: Time series, trends, continuous data
-- Area Charts: Cumulative values, filled trends
-- Pie Charts: Parts of a whole (use sparingly, max 5 categories)
-- Scatter Plots: Correlations, relationships between variables
-- Radar Charts: Multivariate data, comparing multiple variables
-- Radial Bar Charts: Circular progress bars, comparing values
-- Funnel Charts: Sequential process, conversion rates
-- Treemaps: Hierarchical data, part-to-whole relationships
-- Composed Charts: Combining multiple chart types. Always use this when we have multiple series.
+- Bar, Line, Area, Pie, Scatter, Radar, Radial Bar, Funnel, Treemap, Composed
 
 DESIGN PRINCIPLES:
-- Accessibility first (colorblind-friendly, high contrast)
+- Accessibility first
 - Mobile responsive
-- Publication ready
-- Clear, descriptive titles and labels
+- Clear, descriptive titles
 - Minimal cognitive load
-
-**MANDATORY REQUIREMENTS**
-- When creating a chart, you **must** return a `create_chart` function call.
-    - That call’s arguments **must** include a non-empty `data` array.
-    - If the user did not supply any data, you must generate a reasonable sample from your knowledge base.
-- When analyzing data, use the analyze_data function.
-- Always prioritize truthful data representation and journalistic integrity.';
+TXT;
 
         if (! empty($context['data'])) {
             $sample = json_encode(array_slice($context['data'], 0, 5));
@@ -312,77 +251,60 @@ DESIGN PRINCIPLES:
             $prompt .= "\nCURRENT CHART TYPE: {$context['chartType']}";
         }
 
-        $prompt .= "\nRespond conversationally but be ready to take action when users want to create visualizations.";
-
         return $prompt;
     }
 
     private function ensureColorCount(array $existingColors, int $requiredCount): array
     {
-        // Remove duplicates & reindex
         $colors = array_values(array_unique($existingColors));
-
-        // Keep generating until we hit the required count
         while (count($colors) < $requiredCount) {
             $new = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
             if (! in_array($new, $colors, true)) {
                 $colors[] = $new;
             }
         }
-
-        // If there were more existing colors than needed, truncate
         return array_slice($colors, 0, $requiredCount);
     }
 
-    /** Mirrors your TS createSampleChart */
     protected function createSampleChart(string $type, array $args): array
     {
         return [
             'chartConfig' => [
                 'type' => $type,
                 'title' => $args['title'],
-                'xAxis' => $args['xAxis'],
-                'yAxis' => $args['yAxis'],
+                'xAxis' => $args['xAxis'] ?? 'Category',
+                'yAxis' => $args['yAxis'] ?? 'Value',
                 'series' => $args['series'] ?? [],
-                'colors' => $this->ensureColorCount($args['colors'], count($args['data'])),
+                'colors' => $this->ensureColorCount($args['colors'] ?? [], count($args['series'] ?? [])),
                 'showGrid' => $args['showGrid'] ?? true,
                 'showLegend' => $args['showLegend'] ?? true,
                 'width' => $args['width'] ?? 800,
                 'height' => $args['height'] ?? 400,
             ],
-            'generatedData' => $args['data'],
-            'suggestions' => [
-                'Customize the chart colors',
-                'Add more series for deeper insights',
-                'Adjust the chart dimensions for better fit',
-                'Consider adding tooltips for interactivity',
-            ],
+            'generatedData' => $args['data'] ?? [],
+            'suggestions' => $this->defaultSuggestions(),
         ];
     }
 
-    /** Port of your TS analyzeUploadedData */
-    protected function analyzeUploadedData(array $data): array
-    {
-        if (empty($data)) {
-            return [
-                'content' => 'No data available for analysis.',
-                'dataInsights' => ['patterns' => [], 'outliers' => [], 'recommendations' => []],
-                'chartRecommendation' => ['type' => 'bar', 'reasoning' => 'Upload data to analyze.'],
-            ];
-        }
-
-        // … replicate your TS logic for insights, recommendations, suggestedChartTypes …
-        return [
-            'dataInsights' => ['patterns' => []/* … */],
-            'recommendations' => [/* … */],
-            'chartRecommendation' => ['type' => 'line', 'reasoning' => '…'],
-        ];
-    }
-
-    /** Parses a non‐function reply (optional, for extra suggestions) */
     protected function parseAIResponse(string $aiContent, string $userMessage, array $context): array
     {
-        // … port your parseAIResponse & generateAdvancedSuggestions logic …
-        return ['content' => $aiContent, 'suggestions' => []];
+        return [
+            'content' => $aiContent,
+            'suggestions' => $this->defaultSuggestions(),
+        ];
+    }
+
+    protected function defaultSuggestions(): array
+    {
+        return [
+            'Create a bar chart showing average U.S. household income over the past ten years',
+            'Generate a line chart of the U.S. federal deficit over the last twenty years',
+            'Visualize minimum wage increases by U.S. state over the past twenty years',
+            'Plot global smartphone adoption from 2000 to 2020',
+            'Show CO₂ emissions by country since 1990',
+            'Compare top programming languages by developer salary',
+            'Illustrate global life expectancy trends over time',
+            'Create a chart of renewable energy share by country',
+        ];
     }
 }

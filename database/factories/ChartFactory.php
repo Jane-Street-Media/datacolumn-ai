@@ -17,7 +17,7 @@ class ChartFactory extends Factory
      */
     public function definition(): array
     {
-        $type = $this->faker->randomElement(['line', 'bar', 'area']);
+        $type = 'composed';
         $colors = ['#8884d8', '#82ca9d', '#ffc658'];
 
         return [
@@ -31,9 +31,9 @@ class ChartFactory extends Factory
                 'xAxis' => 'month',
                 'yAxis' => '',
                 'series' => [
-                    ['chartType' => $type, 'type' => 'monotone', 'dataKey' => 'Apples', 'fill' => '#fc59a3', 'stroke' => '#fc59a3'],
-                    ['chartType' => $type, 'type' => 'monotone', 'dataKey' => 'Oranges', 'fill' => '#87c830', 'stroke' => '#87c830'],
-                    ['chartType' => $type, 'type' => 'monotone', 'dataKey' => 'Bananas', 'fill' => '#ffd400', 'stroke' => '#ffd400'],
+                    ['chartType' => 'bar', 'type' => 'monotone', 'dataKey' => 'Apples', 'fill' => '#fc59a3', 'stroke' => '#fc59a3'],
+                    ['chartType' => 'bar', 'type' => 'monotone', 'dataKey' => 'Oranges', 'fill' => '#87c830', 'stroke' => '#87c830'],
+                    ['chartType' => 'bar', 'type' => 'monotone', 'dataKey' => 'Bananas', 'fill' => '#ffd400', 'stroke' => '#ffd400'],
                 ],
                 'grid' => [
                     // draw vertical grid lines

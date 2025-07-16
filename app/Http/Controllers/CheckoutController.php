@@ -77,6 +77,9 @@ class CheckoutController extends Controller
         $team = Team::query()->find($request->user()->current_team_id);
         SyncSubscriptionPlanChanges::handle($team);
 
+        $team = Team::query()->find($request->user()->current_team_id);
+        SyncSubscriptionPlanChanges::handle($team);
+
         return redirect()->back()->with('success', 'Swapped successfully');
     }
 

@@ -8,7 +8,6 @@ const asset = (file) => {
     const page = usePage();
     return `${page.props.base_url}/${file}`;
 };
-
 export default function HomeLayout({ children }) {
     return (
         <AppearanceProvider>

@@ -37,7 +37,7 @@ class Plan extends Model
     public static function booted(): void
     {
         static::addGlobalScope(function ($builder) {
-            $builder->orderBy('order', 'asc');
+            $builder->orderBy('order', 'asc')->where('is_visible', true);
         });
     }
 }

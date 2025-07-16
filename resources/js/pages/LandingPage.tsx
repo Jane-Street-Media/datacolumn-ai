@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import HomeLayout from '@/layouts/home-layout';
+import Pricing from '@/pages/pricing/guest-pricing';
 
 const chartTypes = [
     { name: 'Bar Chart', icon: BarChart3 },
@@ -126,8 +127,17 @@ const testimonials = [
 ];
 // const CurrentThemeIcon = getCurrentThemeIcon();
 
-export default function LandingPage() {
+export default function LandingPage({ plans }) {
 
+    const scrollTo = (selector) => {
+        const el = document.querySelector(selector)
+        if (el) {
+            const yOffset = -120 // Adjust for any fixed header height
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+
+            window.scrollTo({ top: y, behavior: 'smooth' })
+        }
+    }
   return (
       <HomeLayout>
           {/* Hero Section */}
@@ -141,7 +151,7 @@ export default function LandingPage() {
                   >
                       Turn data into story-ready charts,{' '}
                       <br className="hidden sm:block" />
-                      <span className="text-primary/90 dark:text-blue-400">In seconds.</span>
+                      <span className="text-primary/90 dark:text-blue-400">in seconds.</span>
                   </motion.h1>
 
                   <motion.p
@@ -150,7 +160,7 @@ export default function LandingPage() {
                       transition={{ duration: 0.6, delay: 0.2 }}
                       className="text-lg sm:text-xl text-secondary-foreground dark:text-primary-foreground/80 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4"
                   >
-                      DataColumn.ai helps journalists create clean, embeddable visualizations using AI.
+                      DataColumn helps journalists create clean, embeddable visualizations with AI.
                       No clutter. No code. Just clarity.
                   </motion.p>
 
@@ -160,13 +170,13 @@ export default function LandingPage() {
                       transition={{ duration: 0.6, delay: 0.4 }}
                       className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4"
                   >
-                      <Link
-                          href={route('pricing')}
-                          className="flex items-center space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl backdrop-blur-sm"
+                      <a
+                          onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                          className="cursor-pointer flex items-center space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl backdrop-blur-sm"
                       >
                           <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                           <span>Get Started Free</span>
-                      </Link>
+                      </a>
                       <Link
                           href={route('login')}
                           className="flex items-center space-x-2 border border-border hover:border-muted-foreground text-foreground/90 hover:text-foreground bg-card px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 bg-background/50 backdrop-blur-sm"
@@ -394,6 +404,7 @@ export default function LandingPage() {
               </div>
           </section>
 
+          <Pricing plans={plans} />
           {/* CTA */}
           <section className="py-16 sm:py-20 relative z-20 bg-background dark:bg-gray-800 transition-colors duration-300">
               <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -404,13 +415,13 @@ export default function LandingPage() {
                       Start free — no credit card required.
                   </p>
 
-                  <Link
-                      href={route('pricing')}
-                      className="flex items-center w-fit space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 mx-auto shadow-lg hover:shadow-xl"
+                  <a
+                      onClick={(e) => { e.preventDefault(); scrollTo('#pricing') }}
+                      className="cursor-pointer flex items-center w-fit space-x-2 bg-primary/90 hover:bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 transform hover:scale-105 mx-auto shadow-lg hover:shadow-xl"
                   >
                       <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span>Get Started Free</span>
-                  </Link>
+                  </a>
               </div>
           </section>
       </HomeLayout>

@@ -1,14 +1,11 @@
-import { Button } from '@/components/ui/button';
-import { router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import { Check, Loader2, OctagonX } from 'lucide-react';
+import { Check, OctagonX, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-export default function Pricing({ plans, subscription, isSubscribed }) {
+export default function Pricing({ plans }) {
     const [billing, setBilling] = useState('Monthly');
     const [hoveredCard, setHoveredCard] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [loadingPlanId, setLoadingPlanId] = useState(null);
     const markerRef = useRef(null);
     const monthlyRef = useRef(null);
     const yearlyRef = useRef(null);
@@ -38,14 +35,6 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         setHoveredCard(null);
     };
 
-    const handleCheckoutClick = (e, planId, plan) => {
-        if (loading) {
-            e.preventDefault();
-            return;
-        }
-        router.get(route('login', planId));
-    };
-
     const filteredPlans = plans.filter((plan) => {
         if (billing === 'Monthly' && plan.monthly_price !== undefined) {
             return true;
@@ -56,7 +45,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         return false;
     });
     return (
-        <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <section id="pricing" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
                 <h2 className="mb-3 text-3xl font-bold text-zinc-900 dark:text-zinc-50">Chart Your Course</h2>
                 <p className="text-lg text-zinc-600 dark:text-zinc-300">Set sail and discover the riches of our value-packed plans.</p>
@@ -67,28 +56,24 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                     <div
                         ref={monthlyRef}
                         onClick={() => {
-                            if (!loading) {
-                                setBilling('Monthly');
-                                toggleRepositionMarker(monthlyRef.current);
-                            }
+                            setBilling('Monthly');
+                            toggleRepositionMarker(monthlyRef.current);
                         }}
                         className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                             billing === 'Monthly' ? 'text-white' : 'text-[#012A38] dark:text-white'
-                        } ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        }`}
                     >
                         Monthly
                     </div>
                     <div
                         ref={yearlyRef}
                         onClick={() => {
-                            if (!loading) {
-                                setBilling('Yearly');
-                                toggleRepositionMarker(yearlyRef.current);
-                            }
+                            setBilling('Yearly');
+                            toggleRepositionMarker(yearlyRef.current);
                         }}
                         className={`relative z-20 rounded-full px-4 py-2 text-sm font-medium text-[#012A38] transition-colors dark:text-white ${
                             billing === 'Yearly' ? 'text-white' : 'text-[#012A38] dark:text-white'
-                        } ${loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        } `}
                     >
                         Yearly
                     </div>
@@ -101,15 +86,12 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
             {/* Card container - changed from grid to flex */}
             <div className="flex flex-wrap justify-center">
                 {filteredPlans.map((plan, index) => {
-                    const planId = billing === 'Monthly' ? plan.monthly_chargebee_id : plan.yearly_chargebee_id;
-                    const isLoading = loading && loadingPlanId === planId;
-
                     return (
                         <div
                             key={index}
-                            onMouseEnter={() => !loading && handleMouseEnter(index)}
-                            onMouseLeave={() => !loading && handleMouseLeave()}
-                            className={`mb-6 max-w-[400px] min-w-[300px] flex-1 px-3 transition-all duration-300 ease-in-out ${loading && !isLoading ? 'opacity-50' : ''}`}
+                            onMouseEnter={() => handleMouseEnter(index)}
+                            onMouseLeave={() => handleMouseLeave()}
+                            className={`mb-6 max-w-[400px] min-w-[300px] flex-1 px-3 transition-all duration-300 ease-in-out`}
                         >
                             <div
                                 className={`bg-card relative flex h-full flex-col overflow-hidden rounded-xl border-2 shadow-md ${
@@ -173,29 +155,19 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     </ul>
                                     <div className="mt-6">
                                         {plan.name.toLowerCase() === 'enterprise' ? (
-                                        <a
-                                            href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
-                                            className="from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-                                        >
-                                            Get in touch
-                                        </a>
-                                        ) : (
-                                            <Button
-                                                onClick={(e) => handleCheckoutClick(e, planId, plan)}
-                                                variant="gradient"
-                                                className={`${loading ? 'cursor-not-allowed' : ''} absolute right-5 bottom-4 left-5`}
+                                            <a
+                                                href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
+                                                className="from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
                                             >
-                                                {isLoading ? (
-                                                    <span className="flex items-center justify-center">
-                                                    <>
-                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                        Processing...
-                                                    </>
-                                                </span>
-                                                ) : (
-                                                    (plan.cta ?? 'Get Started')
-                                                )}
-                                            </Button>
+                                                Get in touch
+                                            </a>
+                                        ) : (
+                                            <Link
+                                                href={route('login')}
+                                                className="from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+                                            >
+                                                {plan.cta ?? 'Get Started'}
+                                            </Link>
                                         )}
                                     </div>
                                 </div>
@@ -207,6 +179,24 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                         </div>
                     );
                 })}
+            </div>
+            <div className="py-10 bg-card relative flex h-full flex-col overflow-hidden rounded-xl border-2 shadow-md border-card">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">
+                        Need more?
+                    </h2>
+                    <p className="text-lg sm:text-lg text-secondary-foreground dark:text-primary-foreground/80 mb-6 sm:mb-8">
+                        Our team is here to help you find the perfect solution for your needs. Whether you're a startup, a growing business, or an enterprise,
+                        we can tailor our services to fit your requirements.
+                    </p>
+
+                    <a
+                        href={`mailto:${import.meta.env.VITE_MAIL_FROM_ADDRESS}`}
+                        className="w-1/4 min-w-fit m-auto from-gradient-from to-gradient-to focus-visible:border-ring focus-visible:ring-ring absolute right-5 bottom-4 left-5 inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-all outline-none disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8"
+                    >
+                        Get in touch
+                    </a>
+                </div>
             </div>
         </section>
     );

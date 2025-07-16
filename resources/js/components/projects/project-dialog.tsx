@@ -33,7 +33,7 @@ export default function ProjectDialog({ folders, project = null, trigger, status
         name: project?.name ?? '',
         description: project?.description ?? '',
         folder_id: project?.folder_id ?? '',
-        status: project?.status ?? ''
+        status: project?.status ?? 'active'
     });
 
     const isEdit = useMemo(() => !!project?.id, [project]);
@@ -108,7 +108,6 @@ export default function ProjectDialog({ folders, project = null, trigger, status
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            required
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
                             disabled={processing}

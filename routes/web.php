@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
 use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
@@ -28,14 +27,8 @@ Route::get('/', [PagesController::class, 'home'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
-    Route::get('test', function () {
-        return Inertia::render('dashboard');
-    })->name('test');
 
 });
-
-Route::get('billing', [BillingController::class, 'billing'])->name('billing');
-Route::get('pricing', [BillingController::class, 'pricing'])->name('pricing');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('failed-payment', function () {

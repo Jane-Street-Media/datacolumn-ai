@@ -34,7 +34,6 @@ export default function FolderDialog() {
         post(route('folder.store'), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
-                console.log(response);
                 reset('name','description');
                 setOpen(false);
                 toast(response.props.flash.success, {
@@ -61,7 +60,7 @@ export default function FolderDialog() {
 
                 <form onSubmit={submit} className="grid gap-4">
                     <div className="grid gap-3">
-                        <Label htmlFor="name-1">Name</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input
                             id="name"
                             type="name"
@@ -78,8 +77,6 @@ export default function FolderDialog() {
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
-                            required
-                            autoFocus
                             tabIndex={2}
                             autoComplete="description"
                             value={data.description}

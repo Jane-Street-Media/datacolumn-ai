@@ -77,6 +77,9 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
     const { config, setConfig, columns} = useChartEditor();
 
     const handleChartTypeChange = (type: CustomChartConfig['type']) => {
+        if (type === '') {
+            return;
+        }
         if (type !== 'composed') {
             // // If the chart type is not composed, reset series to only include the first dataKey
             if (config.series.length) {
@@ -178,7 +181,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
             >
                 {/* Chart Type */}
                 <div>
-                    <h4 className="mb-3 text-sm font-medium">Chart Type</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Chart Type</h4>
                     <ToggleGroup
                         type="single"
                         value={config.type}
@@ -196,7 +199,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
                 {/* Theme Selection */}
                 <div>
-                    <h4 className="mb-3 text-sm font-medium">Chart Theme</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Chart Theme</h4>
                     <ToggleGroup
                         type="single"
                         value={config.theme}
@@ -214,7 +217,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
                 {/* Background Color */}
                 <div>
-                    <h4 className="mb-3 text-sm font-medium">Background Color</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Background Color</h4>
                     <RadioGroup
                         value={config.backgroundColor ?? 'default'}
                         onValueChange={(value) => setConfig({...config, backgroundColor: value as any })}
@@ -252,7 +255,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
                 {/* Title Settings */}
                 <div className="space-y-4">
-                    <h4 className="mb-3 text-sm font-medium">Title Settings</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Title Settings</h4>
 
                     {/* Chart Title */}
                     <Input value={config.title} onChange={(e) => setConfig({...config, title: e.target.value })} placeholder="Enter chart title" />
@@ -306,7 +309,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                 {/* Axis Configuration */}
                 {!['pie', 'radar', 'radialBar', 'funnel', 'treemap'].includes(config.type) && (
                     <div className="space-y-4">
-                        <h4 className="mb-3 text-sm font-medium">Axis Configuration</h4>
+                        <h4 className="mb-3 text-sm font-semibold">Axis Configuration</h4>
                         <Select value={config.xAxis} onValueChange={(val) => setConfig({...config, xAxis: val })}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select X axis column" />
@@ -332,8 +335,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                         />
 
                         <div className="space-y-4">
-                            <h4 className="mb-3 text-sm font-medium">Series Config</h4>
-
+                            <h4 className="mb-3 text-sm font-semibold">Series Config</h4>
                             <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select Y Sery" />
@@ -360,7 +362,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                                                 <SelectValue placeholder="Select Y Sery" />
                                             </SelectTrigger>
                                             <SelectContent className="w-full">
-                                                {chartTypes.map(({ type, label, icon: Icon }) => (
+                                                {chartTypes.filter(chartType => chartType.type !== 'composed').map(({ type, label, icon: Icon }) => (
                                                     <SelectItem key={type} value={type}>
                                                         {label}
                                                     </SelectItem>
@@ -399,7 +401,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
                 {/* Padding Options */}
                 <div className="space-y-4">
-                    <h4 className="mb-3 text-sm font-medium">Padding Options</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Padding Options</h4>
                     <RadioGroup value={config.paddingOption} onValueChange={(value) => setConfig({...config, paddingOption: value as any })}>
                         <div className="flex items-center gap-2">
                             <RadioGroupItem id="default" value="default" />
@@ -432,7 +434,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
                 {/* Tooltip Settings */}
                 <div className="space-y-4">
-                    <h4 className="mb-3 text-sm font-medium">Tooltip Settings</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Tooltip Settings</h4>
                     <Select value={config.tooltipFormat || 'default'} onValueChange={(val) => setConfig({...config, tooltipFormat: val as any })}>
                         <SelectTrigger className="w-full">
                             <SelectValue />
@@ -454,31 +456,9 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                     )}
                 </div>
 
-                {/* Color Schemes */}
-                <div className="space-y-4">
-                    <h4 className="mb-3 text-sm font-medium">Color Scheme</h4>
-                    <ToggleGroup
-                        type="single"
-                        value={colorSchemes.findIndex((s) => JSON.stringify(s) === JSON.stringify(config.colors)).toString()}
-                        onValueChange={(val) => setConfig({...config, colors: colorSchemes[parseInt(val, 10)] })}
-                        className="flex flex-1 flex-col space-y-2"
-                    >
-                        {colorSchemes.map((scheme, idx) => (
-                            <ToggleGroupItem key={idx} value={idx.toString()} className="flex w-full items-center space-x-2 rounded-lg border py-2">
-                                <div className="flex space-x-1">
-                                    {scheme.map((color, i) => (
-                                        <div key={i} className="h-6 w-6 rounded-full border" style={{ backgroundColor: color }} />
-                                    ))}
-                                </div>
-                                <span>Scheme {idx + 1}</span>
-                            </ToggleGroupItem>
-                        ))}
-                    </ToggleGroup>
-                </div>
-
                 {/* Display Options */}
                 <div className="space-y-3">
-                    <h4 className="mb-3 text-sm font-medium">Display Options</h4>
+                    <h4 className="mb-3 text-sm font-semibold">Display Options</h4>
                     <div className="flex items-center gap-3">
                         <Checkbox id="showGrid" checked={config.showGrid} onCheckedChange={(checked) => setConfig({...config, showGrid: !!checked })} />
                         <label className="text-sm font-medium cursor-pointer" htmlFor="showGrid">

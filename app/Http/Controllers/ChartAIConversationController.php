@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Enums\PlanFeatureEnum;
+use App\Exceptions\PackageLimitExceededException;
 use App\Services\ReChartAIService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,13 @@ class ChartAIConversationController extends Controller
     {
         $team = auth()->user()->currentTeam;
 
-        EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_AI_GENERATIONS);
+        try {
+            EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_AI_GENERATIONS);
+        }  catch (PackageLimitExceededException $exception) {
+            return response()->json([
+                'error' => $exception->getMessage(),
+            ]);
+        }
 
         $conversationIdentifier = $request->identifier;
         if (is_null($conversationIdentifier)) {

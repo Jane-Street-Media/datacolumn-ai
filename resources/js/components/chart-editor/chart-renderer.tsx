@@ -6,21 +6,6 @@ import {
   Line,
   AreaChart,
   Area,
-  PieChart,
-  Pie,
-  Cell,
-  ScatterChart,
-  Scatter,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  RadialBarChart,
-  RadialBar,
-  Treemap,
-  FunnelChart,
-  Funnel,
   ComposedChart,
   XAxis,
   YAxis,
@@ -152,6 +137,18 @@ export const ChartRenderer: React.FC = () => {
       };
     }
 
+      // Determine if we should use dark theme
+      const isDarkTheme = config.theme === 'dark' ||
+          (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+      // Determine background color
+      config.grid.fill = isDarkTheme ? '#1E2939FF' : '#ffffff';
+
+      if (config.backgroundColor === 'transparent') {
+          config.grid.fill = '';
+      } else if (config.backgroundColor && config.backgroundColor !== 'default') {
+          config.grid.fill = config.backgroundColor;
+      }
 
       switch (config.type) {
       case 'bar':
@@ -206,121 +203,6 @@ export const ChartRenderer: React.FC = () => {
           </AreaChart>
         );
 
-      case 'pie':
-        return (
-          <PieChart>
-              {config.series.map((data) => (
-                  <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={120}
-                      dataKey={config.yAxis}
-                      nameKey={config.xAxis}
-                      label
-                  >
-                      {chartData.map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={config.colors[index % config.colors.length]} />
-                      ))}
-                  </Pie>
-              ))}
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
-          </PieChart>
-        );
-
-      case 'scatter':
-        return (
-          <ScatterChart {...commonProps}>
-            {config.showGrid && <CartesianGrid {...config.grid} />}
-            <XAxis dataKey={config.xAxis} type="number" {...xAxisProps} />
-            <YAxis dataKey={config.yAxis} {...yAxisProps} />
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
-              {config.series.map((data) => (
-                  <Scatter key={data.dataKey} {...data} />
-              ))}
-          </ScatterChart>
-        );
-
-      case 'radar':
-        return (
-          <RadarChart cx="50%" cy="50%" outerRadius={150} {...commonProps}>
-            <PolarGrid stroke={gridColor} />
-            <PolarAngleAxis dataKey={config.xAxis} tick={{ fill: axisColor }} />
-            <PolarRadiusAxis angle={30} domain={[0, 'auto']} tick={{ fill: axisColor }} />
-            <Radar
-              name={config.yAxis}
-              dataKey={config.yAxis}
-              stroke={config.colors[0]}
-              fill={config.colors[0]}
-              fillOpacity={0.6}
-            />
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
-          </RadarChart>
-        );
-
-      case 'radialBar':
-        return (
-          <RadialBarChart
-            cx="50%"
-            cy="50%"
-            innerRadius={20}
-            outerRadius={140}
-            barSize={10}
-            {...commonProps}
-          >
-            <RadialBar
-              minAngle={15}
-              background
-              clockWise
-              dataKey={config.yAxis}
-              label={{ position: 'insideStart', fill: axisColor }}
-            >
-              {chartData.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={config.colors[index % config.colors.length]} />
-              ))}
-            </RadialBar>
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />}
-          </RadialBarChart>
-        );
-
-      case 'funnel':
-        return (
-          <FunnelChart {...commonProps}>
-            <Funnel
-              dataKey={config.yAxis}
-              nameKey={config.xAxis}
-              data={chartData}
-              isAnimationActive
-            >
-              {chartData.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={config.colors[index % config.colors.length]} />
-              ))}
-            </Funnel>
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
-          </FunnelChart>
-        );
-
-      case 'treemap':
-        return (
-          <Treemap
-            data={chartData}
-            dataKey={config.yAxis}
-            nameKey={config.xAxis}
-            aspectRatio={4/3}
-            stroke="#fff"
-            fill={config.colors[0]}
-          >
-            {chartData.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={config.colors[index % config.colors.length]} />
-            ))}
-          </Treemap>
-        );
-
       case 'composed':
         return (
           <ComposedChart {...commonProps}>
@@ -371,7 +253,7 @@ export const ChartRenderer: React.FC = () => {
                      (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   // Determine background color
-  let bgColorClass = isDarkTheme ? 'bg-gray-800' : 'bg-white';
+  let bgColorClass = isDarkTheme ? 'bg-[#1E2939FF]' : 'bg-[#ffffff]';
   let bgColorStyle = {};
 
   if (config.backgroundColor === 'transparent') {
@@ -383,7 +265,7 @@ export const ChartRenderer: React.FC = () => {
 
   return (
     <div
-      className={`rounded-lg border py-8 px-4 ${isDarkTheme ? 'border-gray-700' : 'border-gray-200'} ${bgColorClass}`}
+      className={`rounded-lg py-8 px-4 ${bgColorClass}`}
       id="chart-container"
       style={bgColorStyle}
     >
@@ -391,7 +273,7 @@ export const ChartRenderer: React.FC = () => {
       {config.title && (
         <div className={`px-10 mb-4 ${getTitleAlignment()}`}>
           <h2
-            className={`text-2xl mb-2 ${config.titleWeight === 'bold' ? 'font-bold' : 'font-normal'}`}
+            className={`text-2xl mb-0.5 ${config.titleWeight === 'bold' ? 'font-bold' : 'font-normal'}`}
             style={{ color: config.titleColor }}
           >
             {config.title}
@@ -399,7 +281,7 @@ export const ChartRenderer: React.FC = () => {
           {/* Subtitle */}
           {config.subtitle && (
             <p
-              className="text-lg opacity-80"
+              className="text-lg opacity-80 "
               style={{ color: config.subtitleColor }}
             >
               {config.subtitle}
