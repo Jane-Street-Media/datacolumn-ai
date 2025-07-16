@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\RoleEnum;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\Scopes\TeamScope;
 use App\Models\User;
@@ -30,6 +31,9 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->where('email', '!=', 'curtis@datacolumn.ai');
+            })
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
@@ -37,9 +41,6 @@ class UserResource extends Resource
                     ->label('Provider')
                     ->getStateUsing(fn($record) => $record->provider_name ?? 'N/A'),
             ])
-            ->modifyQueryUsing(function (Builder $query) {
-                return $query->role('member')->withoutGlobalScope(TeamScope::class);
-            })
             ->filters([
                 SelectFilter::make('teams')
                     ->relationship('teams', 'name')

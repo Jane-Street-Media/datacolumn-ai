@@ -4,8 +4,9 @@ namespace App\Enums;
 
 use App\Traits\EnumToArray;
 use Carbon\CarbonImmutable;
+use Filament\Support\Contracts\HasLabel;
 
-enum Period: string
+enum Period: string implements HasLabel
 {
     use EnumToArray;
     case TODAY = 'TODAY';

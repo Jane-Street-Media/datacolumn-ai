@@ -17,6 +17,7 @@ class Dashboard extends \Filament\Pages\Dashboard
             ->schema([
                 Select::make('period')
                     ->label('Select Period')
+                    ->default(Period::LAST_30_DAYS->value)
                     ->options(Period::class)
             ]);
     }
