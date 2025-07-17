@@ -19,6 +19,8 @@ export default function ChartEmbed({ chart, watermark }){
         bgColorStyle = { backgroundColor: config.backgroundColor };
     }
 
+    const watermarkClass = isDarkTheme ? 'text-white' : 'text-foreground';
+
     return (
         <ChartEditorProvider chart={chart}>
             <div className={`min-h-screen p-4 ${bgColorClass}`} style={bgColorStyle}>
@@ -27,7 +29,7 @@ export default function ChartEmbed({ chart, watermark }){
                         <ChartRenderer />
 
                         {watermark && (
-                            <div className="mt-2 text-right text-xs text-foreground">
+                            <div className={`mt-2 text-right text-xs ${watermarkClass}`}>
                                 Powered by <a href="https://datacolumn.ai" target="_blank" rel="noopener noreferrer" className="text-primary">DataColumn.ai</a>
                             </div>
                         )}
