@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth\Socialite;
 
 use App\Actions\Auth\RegisterUserAndCreateTeam;
+use App\Actions\Notifications\SendNotification;
 use App\Data\Auth\RegisterUserData;
+use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -26,6 +28,7 @@ class SocialiteController extends Controller
             ]), $provider);
         }
         Auth::login($user);
+        SendNotification::handle($user, NotificationType::WELCOME);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
