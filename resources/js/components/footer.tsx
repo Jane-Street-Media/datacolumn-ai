@@ -5,7 +5,6 @@ import React, { useMemo } from 'react';
 export default function Footer(){
     const page = usePage()
     const user = useMemo(() => page.props.auth.user, [page])
-
     const scrollTo = (selector) => {
         const el = document.querySelector(selector)
         if (el) {
@@ -15,7 +14,6 @@ export default function Footer(){
             window.scrollTo({ top: y, behavior: 'smooth' })
         }
     }
-
     return (
         <footer className="bg-foreground dark:bg-gray-950 text-primary-foreground py-8 sm:py-12 transition-colors duration-300 relative z-20">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

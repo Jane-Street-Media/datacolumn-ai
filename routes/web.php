@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChartAIController;
 use App\Http\Controllers\ChartAIConversationController;
 use App\Http\Controllers\DashboardController;
@@ -9,13 +8,12 @@ use App\Http\Controllers\Folders\FolderController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Projects\ProjectChartsController;
 use App\Http\Controllers\Projects\ProjectsController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Projects\ValidateChartExportController;
 use App\Http\Controllers\Team\Invitation\TeamInvitationController;
 use App\Http\Controllers\Team\SwitchUserTeamController;
 use App\Http\Controllers\Team\TeamController;
 use App\Http\Controllers\Team\TeamMemberController;
-use Chargebee\Cashier\Http\Controllers\WebhookController;
-use Chargebee\Cashier\Http\Middleware\AuthenticateWebhook;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -38,9 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('failed-payment');
 });
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('subscription/success', function () {
-        return Inertia::render('banners/successfulSubscription');
-    })->name('successful-subscription');
+    Route::get('subscription/success', [SubscriptionController::class, 'success'])->name('successful-subscription');
 });
 Route::middleware([])->group(function () {
     Route::get('something-went-wrong', function () {

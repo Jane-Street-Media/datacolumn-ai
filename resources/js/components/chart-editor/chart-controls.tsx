@@ -336,7 +336,6 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
                         <div className="space-y-4">
                             <h4 className="mb-3 text-sm font-semibold">Series Config</h4>
-
                             <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select Y Sery" />

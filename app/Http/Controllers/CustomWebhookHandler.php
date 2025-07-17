@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Notifications\SendNotification;
 use App\Actions\SyncSubscriptionPlanChanges;
+use App\Enums\NotificationType;
 use App\Helpers\SubscriptionLockHelper;
 use App\Models\Plan;
+use App\Models\User;
 use Carbon\Carbon;
 use Chargebee\Cashier\Cashier;
 use Chargebee\Cashier\Listeners\HandleWebhookReceived;
@@ -118,9 +121,12 @@ class CustomWebhookHandler extends HandleWebhookReceived
     protected function handleSubscriptionCreated(array $payload): void
     {
         parent::handleSubscriptionCreated($payload);
-        Log::info('In the listener');
         $team = Cashier::findBillable($payload['content']['subscription']['customer_id']);
         if ($team && $team->user_id) {
+            $user = User::find($team->user_id);
+            $newPlan = $user->currentTeam->subscriptionWithProductDetails()->plan->display_name;
+            $oldPlan = Plan::query()->where('chargebee_id', 'free-monthly')->first()?->display_name ?? 'Free';
+            SendNotification::handle($user, NotificationType::UPGRADE, $oldPlan, $newPlan);
             SubscriptionLockHelper::unlock($team->user_id);
         }
     }

@@ -100,6 +100,7 @@ DESC,
                                 'type' => 'object',
                                 'additionalProperties' => true,
                             ],
+
                         ],
                         'data' => [
                             'type' => 'array',

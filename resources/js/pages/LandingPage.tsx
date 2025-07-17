@@ -138,7 +138,6 @@ export default function LandingPage({ plans }) {
             window.scrollTo({ top: y, behavior: 'smooth' })
         }
     }
-
   return (
       <HomeLayout>
           {/* Hero Section */}
@@ -406,7 +405,6 @@ export default function LandingPage({ plans }) {
           </section>
 
           <Pricing plans={plans} />
-
           {/* CTA */}
           <section className="py-16 sm:py-20 relative z-20 bg-background dark:bg-gray-800 transition-colors duration-300">
               <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

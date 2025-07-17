@@ -19,7 +19,6 @@ import { useChartEditor } from '@/contexts/chart-editor-context';
 
 export default function EmbedDialog() {
     const { chart, config, data } = useChartEditor();
-
     const iframeHeight = config.height; // Default height for the iframe
 
     const embedScript = `<!-- DataColumn.ai Chart -->

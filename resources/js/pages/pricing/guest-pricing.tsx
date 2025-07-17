@@ -180,7 +180,6 @@ export default function Pricing({ plans }) {
                     );
                 })}
             </div>
-
             <div className="py-10 bg-card relative flex h-full flex-col overflow-hidden rounded-xl border-2 shadow-md border-card">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6">

@@ -2,12 +2,10 @@ import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
 import { ChartEditorProvider } from '@/contexts/chart-editor-context';
 
 export default function ChartEmbed({ chart, watermark }){
-
     const config = chart.config;
 // Determine if we should use dark theme
     const isDarkTheme = config.theme === 'dark' ||
         (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
     // Determine background color
     let bgColorClass = isDarkTheme ? 'bg-gray-800' : 'bg-white';
     let bgColorStyle = {};

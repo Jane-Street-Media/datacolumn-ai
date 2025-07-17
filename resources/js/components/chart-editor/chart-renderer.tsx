@@ -150,8 +150,6 @@ export const ChartRenderer: React.FC = () => {
           config.grid.fill = config.backgroundColor;
       }
 
-
-
       switch (config.type) {
       case 'bar':
         return (
