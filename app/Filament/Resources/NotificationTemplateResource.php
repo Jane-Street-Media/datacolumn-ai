@@ -23,6 +23,7 @@ class NotificationTemplateResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $record = $form->getRecord();
         return $form
             ->schema([
                 Section::make()
@@ -47,7 +48,7 @@ class NotificationTemplateResource extends Resource
                             ->required()
                             ->placeholder('Enter Template message')
                             ->helperText(
-                                'Applicable attributes are: [user_name], [team_name], [plan_name], [old_plan], [new_plan]'
+                                'Applicable attributes are: ' . $record->type->getApplicableAttributes()
                             )
                             ->columnSpanFull()
                             ->rows(10),

@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Enums\NotificationType;
 use App\Models\NotificationTemplate;
 use App\Models\TeamInvitation;
+use App\Traits\MessageFormatter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\URL;
 
 class InvitationSent extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, MessageFormatter;
 
     public $subject;
     public NotificationTemplate $template;
@@ -41,12 +42,17 @@ class InvitationSent extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
+        $text = $this->refineMessage($this->template->message, [
+            'team_name' => $this->teamInvitation->team->name,
+            'user_name' => $this->teamInvitation->email,
+            'app_name' => config('app.name'),
+        ]);
         return new Content(
             markdown: 'mail.invitation-sent',
             with: [
                 'acceptUrl' => URL::signedRoute('team-invitations.accept', $this->teamInvitation),
                 'invitation' => $this->teamInvitation,
-                'text' => $this->template->message
+                'text' => $text
             ]
         );
     }

@@ -28,10 +28,9 @@ class WelcomeNotification extends Notification
         $notificationTemplate = $type->getNotificationTemplate();
         $text = $this->refineMessage($notificationTemplate->message, [
             'user_name' => $user->name,
-            'app_name' => config('app.name'),
         ]);
         $subject = $this->refineMessage($notificationTemplate->subject, [
-            'app_name' => config('app.name'),
+            'user_name' => $user->name,
         ]);
         return $type->getNotificationEmail()
             ->with(['text' => $text])

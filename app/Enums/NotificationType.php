@@ -17,6 +17,7 @@ use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Mail\Mailable;
 use Illuminate\Notifications\Notification;
+use function Laravel\Prompts\select;
 
 enum NotificationType: string implements HasColor, HasIcon, HasLabel
 {
@@ -81,6 +82,15 @@ enum NotificationType: string implements HasColor, HasIcon, HasLabel
             self::WELCOME => new WelcomeNotification(self::WELCOME),
             self::DOWNGRADE => new SendDowngradeSubscriptionNotification(self::DOWNGRADE, $oldPlan, $newPlan),
             self::UPGRADE => new SendUpgradeSubscriptionNotification(self::UPGRADE, $oldPlan, $newPlan),
+        };
+    }
+
+    public function getApplicableAttributes(): string
+    {
+        return match ($this) {
+          self::WELCOME => '[user_name]',
+          self::DOWNGRADE, self::UPGRADE => '[user_name], [team_name], [plan_name], [old_plan], [new_plan]',
+          self::INVITATION => '[user_name], [team_name]',
         };
     }
 }
