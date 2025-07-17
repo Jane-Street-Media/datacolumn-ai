@@ -15,7 +15,7 @@ class NotificationTemplateSeeder extends Seeder
                 'name' => 'Welcome',
                 'subject' => 'Welcome to [app_name] – Were Excited to Have You!',
                 'type' => NotificationType::WELCOME,
-                'message' => "Hi [user_name], \n Welcome aboard! \n We’re thrilled to have you join [app_name]. Your email has been successfully verified, and you\'re now ready to explore everything we have to offer.",
+                'message' => "Hi [user_name], \n Welcome aboard! \n We’re thrilled to have you join [app_name]. Your email has been successfully verified, and you're now ready to explore everything we have to offer.",
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

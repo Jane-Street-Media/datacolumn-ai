@@ -1,3 +1,3 @@
 @component('mail::message')
-    {{ $text }}
+{{ $text }}
 @endcomponent
