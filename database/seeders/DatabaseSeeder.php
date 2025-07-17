@@ -22,15 +22,6 @@ class DatabaseSeeder extends Seeder
             NotificationTemplateSeeder::class
         ]);
 
-        // User::factory(10)->create();
-
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        CreateTeam::handle(CreateTeamData::from(['name' => $user->name]), $user);
-
         User::factory()->create([
             'name' => 'Curtis',
             'email' => 'curtis@datacolumn.ai',
