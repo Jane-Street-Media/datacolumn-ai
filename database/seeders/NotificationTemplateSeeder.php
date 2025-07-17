@@ -35,6 +35,14 @@ class NotificationTemplateSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Team Invitation',
+                'subject' => 'Team Invitation Sent',
+                'type' => NotificationType::INVITATION,
+                'message' => "You’ve been invited to join our team — click the link below to accept your invitation and get started!",
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         NotificationTemplate::upsert($notificationTemplates, ['type'], ['name', 'message', 'created_at', 'updated_at']);

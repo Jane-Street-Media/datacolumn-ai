@@ -4,9 +4,11 @@ namespace App\Actions\Teams\TeamInvitation;
 
 use App\Actions\PlanLimitations\EnsurePlanLimitNotExceeded;
 use App\Enums\ActivityEvents;
+use App\Enums\NotificationType;
 use App\Enums\PlanFeatureEnum;
 use App\Exceptions\PackageLimitExceededException;
 use App\Mail\InvitationSent;
+use App\Models\NotificationTemplate;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use Illuminate\Support\Facades\Mail;
@@ -21,7 +23,7 @@ class SendTeamInvitation
     {
         EnsurePlanLimitNotExceeded::handle($team, PlanFeatureEnum::NO_OF_TEAM_MEMBERS);
         $teamInvitation = $team->invitations()->create($data);
-        Mail::to($teamInvitation->email)->send(new InvitationSent($teamInvitation));
+        Mail::to($teamInvitation->email)->send(new InvitationSent($teamInvitation, NotificationType::INVITATION));
 
         defer(fn () => activity()
             ->performedOn($teamInvitation)

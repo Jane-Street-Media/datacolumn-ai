@@ -1,8 +1,7 @@
 <x-mail::message>
 # You have been invited to join the {{ $invitation->team->name }} team!
 
-If you do not have an account, register your account [here]({{ route('register') }}).
-Then click below to accept the invitation:
+{{ $text }}
 
 <x-mail::button :url="$acceptUrl">
 Accept Invite

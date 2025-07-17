@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Enums\NotificationType;
+use App\Models\NotificationTemplate;
 use App\Models\TeamInvitation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,12 +18,12 @@ class InvitationSent extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(public TeamInvitation $teamInvitation)
+    public $subject;
+    public NotificationTemplate $template;
+    public function __construct(public TeamInvitation $teamInvitation, public NotificationType $notificationType)
     {
-        //
+        $this->template = $notificationType->getNotificationTemplate();
+        $this->subject = $this->template->subject ?? 'Invitation Sent';
     }
 
     /**
@@ -30,7 +32,7 @@ class InvitationSent extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invitation Sent',
+            subject: $this->subject,
         );
     }
 
@@ -44,6 +46,7 @@ class InvitationSent extends Mailable implements ShouldQueue
             with: [
                 'acceptUrl' => URL::signedRoute('team-invitations.accept', $this->teamInvitation),
                 'invitation' => $this->teamInvitation,
+                'text' => $this->template->message
             ]
         );
     }

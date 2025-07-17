@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Enums\Traits\EnumToArray;
+use App\Mail\InvitationSent;
 use App\Mail\WelcomeMail;
 use App\Mail\SubscriptionPlanUpgradeMail;
 use App\Mail\SubscriptionPlanDowngradeMail;
@@ -24,13 +25,15 @@ enum NotificationType: string implements HasColor, HasIcon, HasLabel
     case UPGRADE = 'upgrade';
     case DOWNGRADE = 'downgrade';
     case WELCOME = 'welcome';
+    case INVITATION = 'invitation';
 
     public function getLabel(): ?string
     {
         return match ($this) {
             self::WELCOME => 'Welcome',
             self::UPGRADE => 'Upgrade',
-            self::DOWNGRADE => 'Downgrade'
+            self::DOWNGRADE => 'Downgrade',
+            self::INVITATION => 'Invitation'
         };
     }
 
@@ -40,6 +43,7 @@ enum NotificationType: string implements HasColor, HasIcon, HasLabel
             self::WELCOME => Color::Amber,
             self::DOWNGRADE => Color::Red,
             self::UPGRADE => Color::Green,
+            self::INVITATION => Color::Blue
         };
     }
 
@@ -49,6 +53,7 @@ enum NotificationType: string implements HasColor, HasIcon, HasLabel
             self::WELCOME => 'heroicon-o-trophy',
             self::DOWNGRADE => 'heroicon-o-arrow-trending-down',
             self::UPGRADE => 'heroicon-o-arrow-trending-up',
+            self::INVITATION => 'heroicon-o-trophy'
         };
     }
 
@@ -58,6 +63,7 @@ enum NotificationType: string implements HasColor, HasIcon, HasLabel
             self::WELCOME => NotificationTemplate::query()->where('type', self::WELCOME)->first(),
             self::DOWNGRADE => NotificationTemplate::query()->where('type', self::DOWNGRADE)->first(),
             self::UPGRADE => NotificationTemplate::query()->where('type', self::UPGRADE)->first(),
+            self::INVITATION => NotificationTemplate::query()->where('type', self::INVITATION)->first(),
         };
     }
 
