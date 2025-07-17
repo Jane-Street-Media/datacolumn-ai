@@ -19,18 +19,19 @@ export default function ChartEmbed({ chart, watermark }){
         bgColorStyle = { backgroundColor: config.backgroundColor };
     }
 
-    const watermarkClass = isDarkTheme ? 'text-white' : 'text-foreground';
+    const watermarkClass = isDarkTheme ? 'text-[#D3D3D3]' : 'text-foreground';
+    const watermarkAnchorClass = isDarkTheme ? 'text-white' : 'text-primary';
 
     return (
         <ChartEditorProvider chart={chart}>
             <div className={`min-h-screen p-4 ${bgColorClass}`} style={bgColorStyle}>
                 {chart && (
-                    <div className="h-full">
+                    <div className="h-full no-un">
                         <ChartRenderer />
 
                         {watermark && (
                             <div className={`mt-2 text-right text-xs ${watermarkClass}`}>
-                                Powered by <a href="https://datacolumn.ai" target="_blank" rel="noopener noreferrer" className="text-primary">DataColumn.ai</a>
+                                Powered by <a href="https://datacolumn.ai" target="_blank" rel="noopener noreferrer" className={` no-underline ${watermarkAnchorClass}`}>DataColumn.ai</a>
                             </div>
                         )}
                     </div>
