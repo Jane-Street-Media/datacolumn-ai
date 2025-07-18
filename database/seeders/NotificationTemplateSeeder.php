@@ -45,6 +45,6 @@ class NotificationTemplateSeeder extends Seeder
             ],
         ];
 
-        NotificationTemplate::upsert($notificationTemplates, ['type'], ['name', 'message', 'created_at', 'updated_at']);
+        NotificationTemplate::upsert($notificationTemplates, ['type'], ['name', 'subject', 'message', 'created_at', 'updated_at']);
     }
 }
