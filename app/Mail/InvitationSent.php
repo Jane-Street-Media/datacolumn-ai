@@ -42,19 +42,18 @@ class InvitationSent extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
-        $text = $this->refineMessage($this->template->message, [
-            'team_name' => $this->teamInvitation->team->name,
-            'user_name' => $this->teamInvitation->email,
-            'app_name' => config('app.name'),
-        ]);
-        return new Content(
-            markdown: 'mail.invitation-sent',
-            with: [
-                'acceptUrl' => URL::signedRoute('team-invitations.accept', $this->teamInvitation),
-                'invitation' => $this->teamInvitation,
-                'text' => $text
-            ]
-        );
+         $text = $this->refineMessage($this->template->message, [
+             'team_name' => $this->teamInvitation->team->name,
+             'user_name' => $this->teamInvitation->email,
+         ]);
+         return new Content(
+             markdown: 'mail.invitation-sent',
+             with: [
+                 'acceptUrl' => URL::signedRoute('team-invitations.accept', $this->teamInvitation),
+                 'invitation' => $this->teamInvitation,
+                 'text' => $text
+             ]
+         );
     }
 
     /**

@@ -29,7 +29,7 @@ class SendDowngradeSubscriptionNotification extends Notification
         $notificationTemplate = $type->getNotificationTemplate();
         $text = $this->refineMessage($notificationTemplate->message, [
             'user_name' => $user->name,
-            'team_name' => $user->currentTeam->name,
+            'team_name' => $user->currentTeam->name ?? 'Test Team',
             'old_plan' => $this->oldPlan,
             'new_plan' => $this->newPlan
         ]);
