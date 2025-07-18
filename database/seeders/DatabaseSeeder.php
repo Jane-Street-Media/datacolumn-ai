@@ -43,5 +43,24 @@ class DatabaseSeeder extends Seeder
         $user->update([
             'current_team_id' => $team->id,
         ]);
+
+        $user = User::query()->updateOrcreate([
+            'name' => 'Donot Delete',
+            'email' => 'donot-delete@datacolumn.ai',
+        ], [
+            'email_verified_at' => now(),
+            'remember_token' => Str::random(10),
+        ]);
+
+        $team = Team::query()->updateOrcreate([
+            'user_id' => $user->id,
+            'name' => "Donot Delete",
+        ], [
+            'personal_team' => true,
+        ]);
+
+        $user->update([
+            'current_team_id' => $team->id,
+        ]);
     }
 }
