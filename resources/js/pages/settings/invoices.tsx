@@ -3,6 +3,7 @@ import {BreadcrumbItem} from "@/types";
 import AppLayout from "@/layouts/app-layout";
 import {Head} from "@inertiajs/react";
 import SettingsLayout from "@/layouts/settings/layout";
+import { Download, Eye } from "lucide-react";
 
 interface LineItem {
     id: string;
@@ -35,11 +36,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 type InvoicesProps = {
     invoices: Invoice[];
 };
+
 const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
-    const [hoveredInvoiceId, setHoveredInvoiceId] = useState<string | null>(null);
-
+    const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
 
     const formatCurrency = (amount: number, currency: string) => {
         return new Intl.NumberFormat("en-US", {
@@ -49,7 +50,11 @@ const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
     };
 
     const formatDate = (timestamp: number) => {
-        return new Date(timestamp * 1000).toLocaleDateString();
+        return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
     };
 
     const handleDownloadInvoice = async (invoiceId: string) => {
@@ -60,77 +65,98 @@ const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
         setIsLoading(false);
     };
 
+    const toggleInvoiceDetails = (invoiceId: string) => {
+        setExpandedInvoiceId(expandedInvoiceId === invoiceId ? null : invoiceId);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Invoices"/>
             <SettingsLayout>
-                <div className="p-6">
-                    <div className="text-center max-w-3xl mx-auto mb-12">
-                        <h1 className="text-3xl font-bold text-foreground mb-3">Invoices</h1>
-                        <p className="text-lg text-secondary-foreground">
+                <div className="p-3 sm:p-6">
+                    <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-12">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-3">Invoices</h1>
+                        <p className="text-base sm:text-lg text-secondary-foreground">
                             View and download your billing history
                         </p>
                     </div>
 
                     {isLoading ? (
-                        <div className="flex justify-center items-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-card"></div>
+                        <div className="flex justify-center items-center py-12 sm:py-20">
+                            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary"></div>
                         </div>
                     ) : invoices.length === 0 ? (
-                        <div className="text-center py-10 bg-card rounded-xl shadow-md">
+                        <div className="text-center py-8 sm:py-10 bg-card rounded-xl shadow-md mx-auto max-w-md">
                             <p className="text-foreground">No invoices found.</p>
                         </div>
                     ) : (
-                        <div className="mx-33 flex-1">
+                        <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
                             {invoices.map((invoice) => (
-                                <div
-                                    key={invoice.id}
-                                    className="flex-1 min-w-[300px] max-w-[700px] px-3 mb-6 transition-all duration-300 ease-in-out"
-                                    onMouseEnter={() => setHoveredInvoiceId(invoice.id)}
-                                    onMouseLeave={() => setHoveredInvoiceId(null)}
-                                >
-                                    <div
-                                        className={`bg-white dark:bg-zinc-800 shadow-lg rounded-xl border-2 overflow-hidden flex flex-col h-full transition-all duration-300`}
-                                    >
-                                        <div
-                                            className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                                <div key={invoice.id} className="bg-white dark:bg-zinc-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                    {/* Invoice Header - Always visible */}
+                                    <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
                                             <div>
-                                                <h2 className={`text-lg font-semibold transition-colors duration-300`}>
-                                                    Invoice #{invoice.id}
-                                                </h2>
-                                                <p className={`text-sm font-medium ${
-                                                    invoice.status === "paid"
-                                                        ? "text-green-600 dark:text-green-400"
-                                                        : "text-red-600 dark:text-red-400"
-                                                }`}>
-                                                    {invoice.status.toUpperCase()}
-                                                </p>
+                                                <div className="flex items-center space-x-3 mb-2">
+                                                    <h2 className="text-lg sm:text-xl font-semibold text-foreground">
+                                                        Invoice #{invoice.id.slice(-8)}
+                                                    </h2>
+                                                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                                        invoice.status === "paid"
+                                                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                                            : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                                                    }`}>
+                                                        {invoice.status.toUpperCase()}
+                                                    </span>
+                                                </div>
+                                                <div className="text-sm text-zinc-600 dark:text-zinc-300 space-y-1 sm:space-y-0 sm:space-x-4 sm:flex">
+                                                    <span>Date: {formatDate(invoice.date)}</span>
+                                                    <span>Due: {formatDate(invoice.due_date)}</span>
+                                                </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="text-sm text-zinc-600 dark:text-zinc-300">Date: {formatDate(invoice.date)}</p>
-                                                <p className="text-sm text-zinc-600 dark:text-zinc-300">Due: {formatDate(invoice.due_date)}</p>
+                                            
+                                            <div className="flex items-center space-x-2">
+                                                <button
+                                                    onClick={() => toggleInvoiceDetails(invoice.id)}
+                                                    className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors sm:hidden"
+                                                >
+                                                    <Eye className="w-4 h-4 mr-1 inline" />
+                                                    {expandedInvoiceId === invoice.id ? 'Hide' : 'Details'}
+                                                </button>
+                                                
+                                                <a
+                                                    href={`/user/invoice/${invoice.id}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center space-x-2 px-3 sm:px-4 py-2 sm:py-3 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                    <span className="hidden sm:inline">Download</span>
+                                                </a>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div className="p-6">
-                                            <div className="mb-6 grid grid-cols-3 gap-4">
-                                                <div className="bg-gray-50 dark:bg-zinc-700 p-4 rounded-lg">
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
-                                                    <p className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+                                    {/* Invoice Summary - Always visible on desktop, collapsible on mobile */}
+                                    <div className={`${expandedInvoiceId === invoice.id || 'sm:block'} ${expandedInvoiceId !== invoice.id && 'hidden'} sm:block`}>
+                                        <div className="p-4 sm:p-6">
+                                            {/* Amount Summary Cards */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                                                <div className="bg-gray-50 dark:bg-zinc-700 p-3 sm:p-4 rounded-lg">
+                                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Total Amount</p>
+                                                    <p className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-50">
                                                         {formatCurrency(invoice.total, invoice.currency_code)}
                                                     </p>
                                                 </div>
-                                                <div className="bg-gray-50 dark:bg-zinc-700 p-4 rounded-lg">
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400">Amount
-                                                        Paid</p>
-                                                    <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                                                <div className="bg-gray-50 dark:bg-zinc-700 p-3 sm:p-4 rounded-lg">
+                                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Amount Paid</p>
+                                                    <p className="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400">
                                                         {formatCurrency(invoice.amount_paid, invoice.currency_code)}
                                                     </p>
                                                 </div>
-                                                <div className="bg-gray-50 dark:bg-zinc-700 p-4 rounded-lg">
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400">Amount
-                                                        Due</p>
-                                                    <p className={`text-lg font-bold ${
+                                                <div className="bg-gray-50 dark:bg-zinc-700 p-3 sm:p-4 rounded-lg">
+                                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Amount Due</p>
+                                                    <p className={`text-lg sm:text-xl font-bold ${
                                                         invoice.amount_due > 0
                                                             ? "text-red-600 dark:text-red-400"
                                                             : "text-zinc-900 dark:text-zinc-50"
@@ -140,51 +166,53 @@ const Invoices: React.FC<InvoicesProps> = ({invoices}) => {
                                                 </div>
                                             </div>
 
-                                            <div className="overflow-x-auto">
-                                                <table className="w-full border-collapse">
-                                                    <thead>
-                                                    <tr className="bg-gray-50 dark:bg-zinc-700">
-                                                        <th className="border border-gray-200 dark:border-gray-700 p-2 text-left text-zinc-900 dark:text-zinc-50">Item</th>
-                                                        <th className="border border-gray-200 dark:border-gray-700 p-2 text-center text-zinc-900 dark:text-zinc-50">Quantity</th>
-                                                        <th className="border border-gray-200 dark:border-gray-700 p-2 text-right text-zinc-900 dark:text-zinc-50">Unit
-                                                            Price
-                                                        </th>
-                                                        <th className="border border-gray-200 dark:border-gray-700 p-2 text-right text-zinc-900 dark:text-zinc-50">Total</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
+                                            {/* Line Items */}
+                                            <div className="space-y-3 sm:space-y-0">
+                                                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Items</h3>
+                                                
+                                                {/* Mobile: Card layout */}
+                                                <div className="sm:hidden space-y-3">
                                                     {invoice.line_items.map((item) => (
-                                                        <tr key={item.id} className="border-t">
-                                                            <td className="border border-gray-200 dark:border-gray-700 p-2 text-zinc-600 dark:text-zinc-300">{item.description}</td>
-                                                            <td className="border border-gray-200 dark:border-gray-700 p-2 text-center text-zinc-600 dark:text-zinc-300">{item.quantity}</td>
-                                                            <td className="border border-gray-200 dark:border-gray-700 p-2 text-right text-zinc-600 dark:text-zinc-300">{formatCurrency(item.unit_amount, invoice.currency_code)}</td>
-                                                            <td className="border border-gray-200 dark:border-gray-700 p-2 text-right text-zinc-600 dark:text-zinc-300">{formatCurrency(item.amount, invoice.currency_code)}</td>
-                                                        </tr>
+                                                        <div key={item.id} className="bg-gray-50 dark:bg-zinc-700 p-3 rounded-lg">
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <p className="font-medium text-sm text-zinc-900 dark:text-zinc-100">{item.description}</p>
+                                                                <p className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+                                                                    {formatCurrency(item.amount, invoice.currency_code)}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+                                                                <span>Qty: {item.quantity}</span>
+                                                                <span>Unit: {formatCurrency(item.unit_amount, invoice.currency_code)}</span>
+                                                            </div>
+                                                        </div>
                                                     ))}
-                                                    </tbody>
-                                                </table>
+                                                </div>
+
+                                                {/* Desktop: Table layout */}
+                                                <div className="hidden sm:block overflow-x-auto">
+                                                    <table className="w-full border-collapse">
+                                                        <thead>
+                                                            <tr className="bg-gray-50 dark:bg-zinc-700">
+                                                                <th className="border border-gray-200 dark:border-gray-600 p-3 text-left text-sm font-medium text-zinc-900 dark:text-zinc-50">Item</th>
+                                                                <th className="border border-gray-200 dark:border-gray-600 p-3 text-center text-sm font-medium text-zinc-900 dark:text-zinc-50">Qty</th>
+                                                                <th className="border border-gray-200 dark:border-gray-600 p-3 text-right text-sm font-medium text-zinc-900 dark:text-zinc-50">Unit Price</th>
+                                                                <th className="border border-gray-200 dark:border-gray-600 p-3 text-right text-sm font-medium text-zinc-900 dark:text-zinc-50">Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {invoice.line_items.map((item) => (
+                                                                <tr key={item.id}>
+                                                                    <td className="border border-gray-200 dark:border-gray-600 p-3 text-sm text-zinc-600 dark:text-zinc-300">{item.description}</td>
+                                                                    <td className="border border-gray-200 dark:border-gray-600 p-3 text-center text-sm text-zinc-600 dark:text-zinc-300">{item.quantity}</td>
+                                                                    <td className="border border-gray-200 dark:border-gray-600 p-3 text-right text-sm text-zinc-600 dark:text-zinc-300">{formatCurrency(item.unit_amount, invoice.currency_code)}</td>
+                                                                    <td className="border border-gray-200 dark:border-gray-600 p-3 text-right text-sm font-medium text-zinc-900 dark:text-zinc-100">{formatCurrency(item.amount, invoice.currency_code)}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div className="p-6 mt-auto bg-zinc-50 dark:bg-zinc-900">
-                                            <a
-                                                href={`/user/invoice/${invoice.id}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className={`block w-full px-4 py-3 text-center font-medium rounded-lg transition-all text-white bg-primary`}
-                                            >
-                                                <span className="flex items-center justify-center">
-                                                    <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/>
-                                                    </svg>
-                                                Download Invoice
-                                                </span>
-                                            </a>
-                                        </div>
-
-                                        {hoveredInvoiceId === invoice.id && (
-                                            <div className="absolute top-0 right-0 w-full bg-[#FF3300]"></div>
-                                        )}
                                     </div>
                                 </div>
                             ))}
