@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'curtis@datacolumn.ai',
         ], [
             'email_verified_at' => now(),
-            'password' => 'password',
             'remember_token' => Str::random(10),
         ]);
 
