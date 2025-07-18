@@ -55,6 +55,7 @@ class DatabaseSeeder extends Seeder
         $team = Team::query()->updateOrcreate([
             'user_id' => $user->id,
             'name' => "Donot Delete",
+            'password' => Hash::make('password'),
         ], [
             'personal_team' => true,
         ]);
