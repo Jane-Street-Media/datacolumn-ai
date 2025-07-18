@@ -1,5 +1,5 @@
 <x-mail::message>
-# You have been invited to join the {{ $invitation->team->name }} team!
+# You have been invited to join the {{ $invitation->team->name ?? 'Test' }} team!
 
 {{ $text }}
 
