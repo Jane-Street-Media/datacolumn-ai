@@ -10,6 +10,8 @@ use App\Models\User;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,14 +25,19 @@ class DatabaseSeeder extends Seeder
             NotificationTemplateSeeder::class
         ]);
 
-        $user = User::factory()->create([
+        $user = User::query()->updateOrcreate([
             'name' => 'Curtis',
             'email' => 'curtis@datacolumn.ai',
+        ], [
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'remember_token' => Str::random(10),
         ]);
 
-        $team = Team::query()->create([
+        $team = Team::query()->updateOrcreate([
             'user_id' => $user->id,
             'name' => "Curtis",
+        ], [
             'personal_team' => true,
         ]);
 
