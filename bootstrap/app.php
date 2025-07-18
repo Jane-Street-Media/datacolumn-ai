@@ -4,6 +4,7 @@ use App\Console\Commands\ResetTeamFeatureLimits;
 use App\Http\Middleware\DynamicFrameGuard;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IsTeamPlan;
+use App\Http\Middleware\RefreshUserSession;
 use App\Http\Middleware\SetTeam;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'teams' => SetTeam::class,
             'isTeamPlan' => IsTeamPlan::class,
             'iframe.dynamic' => DynamicFrameGuard::class,
+            'refreshUserSession' => RefreshUserSession::class,
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
