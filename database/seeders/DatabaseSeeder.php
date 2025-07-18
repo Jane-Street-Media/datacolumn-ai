@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
         ], [
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
+            'password' => Hash::make('password'),
         ]);
 
         $team = Team::query()->updateOrcreate([
@@ -57,7 +58,6 @@ class DatabaseSeeder extends Seeder
             'name' => "Donot Delete",
         ], [
             'personal_team' => true,
-            'password' => Hash::make('password'),
         ]);
 
         $user->update([
