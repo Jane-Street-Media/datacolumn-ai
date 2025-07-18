@@ -8,6 +8,7 @@ use App\Data\Auth\RegisterUserData;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserSession;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -28,6 +29,7 @@ class SocialiteController extends Controller
             ]), $provider);
         }
         Auth::login($user);
+        UserSession::createUserSession($user);
         SendNotification::handle($user, NotificationType::WELCOME);
 
         return redirect()->intended(route('dashboard', absolute: false));

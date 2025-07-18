@@ -78,13 +78,10 @@ class UserSessionResource extends Resource
                     ->preload(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(
 
-                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -100,8 +97,6 @@ class UserSessionResource extends Resource
     {
         return [
             'index' => Pages\ListUserSessions::route('/'),
-//            'create' => Pages\CreateUserSession::route('/create'),
-//            'edit' => Pages\EditUserSession::route('/{record}/edit'),
         ];
     }
 }
