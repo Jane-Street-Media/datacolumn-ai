@@ -24,7 +24,7 @@ Route::get('/forget-cache', function () {
 
 Route::get('/', [PagesController::class, 'home'])->name('home');
 
-Route::group(['refreshUserSession' => 'auth'], function () {
+Route::group(['middleware' => 'refreshUserSession'], function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('dashboard', DashboardController::class)->name('dashboard');
 
@@ -90,6 +90,9 @@ Route::group(['refreshUserSession' => 'auth'], function () {
         });
     });
 
+    require __DIR__.'/settings.php';
+    require __DIR__.'/checkout.php';
+    require __DIR__.'/subscription.php';
 });
 
 Route::middleware([])->group(function () {
@@ -103,7 +106,5 @@ Route::middleware([])->group(function () {
 
 Route::get('chart/embed/{chart:uuid}', EmbeddedChartController::class)->middleware('iframe.dynamic')->name('chart.embed');
 
-require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
-require __DIR__.'/checkout.php';
-require __DIR__.'/subscription.php';
+
