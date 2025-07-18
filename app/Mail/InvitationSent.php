@@ -45,7 +45,6 @@ class InvitationSent extends Mailable implements ShouldQueue
          $text = $this->refineMessage($this->template->message, [
              'team_name' => $this->teamInvitation->team->name,
              'user_name' => $this->teamInvitation->email,
-             'app_name' => config('app.name'),
          ]);
          return new Content(
              markdown: 'mail.invitation-sent',
