@@ -7,6 +7,7 @@ use App\Models\NotificationTemplate;
 use App\Models\TeamInvitation;
 use App\Traits\MessageFormatter;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
@@ -14,7 +15,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\URL;
 
-class InvitationSent extends Mailable
+class InvitationSent extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels, MessageFormatter;
 
@@ -42,16 +43,14 @@ class InvitationSent extends Mailable
     public function content(): Content
     {
          $text = $this->refineMessage($this->template->message, [
-             'team_name' => $this->teamInvitation->team->name ?? 'Test Team',
-             'user_name' => $this->teamInvitation->email ?? 'Test Email',
+             'team_name' => $this->teamInvitation->team->name,
+             'user_name' => $this->teamInvitation->email,
              'app_name' => config('app.name'),
          ]);
          return new Content(
              markdown: 'mail.invitation-sent',
              with: [
-                 'acceptUrl' => $this->teamInvitation && $this->teamInvitation->id
-                     ? URL::signedRoute('team-invitations.accept', $this->teamInvitation)
-                     : url('/test-accept'),
+                 'acceptUrl' => URL::signedRoute('team-invitations.accept', $this->teamInvitation),
                  'invitation' => $this->teamInvitation,
                  'text' => $text
              ]

@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -101,15 +102,16 @@ class NotificationTemplateResource extends Resource
                         $newPlan = $record->type == NotificationType::UPGRADE ? 'enterprise' : 'basic';
 
                         if ($record->type == NotificationType::INVITATION) {
-                            $testTeam = new \App\Models\TeamInvitation([
+                            $teamInvitation = Auth::user()->currentTeam->invitations()->create([
                                 'email' => $data['email'],
                                 'role' => 'member'
                             ]);
-                            Mail::to($testTeam->email)->send(
-                                new InvitationSent($testTeam, NotificationType::INVITATION)
+
+                            Mail::to($teamInvitation->email)->send(
+                                new InvitationSent($teamInvitation, NotificationType::INVITATION)
                             );
                         } else {
-                            app(SendNotification::class)->handle($testUser, $record->type, $oldPlan, $newPlan);
+                            SendNotification::class::handle($testUser, $record->type, $oldPlan, $newPlan);
                         }
 
                         Notification::make()
