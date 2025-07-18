@@ -232,13 +232,13 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                         </div>
                                     </div>
                                 ) : (<></>)}
-                                
+
                                 <div className="px-4 sm:px-6 pt-4 sm:pt-6">
                                     <span className={`text-foreground inline-block rounded-full px-3 sm:px-4 py-1 text-sm font-medium dark:text-white`}>
                                         {plan.name}
                                     </span>
                                 </div>
-                                
+
                                 <div className="mt-3 sm:mt-4 px-4 sm:px-6">
                                     <div className="flex items-baseline">
                                         <span className={`text-3xl sm:text-4xl font-bold ${hoveredCard === index ? 'text-primary' : 'text-foreground'}`}>
@@ -253,7 +253,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                 </div>
 
                                 <div className="bg-card p-4 sm:p-6">
-                                    <ul className="space-y-2 sm:space-y-3 pt-3 sm:pt-4">
+                                    <ul className="space-y-2 sm:space-y-3 pt-3 sm:pt-4 mb-5">
                                         {plan.details &&
                                             plan.details.map((detail, i) => (
                                                 <li key={i} className="flex items-start">
@@ -280,7 +280,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                                 </li>
                                             ))}
                                     </ul>
-                                    
+
                                     <div className="mt-4 sm:mt-6">
                                         {!isSubscribed ? (
                                             plan.name.toLowerCase() === 'free' && isAuthenticated ?  (
