@@ -89,7 +89,7 @@ enum NotificationType: string implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
           self::WELCOME => '[user_name]',
-          self::DOWNGRADE, self::UPGRADE => '[user_name], [team_name], [plan_name], [old_plan], [new_plan]',
+          self::DOWNGRADE, self::UPGRADE => '[user_name], [team_name], [old_plan], [new_plan]',
           self::INVITATION => '[user_name], [team_name]',
         };
     }

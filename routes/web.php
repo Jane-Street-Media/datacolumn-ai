@@ -98,7 +98,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/conversation', ChartAIConversationController::class)->name('chart-ai.conversation');
     });
 });
-
 Route::get('chart/embed/{chart:uuid}', EmbeddedChartController::class)->middleware('iframe.dynamic')->name('chart.embed');
 
 require __DIR__.'/settings.php';

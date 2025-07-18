@@ -2,18 +2,24 @@
 
 namespace App\Filament\Resources;
 
+use App\Actions\Notifications\SendNotification;
 use App\Enums\NotificationType;
 use App\Filament\Resources\NotificationTemplateResource\Pages;
+use App\Mail\InvitationSent;
 use App\Models\NotificationTemplate;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationTemplateResource extends Resource
 {
@@ -80,6 +86,39 @@ class NotificationTemplateResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('send_test_email')
+                    ->form([
+                        TextInput::make('email')
+                            ->email()
+                            ->required(),
+                    ])
+                    ->action(function (array $data, $record) {
+                        $testUser = new \App\Models\User([
+                            'name' => 'Test User',
+                            'email' => $data['email'],
+                        ]);
+
+                        $oldPlan = $record->type == NotificationType::UPGRADE ? 'basic' : 'enterprise';
+                        $newPlan = $record->type == NotificationType::UPGRADE ? 'enterprise' : 'basic';
+
+                        if ($record->type == NotificationType::INVITATION) {
+                            $teamInvitation = Auth::user()->currentTeam->invitations()->create([
+                                'email' => $data['email'],
+                                'role' => 'member'
+                            ]);
+
+                            Mail::to($teamInvitation->email)->send(
+                                new InvitationSent($teamInvitation, NotificationType::INVITATION)
+                            );
+                        } else {
+                            SendNotification::class::handle($testUser, $record->type, $oldPlan, $newPlan);
+                        }
+
+                        Notification::make()
+                            ->title(__('Email sent!'))
+                            ->success()
+                            ->send();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
