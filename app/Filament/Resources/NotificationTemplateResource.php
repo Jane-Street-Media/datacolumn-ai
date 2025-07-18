@@ -98,8 +98,8 @@ class NotificationTemplateResource extends Resource
                             'email' => $data['email'],
                         ]);
 
-                        $oldPlan = $record->type == NotificationType::UPGRADE ? 'basic' : 'premium';
-                        $newPlan = $record->type == NotificationType::UPGRADE ? 'premium' : 'basic';
+                        $oldPlan = $record->type == NotificationType::UPGRADE ? 'basic' : 'enterprise';
+                        $newPlan = $record->type == NotificationType::UPGRADE ? 'enterprise' : 'basic';
 
                         if ($record->type == NotificationType::INVITATION) {
                             $teamInvitation = Auth::user()->currentTeam->invitations()->create([
