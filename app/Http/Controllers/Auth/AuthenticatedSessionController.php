@@ -48,4 +48,9 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+    public function browserCloseLogout(): void
+    {
+        Log:info('user', ['data' => Auth::user()]);
+        Auth::logout();
+    }
 }
