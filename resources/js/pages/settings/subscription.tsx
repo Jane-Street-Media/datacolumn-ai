@@ -128,7 +128,6 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Subscription" />
             <SettingsLayout>
-                {/* Fixed: Added overflow-x-hidden and proper mobile container */}
                 <div className="w-full overflow-x-hidden">
                     <div className="p-3 sm:p-6 max-w-full">
                         <div className="mx-auto mb-6 sm:mb-12 max-w-3xl text-center">
@@ -151,7 +150,6 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                             </div>
                         ) : (
                             <div className="w-full max-w-4xl mx-auto">
-                                {/* Fixed: Added w-full and overflow handling */}
                                 <div className="w-full border-opacity-30 dark:border-opacity-50 bg-card overflow-hidden rounded-xl shadow-lg">
                                     {/* Subscription Header */}
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-6 space-y-3 sm:space-y-0">
@@ -180,7 +178,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                     </div>
 
                                     <div className="p-4 sm:p-6">
-                                        {/* Fixed: Payment & Billing Info - Better mobile stacking */}
+                                        {/* Payment & Billing Info */}
                                         <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                                             <div className="border-primary rounded-lg border p-3 sm:p-4 min-w-0">
                                                 <p className="text-foreground text-sm font-medium">Card Number</p>
@@ -200,11 +198,10 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                             </div>
                                         </div>
 
-                                        {/* Fixed: Subscription Items - Simpler mobile layout */}
+                                        {/* Subscription Items */}
                                         <div className="mb-4 sm:mb-6">
                                             <h3 className="text-md text-foreground mb-3 font-semibold">Subscription Items</h3>
                                             
-                                            {/* Mobile: Simple card */}
                                             <div className="bg-gray-50 dark:bg-zinc-700 p-3 rounded-lg">
                                                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
                                                     <div className="min-w-0 flex-1">
@@ -234,7 +231,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                         </div>
                                     </div>
 
-                                    {/* Fixed: Action Buttons - Better mobile layout */}
+                                    {/* Action Buttons */}
                                     <div className="flex flex-col gap-3 bg-zinc-50 p-4 sm:p-6 sm:flex-row sm:gap-4 dark:bg-zinc-900">
                                         <button
                                             onClick={handleUpdatePaymentMethod}
@@ -286,7 +283,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                             </div>
                         )}
 
-                        {/* Fixed: Cancel Subscription Modal */}
+                        {/* Modal */}
                         {cancelSubscriptionModalOpen && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
                                 <div className="w-full max-w-md rounded-lg bg-white p-4 sm:p-6 dark:bg-zinc-800">
@@ -315,9 +312,12 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                             </div>
                         )}
 
+                        {/* FIXED: Wrap Pricing component to constrain its width */}
                         {!canResumeSubscription && (
-                            <div className="mt-8 sm:mt-12">
-                                <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                            <div className="mt-8 sm:mt-12 w-full overflow-x-hidden">
+                                <div className="w-full max-w-full overflow-x-hidden -mx-3 px-3 sm:-mx-6 sm:px-6">
+                                    <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                                </div>
                             </div>
                         )}
                     </div>
