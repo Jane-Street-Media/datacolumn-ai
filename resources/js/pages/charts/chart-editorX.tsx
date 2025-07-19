@@ -123,7 +123,7 @@ export default function ChartEditorX({ chart }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-2 sm:gap-4 rounded-xl p-2 sm:p-4">
                 <ChartHeaderActions 
                     chart={chart} 
                     config={config} 
@@ -136,24 +136,26 @@ export default function ChartEditorX({ chart }) {
                 />
 
                 <Tabs defaultValue="design" className="w-full">
-                    <TabsList>
-                        <TabsTrigger value="design">Design</TabsTrigger>
-                        <TabsTrigger value="data">Data</TabsTrigger>
-                        <TabsTrigger value="preview">Preview</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="design" className="text-xs sm:text-sm">Design</TabsTrigger>
+                        <TabsTrigger value="data" className="text-xs sm:text-sm">Data</TabsTrigger>
+                        <TabsTrigger value="preview" className="text-xs sm:text-sm">Preview</TabsTrigger>
                     </TabsList>
                     <Card>
-                        <CardContent>
-                            <TabsContent value="design">
+                        <CardContent className="p-2 sm:p-6">
+                            <TabsContent value="design" className="mt-2 sm:mt-6">
                                 <div className="flex-1 overflow-hidden">
-                                    {/* Updated layout: flex on mobile, grid on lg+ */}
-                                    <div className="flex h-full flex-col lg:grid xl:grid-cols-3 lg:gap-6 lg:p-6 p-0">
+                                    {/* Mobile-optimized layout */}
+                                    <div className="flex h-full flex-col lg:grid xl:grid-cols-3 lg:gap-6 gap-4">
                                         {/* Chart container: full width on mobile, constrained on desktop */}
-                                        <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0 w-full overflow-x-auto">
-                                            <ChartRenderer data={data} config={config} />
+                                        <div className="order-2 lg:order-1 lg:col-span-2 w-full overflow-x-auto">
+                                            <div className="min-h-[300px] sm:min-h-[400px]">
+                                                <ChartRenderer data={data} config={config} />
+                                            </div>
                                         </div>
-                                        {/* Controls: stacked below chart on mobile */}
-                                        <div className="order-1 flex-1 lg:order-2 lg:flex-none px-4 lg:px-0">
-                                            <div className="h-full">
+                                        {/* Controls: stacked above chart on mobile for better UX */}
+                                        <div className="order-1 lg:order-2 lg:flex-none">
+                                            <div className="h-full max-h-[400px] lg:max-h-none overflow-y-auto lg:overflow-visible">
                                                 <ChartControls 
                                                     config={config} 
                                                     columns={columns} 
@@ -164,18 +166,22 @@ export default function ChartEditorX({ chart }) {
                                     </div>
                                 </div>
                             </TabsContent>
-                            <TabsContent value="data">
-                                <DataTable 
-                                    data={data} 
-                                    columns={columns} 
-                                    onDataChange={handleDataChange} 
-                                    onAddRow={handleAddRow} 
-                                />
+                            <TabsContent value="data" className="mt-2 sm:mt-6">
+                                <div className="overflow-x-auto">
+                                    <DataTable 
+                                        data={data} 
+                                        columns={columns} 
+                                        onDataChange={handleDataChange} 
+                                        onAddRow={handleAddRow} 
+                                    />
+                                </div>
                             </TabsContent>
-                            <TabsContent value="preview">
-                                {/* Full width preview on all screen sizes */}
+                            <TabsContent value="preview" className="mt-2 sm:mt-6">
+                                {/* Full width preview with mobile-optimized height */}
                                 <div className="w-full overflow-x-auto">
-                                    <ChartRenderer data={data} config={config} />
+                                    <div className="min-h-[300px] sm:min-h-[500px]">
+                                        <ChartRenderer data={data} config={config} />
+                                    </div>
                                 </div>
                             </TabsContent>
                         </CardContent>
