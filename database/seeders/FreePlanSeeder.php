@@ -9,7 +9,7 @@ class FreePlanSeeder extends Seeder
 {
     public function run(): void
     {
-        $planQuery = Plan::query();
+        $planQuery = Plan::query()->withoutGlobalScopes();
         // Free Monthly
         $planQuery->updateOrCreate(
             ['chargebee_id' => 'free-monthly', 'frequency' => 'month'],

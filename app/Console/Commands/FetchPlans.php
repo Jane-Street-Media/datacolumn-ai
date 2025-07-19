@@ -63,7 +63,7 @@ class FetchPlans extends Command
                     if (! $itemPrice?->price || $itemPrice->price === 0) {
                         continue;
                     }
-                    $plan = Plan::updateOrCreate(
+                    $plan = Plan::query()->withoutGlobalScopes()->updateOrCreate(
                         ['chargebee_id' => $itemPrice->id],
                         [
                             'display_name' => $item->external_name ?? $item->name,

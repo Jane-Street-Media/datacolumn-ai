@@ -9,7 +9,7 @@ class EnterprisePlanSeeder extends Seeder
 {
     public function run(): void
     {
-        $planQuery = Plan::query();
+        $planQuery = Plan::query()->withoutGlobalScopes();
 
         // Enterprise Monthly
         $planQuery->updateOrCreate(
