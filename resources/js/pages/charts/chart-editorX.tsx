@@ -11,8 +11,6 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Projects',
@@ -126,7 +124,16 @@ export default function ChartEditorX({ chart }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <ChartHeaderActions chart={chart} config={config} data={data} columns={columns} handleConfigChange={handleConfigChange} onImportSuccess={(result) => onImportSuccess(result)} onSave={(e) => updateChart(e)} loading={updating}/>
+                <ChartHeaderActions 
+                    chart={chart} 
+                    config={config} 
+                    data={data} 
+                    columns={columns} 
+                    handleConfigChange={handleConfigChange} 
+                    onImportSuccess={(result) => onImportSuccess(result)} 
+                    onSave={(e) => updateChart(e)} 
+                    loading={updating}
+                />
 
                 <Tabs defaultValue="design" className="w-full">
                     <TabsList>
@@ -138,23 +145,38 @@ export default function ChartEditorX({ chart }) {
                         <CardContent>
                             <TabsContent value="design">
                                 <div className="flex-1 overflow-hidden">
-                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid xl:grid-cols-3 lg:gap-6">
-                                        <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0">
+                                    {/* Updated layout: flex on mobile, grid on lg+ */}
+                                    <div className="flex h-full flex-col lg:grid xl:grid-cols-3 lg:gap-6 lg:p-6 p-0">
+                                        {/* Chart container: full width on mobile, constrained on desktop */}
+                                        <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0 w-full overflow-x-auto">
                                             <ChartRenderer data={data} config={config} />
                                         </div>
-                                        <div className="order-1 flex-1 lg:order-2 lg:flex-none">
+                                        {/* Controls: stacked below chart on mobile */}
+                                        <div className="order-1 flex-1 lg:order-2 lg:flex-none px-4 lg:px-0">
                                             <div className="h-full">
-                                                <ChartControls config={config} columns={columns} onConfigChange={handleConfigChange} />
+                                                <ChartControls 
+                                                    config={config} 
+                                                    columns={columns} 
+                                                    onConfigChange={handleConfigChange} 
+                                                />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </TabsContent>
                             <TabsContent value="data">
-                                <DataTable data={data} columns={columns} onDataChange={handleDataChange} onAddRow={handleAddRow} />
+                                <DataTable 
+                                    data={data} 
+                                    columns={columns} 
+                                    onDataChange={handleDataChange} 
+                                    onAddRow={handleAddRow} 
+                                />
                             </TabsContent>
                             <TabsContent value="preview">
-                                <ChartRenderer data={data} config={config} />
+                                {/* Full width preview on all screen sizes */}
+                                <div className="w-full overflow-x-auto">
+                                    <ChartRenderer data={data} config={config} />
+                                </div>
                             </TabsContent>
                         </CardContent>
                     </Card>
