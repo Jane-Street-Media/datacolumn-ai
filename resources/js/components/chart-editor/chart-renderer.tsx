@@ -6,6 +6,18 @@ import {
   Line,
   AreaChart,
   Area,
+  PieChart,
+  Pie,
+  Cell,
+  ScatterChart,
+  Scatter,
+  RadarChart,
+  Radar,
+  RadialBarChart,
+  RadialBar,
+  FunnelChart,
+  Funnel,
+  Treemap,
   ComposedChart,
   XAxis,
   YAxis,
@@ -14,6 +26,9 @@ import {
   Legend,
   ResponsiveContainer,
   TooltipProps,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
 } from 'recharts';
 import { ChartConfig, DataPoint } from '../types';
 import { useChartEditor } from '@/contexts/chart-editor-context';
@@ -34,6 +49,10 @@ const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, 
         return `${value.toFixed(2)}%`;
       case 'decimal':
         return value.toFixed(2);
+      case 'thousands':
+        return `${(value / 1000).toFixed(1)}K`;
+      case 'millions':
+        return `${(value / 1000000).toFixed(1)}M`;
       case 'custom':
         if (config.tooltipCustomFormat) {
           return config.tooltipCustomFormat.replace('{value}', value.toString());
@@ -66,6 +85,38 @@ const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, 
   );
 };
 
+// Custom content component for Treemap
+const CustomTreemapContent = (props: any) => {
+  const { root, depth, x, y, width, height, index, colors, name, value } = props;
+  
+  return (
+    <g>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        style={{
+          fill: depth < 2 ? colors[Math.floor((index / root.children.length) * 6)] : 'none',
+          stroke: '#fff',
+          strokeWidth: 2 / (depth + 1e-10),
+          strokeOpacity: 1 / (depth + 1e-10),
+        }}
+      />
+      {depth === 1 ? (
+        <text x={x + width / 2} y={y + height / 2 + 7} textAnchor="middle" fill="#fff" fontSize={12}>
+          {name}
+        </text>
+      ) : null}
+      {depth === 1 && value ? (
+        <text x={x + width / 2} y={y + height / 2 + 25} textAnchor="middle" fill="#fff" fontSize={10}>
+          {value}
+        </text>
+      ) : null}
+    </g>
+  );
+};
+
 export const ChartRenderer: React.FC = () => {
 
     const { config, data } = useChartEditor();
@@ -80,6 +131,26 @@ export const ChartRenderer: React.FC = () => {
       ...item,
     }));
   }, [data, config.xAxis, config.yAxis]);
+
+  // Transform data for waterfall chart
+  const waterfallData = useMemo(() => {
+    if (config.type !== 'waterfall' || !chartData.length || !config.series.length) {
+      return chartData;
+    }
+    
+    let cumulative = config.waterfallStartValue || 0;
+    return chartData.map((item, index) => {
+      const value = item[config.series[0]?.dataKey || 'value'];
+      const result = {
+        ...item,
+        value: value,
+        cumulative: cumulative,
+        total: cumulative + value
+      };
+      cumulative += value;
+      return result;
+    });
+  }, [chartData, config.type, config.series, config.waterfallStartValue]);
 
   if (!data.length || !config.xAxis) {
     return (
@@ -108,9 +179,21 @@ export const ChartRenderer: React.FC = () => {
     return { top: 20, right: 30, left: 20, bottom: 200 };
   };
 
+  // Animation props
+  const getAnimationProps = () => {
+    if (config.enableAnimation === false) {
+      return { isAnimationActive: false };
+    }
+    return {
+      isAnimationActive: true,
+      animationDuration: config.animationDuration || 1000,
+      animationEasing: config.animationType || 'ease'
+    };
+  };
+
   const renderChart = () => {
     const commonProps = {
-      data: chartData,
+      data: config.type === 'waterfall' ? waterfallData : chartData,
       margin: getChartMargin(),
     };
 
@@ -150,17 +233,35 @@ export const ChartRenderer: React.FC = () => {
           config.grid.fill = config.backgroundColor;
       }
 
+      // Legend props
+      const legendProps = config.showLegend ? {
+        wrapperStyle: { paddingTop: '20px' },
+        verticalAlign: config.legendPosition === 'top' || config.legendPosition === 'bottom' ? config.legendPosition : 'bottom',
+        align: config.legendPosition === 'left' || config.legendPosition === 'right' ? config.legendPosition : 'center',
+        layout: config.legendPosition === 'left' || config.legendPosition === 'right' ? 'vertical' : 'horizontal'
+      } : {};
+
+      const animationProps = getAnimationProps();
+
       switch (config.type) {
       case 'bar':
+      case 'stackedBar':
         return (
             <BarChart {...commonProps}>
                 {config.showGrid && <CartesianGrid {...config.grid} />}
                 <XAxis dataKey={config.xAxis} {...xAxisProps} />
                 <YAxis {...yAxisProps} />
-                <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-                {config.showLegend && <Legend />}
-                {}
-                {config.series?.length ? config.series.map((data) => <Bar key={data.dataKey} {...data} />) : (<Bar dataKey={config.yAxis} />)}
+                {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+                {config.showLegend && <Legend {...legendProps} />}
+                {config.series?.length ? config.series.map((seriesData) => (
+                  <Bar 
+                    key={seriesData.dataKey} 
+                    {...seriesData} 
+                    stackId={config.type === 'stackedBar' ? 'stack' : undefined}
+                    radius={[4, 4, 0, 0]}
+                    {...animationProps}
+                  />
+                )) : (<Bar dataKey={config.yAxis} {...animationProps} />)}
             </BarChart>
         );
 
@@ -170,27 +271,49 @@ export const ChartRenderer: React.FC = () => {
                 {config.showGrid && <CartesianGrid {...config.grid} />}
                 <XAxis dataKey={config.xAxis} {...xAxisProps} />
                 <YAxis {...yAxisProps} />
-                <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-                {config.showLegend && <Legend />}
+                {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+                {config.showLegend && <Legend {...legendProps} />}
                 {config.series?.length ? (
-                    config.series.map((data) => <Line key={data.dataKey} {...data} />)
+                    config.series.map((seriesData) => (
+                      <Line 
+                        key={seriesData.dataKey} 
+                        {...seriesData} 
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6 }}
+                        {...animationProps}
+                      />
+                    ))
                 ) : (
-                    <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} />
+                    <Line 
+                      type="monotone" 
+                      dataKey={config.yAxis} 
+                      stroke={config.colors[0]} 
+                      strokeWidth={2} 
+                      dot={{ fill: config.colors[0] }} 
+                      {...animationProps}
+                    />
                 )}
             </LineChart>
         );
 
       case 'area':
+      case 'stackedArea':
         return (
           <AreaChart {...commonProps}>
               {config.showGrid && <CartesianGrid {...config.grid} />}
             <XAxis dataKey={config.xAxis} {...xAxisProps} />
             <YAxis {...yAxisProps} />
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-              {config.showLegend && <Legend />}
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+              {config.showLegend && <Legend {...legendProps} />}
               {config.series?.length ? (
-                  config.series.map((data) => (
-                      <Area key={data.dataKey} {...data} />
+                  config.series.map((seriesData) => (
+                      <Area 
+                        key={seriesData.dataKey} 
+                        {...seriesData} 
+                        stackId={config.type === 'stackedArea' ? 'stack' : undefined}
+                        fillOpacity={seriesData.fillOpacity || 0.6}
+                        {...animationProps}
+                      />
                   ))) : (
                   <Area
                       type="monotone"
@@ -198,9 +321,164 @@ export const ChartRenderer: React.FC = () => {
                       stroke={config.colors[0]}
                       fill={config.colors[0]}
                       fillOpacity={0.6}
+                      {...animationProps}
                   />
               )}
           </AreaChart>
+        );
+
+      case 'pie':
+        const RADIAN = Math.PI / 180;
+        const renderCustomizedLabel = ({
+          cx, cy, midAngle, innerRadius, outerRadius, percent, index
+        }: any) => {
+          const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+          return (
+            <text 
+              x={x} 
+              y={y} 
+              fill="white" 
+              textAnchor={x > cx ? 'start' : 'end'} 
+              dominantBaseline="central"
+              fontSize={12}
+              fontWeight="bold"
+            >
+              {`${(percent * 100).toFixed(0)}%`}
+            </text>
+          );
+        };
+
+        return (
+          <PieChart {...commonProps}>
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
+            <Pie
+              data={chartData}
+              dataKey={config.series[0]?.dataKey || 'value'}
+              nameKey={config.nameKey || 'name'}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={renderCustomizedLabel}
+              innerRadius={config.innerRadius || 0}
+              outerRadius={config.outerRadius || 80}
+              startAngle={config.startAngle || 0}
+              endAngle={config.endAngle || 360}
+              {...animationProps}
+            >
+              {chartData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={config.colors?.[index % config.colors.length] || `hsl(${index * 45}, 70%, 60%)`} 
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        );
+
+      case 'scatter':
+        return (
+          <ScatterChart {...commonProps}>
+            {config.showGrid && <CartesianGrid {...config.grid} />}
+            <XAxis dataKey={config.xAxis} type="number" {...xAxisProps} />
+            <YAxis dataKey={config.series[0]?.dataKey} type="number" {...yAxisProps} />
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
+            {config.series.map((seriesData, index) => (
+              <Scatter
+                key={seriesData.dataKey}
+                name={seriesData.dataKey}
+                data={chartData}
+                fill={seriesData.fill}
+                {...animationProps}
+              />
+            ))}
+          </ScatterChart>
+        );
+
+      case 'radar':
+        return (
+          <RadarChart {...commonProps}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey={config.xAxis} />
+            <PolarRadiusAxis />
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
+            {config.series.map((seriesData, index) => (
+              <Radar
+                key={seriesData.dataKey}
+                name={seriesData.dataKey}
+                dataKey={seriesData.dataKey}
+                stroke={seriesData.stroke}
+                fill={seriesData.fill}
+                fillOpacity={seriesData.fillOpacity || 0.6}
+                {...animationProps}
+              />
+            ))}
+          </RadarChart>
+        );
+
+      case 'radialBar':
+        return (
+          <RadialBarChart {...commonProps}>
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
+            <RadialBar
+              dataKey={config.series[0]?.dataKey || 'value'}
+              cornerRadius={10}
+              fill={config.series[0]?.fill || '#8884d8'}
+              {...animationProps}
+            />
+          </RadialBarChart>
+        );
+
+      case 'funnel':
+        return (
+          <FunnelChart {...commonProps}>
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
+            <Funnel
+              dataKey={config.series[0]?.dataKey || 'value'}
+              data={chartData}
+              isAnimationActive={config.enableAnimation !== false}
+            >
+              {chartData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={config.colors?.[index % config.colors.length] || `hsl(${index * 45}, 70%, 60%)`} 
+                />
+              ))}
+            </Funnel>
+          </FunnelChart>
+        );
+
+      case 'treemap':
+        return (
+          <Treemap
+            {...commonProps}
+            data={chartData}
+            dataKey={config.series[0]?.dataKey || 'value'}
+            aspectRatio={config.aspectRatio || 4/3}
+            stroke="#fff"
+            fill="#8884d8"
+            content={<CustomTreemapContent colors={config.colors} />}
+          />
+        );
+
+      case 'waterfall':
+        return (
+          <BarChart {...commonProps} data={waterfallData}>
+            {config.showGrid && <CartesianGrid {...config.grid} />}
+            <XAxis dataKey={config.xAxis} {...xAxisProps} />
+            <YAxis {...yAxisProps} />
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
+            <Bar dataKey="value" fill="#8884d8" {...animationProps} />
+            <Bar dataKey="cumulative" fill="transparent" {...animationProps} />
+          </BarChart>
         );
 
       case 'composed':
@@ -209,33 +487,69 @@ export const ChartRenderer: React.FC = () => {
               {config.showGrid && <CartesianGrid {...config.grid} />}
             <XAxis dataKey={config.xAxis} {...xAxisProps} />
             <YAxis {...yAxisProps} />
-            <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />
-            {config.showLegend && <Legend />}
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showLegend && <Legend {...legendProps} />}
               {config.series ? (
-                  config.series.map((data) => {
-                    if (data.chartType === 'line') {
-                      return <Line type="monotone" key={data.dataKey} {...data} />;
-                    } else if (data.chartType === 'bar') {
-                      return <Bar type="monotone" key={data.dataKey} {...data} />;
-                    } else if (data.chartType === 'area') {
-                      return <Area type="monotone" key={data.dataKey} {...data} />;
+                  config.series.map((seriesData) => {
+                    if (seriesData.chartType === 'line') {
+                      return (
+                        <Line 
+                          type="monotone" 
+                          key={seriesData.dataKey} 
+                          {...seriesData} 
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                          {...animationProps}
+                        />
+                      );
+                    } else if (seriesData.chartType === 'bar') {
+                      return (
+                        <Bar 
+                          key={seriesData.dataKey} 
+                          {...seriesData} 
+                          radius={[4, 4, 0, 0]}
+                          {...animationProps}
+                        />
+                      );
+                    } else if (seriesData.chartType === 'area') {
+                      return (
+                        <Area 
+                          type="monotone" 
+                          key={seriesData.dataKey} 
+                          {...seriesData} 
+                          fillOpacity={seriesData.fillOpacity || 0.6}
+                          {...animationProps}
+                        />
+                      );
                     }
-                    <Line key={data.dataKey} {...data} />;
+                    return (
+                      <Line 
+                        key={seriesData.dataKey} 
+                        {...seriesData} 
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6 }}
+                        {...animationProps}
+                      />
+                    );
                   })
               ) : (
                 config.type === 'line'
-                  ? <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} />
+                  ? <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} {...animationProps} />
                   : config.type === 'bar'
-                    ? <Bar dataKey={config.yAxis} barSize={20} fill={config.colors[0]} />
+                    ? <Bar dataKey={config.yAxis} barSize={20} fill={config.colors[0]} {...animationProps} />
                     : config.type === 'area'
-                      ? <Area type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} fill={config.colors[0]} fillOpacity={0.6} />
-                      : <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} />
+                      ? <Area type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} fill={config.colors[0]} fillOpacity={0.6} {...animationProps} />
+                      : <Line type="monotone" dataKey={config.yAxis} stroke={config.colors[0]} strokeWidth={2} dot={{ fill: config.colors[0] }} {...animationProps} />
               )}
           </ComposedChart>
         );
 
       default:
-        return null;
+        return (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500">Chart type not supported: {config.type}</p>
+          </div>
+        );
     }
   };
 
@@ -273,7 +587,12 @@ export const ChartRenderer: React.FC = () => {
       {config.title && (
         <div className={`px-10 mb-4 ${getTitleAlignment()}`}>
           <h2
-            className={`text-2xl mb-0.5 ${config.titleWeight === 'bold' ? 'font-bold' : 'font-normal'}`}
+            className={`text-2xl mb-0.5 ${
+              config.titleWeight === 'bold' ? 'font-bold' : 
+              config.titleWeight === 'light' ? 'font-light' :
+              config.titleWeight === 'semibold' ? 'font-semibold' :
+              'font-normal'
+            }`}
             style={{ color: config.titleColor }}
           >
             {config.title}
