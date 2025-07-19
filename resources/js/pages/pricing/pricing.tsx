@@ -168,7 +168,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
         <section className="mx-auto w-full max-w-6xl px-2 sm:px-4 lg:px-6 py-8 sm:py-12">
             <div className="mx-auto mb-8 sm:mb-12 max-w-3xl text-center">
                 <h2 className="mb-3 text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-50">Chart Your Course</h2>
-                <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300">Set sail and discover the riches of our value-packed plans.</p>
+                <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300">Everything you need to build, share, and scale your data insights.</p>
             </div>
 
             <div className="mb-8 sm:mb-12 flex justify-center">
