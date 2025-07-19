@@ -60,30 +60,44 @@ function ChartEditorContent() {
                         <TabsTrigger value="data">Data</TabsTrigger>
                         <TabsTrigger value="preview">Preview</TabsTrigger>
                     </TabsList>
-                    <Card className="mt-2">
-                        <CardContent>
-                            <TabsContent value="design">
+                    
+                    {/* Design Tab */}
+                    <TabsContent value="design" className="mt-2">
+                        <Card>
+                            <CardContent className="p-2 sm:p-4 lg:p-6">
                                 <div className="flex-1 overflow-hidden">
-                                    <div className="flex h-full flex-col p-4 sm:p-6 lg:grid xl:grid-cols-3 lg:gap-6">
-                                        <div className="order-2 mb-6 lg:order-1 lg:col-span-2 lg:mb-0">
+                                    <div className="flex h-full flex-col gap-4 lg:grid xl:grid-cols-3 lg:gap-6">
+                                        <div className="order-2 lg:order-1 lg:col-span-2">
                                             <ChartRenderer />
                                         </div>
                                         <div className="order-1 flex-1 lg:order-2 lg:flex-none">
                                             <div className="h-full">
-                                                <ChartControls />
+                                                <ChartControls cardContentClasses="max-h-[calc(100vh-400px)] lg:max-h-[calc(100vh-300px)]" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </TabsContent>
-                            <TabsContent value="data">
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                    
+                    {/* Data Tab */}
+                    <TabsContent value="data" className="mt-2">
+                        <Card>
+                            <CardContent className="p-2 sm:p-4 lg:p-6">
                                 <DataTable />
-                            </TabsContent>
-                            <TabsContent value="preview">
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                    
+                    {/* Preview Tab */}
+                    <TabsContent value="preview" className="mt-2">
+                        <Card>
+                            <CardContent className="p-2 sm:p-4 lg:p-6">
                                 <ChartRenderer />
-                            </TabsContent>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
                 </Tabs>
             </div>
         </AppLayout>
