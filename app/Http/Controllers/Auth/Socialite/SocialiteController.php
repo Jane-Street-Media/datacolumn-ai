@@ -27,10 +27,10 @@ class SocialiteController extends Controller
                 'provider_id' => $socialUser->getId(),
 
             ]), $provider);
+            SendNotification::handle($user, NotificationType::WELCOME);
         }
         Auth::login($user);
         UserSession::createUserSession($user);
-        SendNotification::handle($user, NotificationType::WELCOME);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
