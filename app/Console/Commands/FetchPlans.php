@@ -84,7 +84,6 @@ class FetchPlans extends Command
                                 '50 AI chart generations per month',
                                 'Priority rendering',
                                 'Chart presets',
-                                'Custom embed domain',
                                 'Advanced customization',
                                 'SVG/PNG exports',
                                 'Usage analytics',
