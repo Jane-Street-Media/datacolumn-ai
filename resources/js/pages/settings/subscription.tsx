@@ -161,21 +161,17 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Subscription" />
             <SettingsLayout>
-                <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="w-full overflow-x-hidden">
+                    <div className="p-3 sm:p-6 max-w-full">
                         {/* Header Section */}
-                        <div className="text-center mb-12">
-                            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                                Subscription Management
-                            </h1>
-                            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                                Manage your subscription, payment details, and billing preferences
-                            </p>
+                        <div className="mx-auto mb-6 sm:mb-12 max-w-3xl text-center">
+                            <h1 className="mb-2 sm:mb-3 text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-50">Subscription Management</h1>
+                            <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300">Manage your subscription, payment details, and billing preferences</p>
                         </div>
 
                         {!isSubscribed ? (
                             /* Free Plan State */
-                            <div className="max-w-4xl mx-auto">
+                            <div className="w-full max-w-4xl mx-auto">
                                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                                     <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-12 text-center">
                                         <div className="text-white">
@@ -207,9 +203,9 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                             </div>
                         ) : (
                             /* Active Subscription State */
-                            <div className="max-w-6xl mx-auto space-y-8">
+                            <div className="w-full max-w-4xl mx-auto">
                                 {/* Main Subscription Card */}
-                                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                <div className="w-full border-opacity-30 dark:border-opacity-50 bg-card overflow-hidden rounded-xl shadow-lg">
                                     {/* Header with gradient */}
                                     <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
                                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -406,8 +402,10 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
 
                         {/* Pricing Section */}
                         {!canResumeSubscription && !isSubscribed && (
-                            <div className="mt-16" data-pricing-section>
-                                <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                            <div className="mt-8 sm:mt-12 w-full overflow-x-hidden" data-pricing-section>
+                                <div className="w-full max-w-full overflow-x-hidden -mx-3 px-3 sm:-mx-6 sm:px-6">
+                                    <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                                </div>
                             </div>
                         )}
                     </div>
