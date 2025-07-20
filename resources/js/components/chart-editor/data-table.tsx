@@ -7,12 +7,12 @@ import { memo, useState, useRef } from 'react';
 import { toast } from 'sonner';
 
 const DataTableComponent: React.FC = () => {
-    const { data, setData, columns, setColumns, config, setConfig } = useChartEditor();
+    const { data, setData, columns, setColumns } = useChartEditor();
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     // Pagination state
     const [page, setPage] = useState(0);
-    const rowsPerPage = 30; // Change as needed
+    const rowsPerPage = 30;
 
     const handleCellEdit = (rowIndex: number, column: string, value: string) => {
         const newData = [...data];
@@ -57,7 +57,6 @@ const DataTableComponent: React.FC = () => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        // Check if it's a CSV file
         if (!file.name.toLowerCase().endsWith('.csv')) {
             toast.error('Please upload a CSV file');
             return;
@@ -74,7 +73,6 @@ const DataTableComponent: React.FC = () => {
                     return;
                 }
 
-                // Extract columns from the first row (headers)
                 const newColumns = Object.keys(parsedData[0]);
                 setColumns(newColumns);
                 setData(parsedData);
@@ -92,7 +90,6 @@ const DataTableComponent: React.FC = () => {
 
         reader.readAsText(file);
         
-        // Reset file input
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -102,10 +99,8 @@ const DataTableComponent: React.FC = () => {
         const lines = csvContent.trim().split('\n');
         if (lines.length === 0) return [];
 
-        // Parse headers
         const headers = parseCSVRow(lines[0]);
         
-        // Parse data rows
         const dataRows = lines.slice(1).map(line => {
             const values = parseCSVRow(line);
             const row: any = {};
@@ -131,15 +126,12 @@ const DataTableComponent: React.FC = () => {
             
             if (char === '"') {
                 if (inQuotes && nextChar === '"') {
-                    // Handle escaped quotes
                     current += '"';
-                    i++; // Skip next quote
+                    i++;
                 } else {
-                    // Toggle quote state
                     inQuotes = !inQuotes;
                 }
             } else if (char === ',' && !inQuotes) {
-                // End of field
                 result.push(current);
                 current = '';
             } else {
@@ -147,7 +139,6 @@ const DataTableComponent: React.FC = () => {
             }
         }
         
-        // Add the last field
         result.push(current);
         return result;
     };
@@ -162,7 +153,6 @@ const DataTableComponent: React.FC = () => {
             const csvContent = generateCSV();
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             
-            // Create download link
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             
@@ -170,12 +160,10 @@ const DataTableComponent: React.FC = () => {
             link.setAttribute('download', `chart-data-${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             
-            // Append to body, click, and remove
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            // Clean up the URL object
             URL.revokeObjectURL(url);
             
             toast.success('CSV downloaded successfully');
@@ -187,14 +175,11 @@ const DataTableComponent: React.FC = () => {
 
     const generateCSV = (): string => {
         try {
-            // Create headers row
             const headers = columns.join(',');
             
-            // Create data rows
             const rows = data.map(row => {
                 return columns.map(col => {
                     const value = String(row[col] || '');
-                    // Escape quotes and wrap in quotes if contains comma, quote, or newline
                     if (value.includes(',') || value.includes('"') || value.includes('\n') || value.includes('\r')) {
                         return `"${value.replace(/"/g, '""')}"`;
                     }
