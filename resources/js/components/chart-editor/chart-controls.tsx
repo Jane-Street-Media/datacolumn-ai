@@ -244,6 +244,41 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
         setColumns(sampleData.columns);
         setData(sampleData.data);
         
+        // Auto-configure chart settings
+        const newConfig = { ...config };
+        newConfig.xAxis = sampleData.columns[0];
+        
+        // Reset series and configure based on chart type
+        newConfig.series = [];
+        
+        // Auto-add appropriate series
+        const dataColumns = sampleData.columns.slice(1); // Skip first column (X-axis)
+        
+        if (multiSeriesCharts.includes(chartType)) {
+            // Add all available series for multi-series charts
+            dataColumns.forEach((col, index) => {
+                newConfig.series.push({
+                    dataKey: col,
+                    chartType: getDefaultChartTypeForSeries(chartType),
+                    type: 'monotone',
+                    fill: getNextColor(),
+                    stroke: getNextColor(),
+                });
+            });
+        } else {
+            // Add just the first series for single-series charts
+            if (dataColumns.length > 0) {
+                newConfig.series.push({
+                    dataKey: dataColumns[0],
+                    chartType: getDefaultChartTypeForSeries(chartType),
+                    type: 'monotone',
+                    fill: getNextColor(),
+                    stroke: getNextColor(),
+                });
+            }
+        }
+        
+        setConfig(newConfig);
         toast.success(`Loaded sample data for ${chartTypes.find(ct => ct.type === chartType)?.label || chartType}`);
     };
 
