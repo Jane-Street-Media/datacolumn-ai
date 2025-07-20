@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useForm, Link, usePage } from '@inertiajs/react';
+import { useForm, Link, usePage, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { BarChart3, Calendar, Delete, Edit, Eye, LoaderCircle, MoreHorizontal, Users } from 'lucide-react';
@@ -22,11 +22,13 @@ import { toast } from 'sonner';
 import AppLogo from '@/components/app-logo';
 
 const MotionCard = motion(Card);
+
 export default function ProjectCard({ index = 1, project, folders, statuses }) {
     const { delete: destroy, reset, processing } = useForm();
 
     const deleteProject: FormEventHandler = (e) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevent card click when deleting
         destroy(route('project.delete', project.id), {
             onError: (err) => console.error(err),
             onSuccess: (response) => {
@@ -36,33 +38,56 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                 });
             },
         });
-    }
+    };
+
+    const handleCardClick = () => {
+        router.visit(route('projects.charts.index', project.id));
+    };
+
+    const handleActionClick = (e) => {
+        e.stopPropagation(); // Prevent card click when clicking actions
+    };
 
     const page = usePage();
-    const showVisits = useMemo(() => page.props.auth.subscription.plan.features['usage_analytics'], [page])
+    const showVisits = useMemo(() => page.props.auth.subscription.plan.features['usage_analytics'], [page]);
 
     return (
         <MotionCard
-            className="hover:border-primary"
+            className="hover:border-primary hover:shadow-md transition-all duration-200 cursor-pointer group"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
+            onClick={handleCardClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick();
+                }
+            }}
+            aria-label={`Open project ${project.name}`}
         >
             <CardHeader>
                 <CardTitle>
-                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-4xl bg-gradient-to-r">
+                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-4xl bg-gradient-to-r group-hover:scale-105 transition-transform duration-200">
                         <AppLogo className="h-5 w-5" showText={false}/>
                     </div>
                 </CardTitle>
-                <CardAction className="flex space-x-2">
-                    <Link href={route('projects.charts.index', project.id)} className="hover:text-primary" prefetch>
+                <CardAction className="flex space-x-2" onClick={handleActionClick}>
+                    <Link 
+                        href={route('projects.charts.index', project.id)} 
+                        className="hover:text-primary transition-colors duration-200" 
+                        prefetch
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <Eye />
                     </Link>
                     <Popover>
-                        <PopoverTrigger>
-                            <MoreHorizontal className="cursor-pointer" />
+                        <PopoverTrigger onClick={(e) => e.stopPropagation()}>
+                            <MoreHorizontal className="cursor-pointer hover:text-primary transition-colors duration-200" />
                         </PopoverTrigger>
-                        <PopoverContent>
+                        <PopoverContent onClick={(e) => e.stopPropagation()}>
                             <div className="flex flex-col space-y-2">
                                 <ProjectDialog
                                     folders={folders}
@@ -85,7 +110,7 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                                             Delete
                                         </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent>
+                                    <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
@@ -108,7 +133,9 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
-                    <h3 className="text-foreground text-lg font-medium">{project.name}</h3>
+                    <h3 className="text-foreground text-lg font-medium group-hover:text-primary transition-colors duration-200">
+                        {project.name}
+                    </h3>
                     <p className="text-secondary-foreground line-clamp-3 text-sm">{project.description}</p>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
@@ -135,10 +162,12 @@ export default function ProjectCard({ index = 1, project, folders, statuses }) {
                     {project.status}
                 </div>
 
-                { showVisits && (<div className="text-secondary-foreground flex items-center text-sm">
-                    <span>{ project.charts_sum_total_visits }</span>
-                    <Users className="h-4 w-4 ml-1" />
-                </div>) }
+                { showVisits && (
+                    <div className="text-secondary-foreground flex items-center text-sm">
+                        <span>{ project.charts_sum_total_visits }</span>
+                        <Users className="h-4 w-4 ml-1" />
+                    </div>
+                ) }
             </CardFooter>
         </MotionCard>
     );
