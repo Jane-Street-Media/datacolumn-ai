@@ -110,8 +110,8 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
     const { config, setConfig, columns} = useChartEditor();
 
     // Define chart type categories for better handling
-    const singleSeriesCharts = ['pie', 'radar', 'radialBar', 'funnel', 'treemap'];
-    const multiSeriesCharts = ['composed', 'stackedBar', 'stackedArea'];
+    const singleSeriesCharts = ['pie', 'radialBar', 'funnel', 'treemap'];
+    const multiSeriesCharts = ['composed', 'stackedBar', 'stackedArea', 'radar'];
     const axisBasedCharts = ['bar', 'line', 'area', 'scatter', 'composed', 'stackedBar', 'stackedArea', 'waterfall'];
 
     const handleChartTypeChange = (type: CustomChartConfig['type']) => {
@@ -119,7 +119,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
             return;
         }
         
-        // Handle single series charts (pie, radar, radialBar, funnel, treemap)
+        // Handle single series charts (pie, radialBar, funnel, treemap)
         if (singleSeriesCharts.includes(type)) {
             setConfig({
                 ...config,
@@ -129,12 +129,12 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
             return;
         }
         
-        // Handle multi-series charts (composed, stackedBar, stackedArea)
+        // Handle multi-series charts (composed, stackedBar, stackedArea, radar)
         if (multiSeriesCharts.includes(type)) {
             setConfig({
                 ...config,
                 type: type,
-                // Keep existing series for multi-series charts
+                // Keep existing series for multi-series charts, but ensure at least one
                 series: config.series.length ? config.series : []
             });
             return;
@@ -228,19 +228,26 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
     }) => {
         const updatedSeries = [...config.series];
 
-        const oldColorValue = (updatedSeries[data.itemIndex].hasOwnProperty('fill')) ? updatedSeries[data.itemIndex].fill : updatedSeries[data.itemIndex].stroke;
+        // Handle color management more intelligently
+        const currentSeries = updatedSeries[data.itemIndex];
+        const oldColorValue = currentSeries.fill || currentSeries.stroke || getNextColor();
+        
+        // For line charts, prefer stroke; for others, prefer fill
         if (data.itemValue.chartType === 'line') {
-            delete updatedSeries[data.itemIndex].fill;
-            updatedSeries[data.itemIndex].stroke = oldColorValue;
+            updatedSeries[data.itemIndex] = {
+                ...currentSeries,
+                ...data.itemValue,
+                stroke: data.itemValue.stroke || oldColorValue,
+                fill: undefined // Remove fill for line charts
+            };
         } else {
-            delete updatedSeries[data.itemIndex].stroke;
-            updatedSeries[data.itemIndex].fill = oldColorValue;
+            updatedSeries[data.itemIndex] = {
+                ...currentSeries,
+                ...data.itemValue,
+                fill: data.itemValue.fill || oldColorValue,
+                stroke: data.itemValue.stroke || oldColorValue
+            };
         }
-
-        updatedSeries[data.itemIndex] = {
-            ...updatedSeries[data.itemIndex],
-            ...data.itemValue,
-        };
 
         setConfig({
             ...config,
@@ -259,7 +266,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
     // Use the categorized chart types
     const isAxisBasedChart = axisBasedCharts.includes(config.type);
-    const isMultiSeriesChart = multiSeriesCharts.includes(config.type) || config.type === 'radar';
+    const isMultiSeriesChart = multiSeriesCharts.includes(config.type);
 
     return (
         <Card>
