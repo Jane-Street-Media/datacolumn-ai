@@ -44,6 +44,7 @@ export default function ChartCard({ index = 1, chart }) {
 
     const deleteChart: FormEventHandler = (e) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevent card click when deleting
         destroy(route('projects.charts.destroy', {
             project: chart.project_id,
             chart: chart.id
@@ -57,37 +58,59 @@ export default function ChartCard({ index = 1, chart }) {
         });
     };
 
+    const handleCardClick = () => {
+        router.visit(route('projects.charts.edit', {
+            project: chart.project_id,
+            chart: chart.id,
+        }));
+    };
+
+    const handleActionClick = (e) => {
+        e.stopPropagation(); // Prevent card click when clicking actions
+    };
+
     const page = usePage();
     const showVisits = useMemo(() => page.props.auth.subscription.plan.features['usage_analytics'], [page])
 
     return (
         <MotionCard
-            className="hover:border-primary"
+            className="hover:border-primary hover:shadow-md transition-all duration-200 cursor-pointer group"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
+            onClick={handleCardClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick();
+                }
+            }}
+            aria-label={`Open chart editor for ${chart.title}`}
         >
             <CardHeader>
                 <CardTitle>
-                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r">
+                    <div className="from-gradient-from to-gradient-to flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r group-hover:scale-105 transition-transform duration-200">
                         {ChartIcon ? <ChartIcon /> : <BarChart3 />}
                     </div>
                 </CardTitle>
-                <CardAction className="flex space-x-2">
+                <CardAction className="flex space-x-2" onClick={handleActionClick}>
                     <Link
                         href={route('projects.charts.edit', {
                             project: chart.project_id,
                             chart: chart.id,
                         })}
-                        className="hover:text-primary"
+                        className="hover:text-primary transition-colors duration-200"
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <Eye />
                     </Link>
                     <Popover>
-                        <PopoverTrigger>
-                            <MoreHorizontal className="cursor-pointer"  />
+                        <PopoverTrigger onClick={(e) => e.stopPropagation()}>
+                            <MoreHorizontal className="cursor-pointer hover:text-primary transition-colors duration-200" />
                         </PopoverTrigger>
-                        <PopoverContent>
+                        <PopoverContent onClick={(e) => e.stopPropagation()}>
                             <div className="flex flex-col space-y-2">
                                 {/*<ProjectDialog*/}
                                 {/*    folders={folders}*/}
@@ -109,11 +132,11 @@ export default function ChartCard({ index = 1, chart }) {
                                             Delete
                                         </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent>
+                                    <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                This action is irreversible. The selected project will be permanently deleted.
+                                                This action is irreversible. The selected chart will be permanently deleted.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
@@ -132,7 +155,7 @@ export default function ChartCard({ index = 1, chart }) {
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
-                    <h3 className="text-foreground text-lg font-medium">{chart.title}</h3>
+                    <h3 className="text-foreground text-lg font-medium group-hover:text-primary transition-colors duration-200">{chart.title}</h3>
                     <p className="text-secondary-foreground line-clamp-3 text-sm">{chart.description}</p>
                     <Badge className="uppercase">{`${chart.type}`}</Badge>
                 </div>
