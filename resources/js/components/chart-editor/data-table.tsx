@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Upload, FileText, Trash2, Download } from 'lucide-react';
+import { Plus, Upload, FileText, Trash2, Download, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useChartEditor } from '@/contexts/chart-editor-context';
@@ -7,7 +7,7 @@ import { memo, useState, useRef } from 'react';
 import { toast } from 'sonner';
 
 const DataTableComponent: React.FC = () => {
-    const { data, setData, columns, setColumns } = useChartEditor();
+    const { data, setData, columns, setColumns, config, setConfig } = useChartEditor();
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     // Pagination state
@@ -276,12 +276,11 @@ const DataTableComponent: React.FC = () => {
                         <span className="text-gray-400">or</span>
                         <Button 
                             variant="outline" 
-                            onClick={() => {
-                                setColumns(['Column 1', 'Column 2', 'Column 3']);
-                                onAddRow();
-                            }}
+                            onClick={loadQuickStartData}
+                            className="flex items-center gap-2"
                         >
-                            Start with Empty Table
+                            <Zap className="w-4 h-4" />
+                            Quick Start Data
                         </Button>
                     </div>
                 </div>
