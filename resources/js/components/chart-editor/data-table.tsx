@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Upload, FileText, Trash2, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useChartEditor } from '@/contexts/chart-editor-context';
 import { memo, useState, useRef } from 'react';
@@ -188,34 +188,31 @@ const DataTableComponent: React.FC = () => {
             {/* Action Buttons */}
             <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                    <Button 
-                        variant="outline" 
+                    <button 
                         onClick={triggerFileUpload}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-gray-50"
                     >
                         <Upload className="w-4 h-4" />
                         <span>Upload CSV</span>
-                    </Button>
+                    </button>
                     
                     {data.length > 0 && (
                         <>
-                            <Button 
-                                variant="outline" 
+                            <button 
                                 onClick={downloadCSV}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-gray-50"
                             >
                                 <Download className="w-4 h-4" />
                                 <span>Download CSV</span>
-                            </Button>
+                            </button>
                             
-                            <Button 
-                                variant="outline" 
+                            <button 
                                 onClick={clearData}
-                                className="flex items-center gap-2 text-red-600 hover:text-red-700"
+                                className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-gray-50 text-red-600 hover:text-red-700"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 <span>Clear Data</span>
-                            </Button>
+                            </button>
                         </>
                     )}
                 </div>
@@ -227,10 +224,10 @@ const DataTableComponent: React.FC = () => {
                         </span>
                     )}
                     
-                    <Button onClick={onAddRow} disabled={columns.length === 0}>
+                    <button onClick={onAddRow} disabled={columns.length === 0} className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50">
                         <Plus className="w-4 h-4" />
                         <span>Add Row</span>
-                    </Button>
+                    </button>
                 </div>
             </div>
 
@@ -254,20 +251,20 @@ const DataTableComponent: React.FC = () => {
                         Upload a CSV file to get started, or manually add data using the table below.
                     </p>
                     <div className="flex items-center justify-center gap-4">
-                        <Button onClick={triggerFileUpload} className="flex items-center gap-2">
+                        <button onClick={triggerFileUpload} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                             <Upload className="w-4 h-4" />
                             Upload CSV File
-                        </Button>
+                        </button>
                         <span className="text-gray-400">or</span>
-                        <Button 
-                            variant="outline" 
+                        <button 
                             onClick={() => {
                                 setColumns(['Column 1', 'Column 2', 'Column 3']);
                                 onAddRow();
                             }}
+                            className="px-4 py-2 border rounded hover:bg-gray-50"
                         >
                             Start with Empty Table
-                        </Button>
+                        </button>
                     </div>
                 </div>
             ) : (
@@ -311,12 +308,12 @@ const DataTableComponent: React.FC = () => {
                             </div>
                             
                             <div className="flex items-center gap-2">
-                                <Button size="sm" disabled={page === 0} onClick={() => setPage(0)}>
+                                <button disabled={page === 0} onClick={() => setPage(0)} className="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50">
                                     First
-                                </Button>
-                                <Button size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
+                                </button>
+                                <button disabled={page === 0} onClick={() => setPage(page - 1)} className="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50">
                                     Prev
-                                </Button>
+                                </button>
                                 <span className="flex items-center gap-1 text-sm">
                                     Page
                                     <input
@@ -332,12 +329,12 @@ const DataTableComponent: React.FC = () => {
                                     />
                                     of {pageCount}
                                 </span>
-                                <Button size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)}>
+                                <button disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)} className="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50">
                                     Next
-                                </Button>
-                                <Button size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(pageCount - 1)}>
+                                </button>
+                                <button disabled={page + 1 >= pageCount} onClick={() => setPage(pageCount - 1)} className="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50">
                                     Last
-                                </Button>
+                                </button>
                             </div>
                         </div>
                     )}
