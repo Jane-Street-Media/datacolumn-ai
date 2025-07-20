@@ -5,32 +5,6 @@ import { useChartEditor } from '@/contexts/chart-editor-context';
 import { memo, useState, useRef } from 'react';
 import { toast } from 'sonner';
 
-// Custom button component to avoid import issues
-const CustomButton = ({ children, onClick, disabled = false, variant = 'default', size = 'default', className = '', ...props }) => {
-    const baseClasses = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
-    
-    const variantClasses = {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
-    };
-    
-    const sizeClasses = {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3'
-    };
-    
-    return (
-        <button
-            className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
-            onClick={onClick}
-            disabled={disabled}
-            {...props}
-        >
-            {children}
-        </button>
-    );
-};
-
 const DataTableComponent: React.FC = () => {
     const { data, setData, columns, setColumns } = useChartEditor();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -227,39 +201,40 @@ const DataTableComponent: React.FC = () => {
     const paginatedData = data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
     const pageCount = Math.ceil(data.length / rowsPerPage);
 
+    // Button styles as inline classes
+    const buttonClass = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2";
+    const buttonSmClass = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3";
+
     return (
         <>
             {/* Action Buttons */}
             <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                    <CustomButton 
-                        variant="outline" 
+                    <button 
                         onClick={triggerFileUpload}
-                        className="flex items-center gap-2"
+                        className={buttonClass}
                     >
                         <Upload className="w-4 h-4" />
                         <span>Upload CSV</span>
-                    </CustomButton>
+                    </button>
                     
                     {data.length > 0 && (
                         <>
-                            <CustomButton 
-                                variant="outline" 
+                            <button 
                                 onClick={downloadCSV}
-                                className="flex items-center gap-2"
+                                className={buttonClass}
                             >
                                 <Download className="w-4 h-4" />
                                 <span>Download CSV</span>
-                            </CustomButton>
+                            </button>
                             
-                            <CustomButton 
-                                variant="outline" 
+                            <button 
                                 onClick={clearData}
-                                className="flex items-center gap-2 text-red-600 hover:text-red-700"
+                                className={`${buttonClass} text-red-600 hover:text-red-700`}
                             >
                                 <Trash2 className="w-4 h-4" />
                                 <span>Clear Data</span>
-                            </CustomButton>
+                            </button>
                         </>
                     )}
                 </div>
@@ -271,10 +246,14 @@ const DataTableComponent: React.FC = () => {
                         </span>
                     )}
                     
-                    <CustomButton onClick={onAddRow} disabled={columns.length === 0}>
+                    <button 
+                        onClick={onAddRow} 
+                        disabled={columns.length === 0}
+                        className={buttonClass}
+                    >
                         <Plus className="w-4 h-4" />
                         <span>Add Row</span>
-                    </CustomButton>
+                    </button>
                 </div>
             </div>
 
@@ -298,19 +277,18 @@ const DataTableComponent: React.FC = () => {
                         Upload a CSV file to get started, or manually add data using the table below.
                     </p>
                     <div className="flex items-center justify-center gap-4">
-                        <CustomButton onClick={triggerFileUpload} className="flex items-center gap-2">
+                        <button onClick={triggerFileUpload} className={buttonClass}>
                             <Upload className="w-4 h-4" />
                             Upload CSV File
-                        </CustomButton>
+                        </button>
                         <span className="text-gray-400">or</span>
-                        <CustomButton 
-                            variant="outline" 
+                        <button 
                             onClick={loadQuickStartData}
-                            className="flex items-center gap-2"
+                            className={buttonClass}
                         >
                             <Zap className="w-4 h-4" />
                             Quick Start Data
-                        </CustomButton>
+                        </button>
                     </div>
                 </div>
             ) : (
@@ -354,12 +332,20 @@ const DataTableComponent: React.FC = () => {
                             </div>
                             
                             <div className="flex items-center gap-2">
-                                <CustomButton size="sm" disabled={page === 0} onClick={() => setPage(0)}>
+                                <button 
+                                    disabled={page === 0} 
+                                    onClick={() => setPage(0)}
+                                    className={buttonSmClass}
+                                >
                                     First
-                                </CustomButton>
-                                <CustomButton size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
+                                </button>
+                                <button 
+                                    disabled={page === 0} 
+                                    onClick={() => setPage(page - 1)}
+                                    className={buttonSmClass}
+                                >
                                     Prev
-                                </CustomButton>
+                                </button>
                                 <span className="flex items-center gap-1 text-sm">
                                     Page
                                     <input
@@ -375,12 +361,20 @@ const DataTableComponent: React.FC = () => {
                                     />
                                     of {pageCount}
                                 </span>
-                                <CustomButton size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)}>
+                                <button 
+                                    disabled={page + 1 >= pageCount} 
+                                    onClick={() => setPage(page + 1)}
+                                    className={buttonSmClass}
+                                >
                                     Next
-                                </CustomButton>
-                                <CustomButton size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(pageCount - 1)}>
+                                </button>
+                                <button 
+                                    disabled={page + 1 >= pageCount} 
+                                    onClick={() => setPage(pageCount - 1)}
+                                    className={buttonSmClass}
+                                >
                                     Last
-                                </CustomButton>
+                                </button>
                             </div>
                         </div>
                     )}
