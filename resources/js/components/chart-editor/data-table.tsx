@@ -139,40 +139,55 @@ const DataTableComponent: React.FC = () => {
             return;
         }
 
-        const csvContent = generateCSV();
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        
-        if (link.download !== undefined) {
+        try {
+            const csvContent = generateCSV();
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Create download link
+            const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
+            
             link.setAttribute('href', url);
-            link.setAttribute('download', 'chart-data.csv');
+            link.setAttribute('download', `chart-data-${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
+            
+            // Append to body, click, and remove
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
+            // Clean up the URL object
+            URL.revokeObjectURL(url);
+            
             toast.success('CSV downloaded successfully');
+        } catch (error) {
+            console.error('Download error:', error);
+            toast.error('Failed to download CSV');
         }
     };
 
     const generateCSV = (): string => {
-        // Create headers row
-        const headers = columns.join(',');
-        
-        // Create data rows
-        const rows = data.map(row => {
-            return columns.map(col => {
-                const value = row[col] || '';
-                // Escape quotes and wrap in quotes if contains comma or quote
-                if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-                    return `"${value.replace(/"/g, '""')}"`;
-                }
-                return value;
-            }).join(',');
-        });
-        
-        return [headers, ...rows].join('\n');
+        try {
+            // Create headers row
+            const headers = columns.join(',');
+            
+            // Create data rows
+            const rows = data.map(row => {
+                return columns.map(col => {
+                    const value = String(row[col] || '');
+                    // Escape quotes and wrap in quotes if contains comma, quote, or newline
+                    if (value.includes(',') || value.includes('"') || value.includes('\n') || value.includes('\r')) {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    }
+                    return value;
+                }).join(',');
+            });
+            
+            return [headers, ...rows].join('\n');
+        } catch (error) {
+            console.error('CSV generation error:', error);
+            throw new Error('Failed to generate CSV content');
+        }
     };
 
     const triggerFileUpload = () => {
