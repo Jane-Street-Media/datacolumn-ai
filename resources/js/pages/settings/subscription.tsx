@@ -180,7 +180,6 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                 You're currently on the free plan. Unlock premium features with a subscription.
                                             </p>
                                             <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 mb-6">
-                                                <DollarSign className="w-5 h-5 mr-2" />
                                                 <span className="font-medium">Starting from $19/month</span>
                                             </div>
                                             <div className="mt-6">
