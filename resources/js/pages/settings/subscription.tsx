@@ -4,7 +4,7 @@ import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
 import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Check, CreditCard, Loader2, XCircle, X } from 'lucide-react';
+import { Check, CreditCard, Loader2, XCircle, X, Download, Calendar, DollarSign, Shield, AlertTriangle } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -60,7 +60,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         return (
             <Button
                 type="button"
-                className="w-full rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:cursor-wait disabled:bg-red-400 min-h-[44px]"
+                className="w-full bg-red-600 hover:bg-red-700 text-white disabled:bg-red-400 disabled:cursor-wait transition-all duration-200"
                 disabled={isLoading}
                 onClick={handleClick}
             >
@@ -124,200 +124,284 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
         );
     };
 
+    const getStatusBadge = (status: string) => {
+        const statusLower = status?.toLowerCase();
+        if (statusLower === 'in_trial') {
+            return (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Trial
+                </span>
+            );
+        } else if (statusLower === 'active') {
+            return (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Active
+                </span>
+            );
+        } else if (statusLower === 'non_renewing') {
+            return (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400">
+                    <XCircle className="w-3 h-3 mr-1" />
+                    Ending Soon
+                </span>
+            );
+        } else {
+            return (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                    <X className="w-3 h-3 mr-1" />
+                    Inactive
+                </span>
+            );
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Subscription" />
             <SettingsLayout>
-                <div className="w-full overflow-x-hidden">
-                    <div className="p-3 sm:p-6 max-w-full">
-                        <div className="mx-auto mb-6 sm:mb-12 max-w-3xl text-center">
-                            <h1 className="mb-2 sm:mb-3 text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-50">Subscription</h1>
-                            <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300">Manage your subscription and payment details</p>
+                <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {/* Header Section */}
+                        <div className="text-center mb-12">
+                            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                                Subscription Management
+                            </h1>
+                            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                                Manage your subscription, payment details, and billing preferences
+                            </p>
                         </div>
 
                         {!isSubscribed ? (
-                            <div className="w-full max-w-4xl mx-auto">
-                                <div className="border-opacity-30 dark:border-opacity-50 mb-6 sm:mb-8 overflow-hidden rounded-xl border-2 border-[#012A38] bg-white shadow-lg dark:bg-zinc-800">
-                                    <div className="border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
-                                        <div className="mb-3 sm:mb-4 flex items-center justify-center space-x-2">
-                                            <h2 className="text-lg sm:text-xl font-semibold text-zinc-900 dark:text-zinc-50">No Active Subscription</h2>
+                            /* Free Plan State */
+                            <div className="max-w-4xl mx-auto">
+                                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-12 text-center">
+                                        <div className="text-white">
+                                            <h2 className="text-3xl font-bold mb-4">Ready to Upgrade?</h2>
+                                            <p className="text-xl text-blue-100 mb-6">
+                                                You're currently on the free plan. Unlock premium features with a subscription.
+                                            </p>
+                                            <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                                                <DollarSign className="w-5 h-5 mr-2" />
+                                                <span className="font-medium">Starting from $9/month</span>
+                                            </div>
                                         </div>
-                                        <p className="mb-3 sm:mb-4 text-center text-sm sm:text-base text-zinc-600 dark:text-zinc-300">
-                                            You don't have an active subscription. Choose a plan below to get started.
-                                        </p>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="w-full max-w-4xl mx-auto">
-                                <div className="w-full border-opacity-30 dark:border-opacity-50 bg-card overflow-hidden rounded-xl shadow-lg">
-                                    {/* Subscription Header */}
-                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-6 space-y-3 sm:space-y-0">
-                                        <div className="min-w-0 flex-1">
-                                            <h2 className="text-foreground text-lg sm:text-xl font-semibold truncate">{subscription.plan.display_name}</h2>
-                                            <p className={`text-sm font-medium ${
-                                                subscription.chargebee_status?.toLowerCase() === 'in_trial'
-                                                    ? 'text-amber-500 dark:text-amber-400'
-                                                    : subscription.chargebee_status?.toLowerCase() === 'active'
-                                                      ? 'text-green-600 dark:text-green-400'
-                                                      : 'text-red-600 dark:text-red-400'
-                                            }`}>
-                                                {subscription.chargebee_status?.toUpperCase() || 'ACTIVE'}
-                                            </p>
-                                        </div>
-                                        <div className="text-left sm:text-right flex-shrink-0">
-                                            <p className="text-sm text-zinc-600 dark:text-zinc-300">Started: {formatDate(subscription.created_at)}</p>
-                                            {subscription.ends_at ? (
-                                                <p className="text-sm text-zinc-600 dark:text-zinc-300">Ends: {formatDate(subscription.ends_at)}</p>
-                                            ) : (
-                                                <p className="text-sm text-zinc-600 dark:text-zinc-300">
-                                                    Renews: {formatDate(subscription.next_billing_at)}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 sm:p-6">
-                                        {/* Payment & Billing Info */}
-                                        <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                                            <div className="border-primary rounded-lg border p-3 sm:p-4 min-w-0">
-                                                <p className="text-foreground text-sm font-medium">Card Number</p>
-                                                <p className="text-secondary-foreground mt-1 text-sm">
-                                                    {`**** **** **** ${auth?.user.pm_last_four || '****'}`}
-                                                </p>
+                            /* Active Subscription State */
+                            <div className="max-w-6xl mx-auto space-y-8">
+                                {/* Main Subscription Card */}
+                                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                    {/* Header with gradient */}
+                                    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                            <div>
+                                                <h2 className="text-2xl font-bold text-white mb-2">
+                                                    {subscription.plan.display_name}
+                                                </h2>
+                                                {getStatusBadge(subscription.chargebee_status)}
                                             </div>
-                                            <div className="border-primary rounded-lg border p-3 sm:p-4 min-w-0">
-                                                <p className="text-foreground text-sm font-medium">Billing Cycle</p>
-                                                <p className="text-secondary-foreground mt-1 text-sm">
-                                                    {subscription.chargebee_price?.match(/Monthly/i) ? 'Monthly' : 'Yearly'}
-                                                </p>
-                                            </div>
-                                            <div className="border-primary rounded-lg border p-3 sm:p-4 min-w-0">
-                                                <p className="text-foreground text-sm font-medium">Currency</p>
-                                                <p className="text-secondary-foreground mt-1 text-sm">{subscription.plan.currency}</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Subscription Items */}
-                                        <div className="mb-4 sm:mb-6">
-                                            <h3 className="text-md text-foreground mb-3 font-semibold">Subscription Items</h3>
-                                            
-                                            <div className="bg-gray-50 dark:bg-zinc-700 p-3 rounded-lg">
-                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="font-medium text-sm text-zinc-900 dark:text-zinc-100">Product</p>
-                                                        <p className="text-sm text-zinc-600 dark:text-zinc-300 truncate">{subscription.plan.display_name}</p>
+                                            <div className="mt-4 sm:mt-0 text-right">
+                                                <div className="text-white/90 text-sm">
+                                                    <div className="flex items-center mb-1">
+                                                        <Calendar className="w-4 h-4 mr-2" />
+                                                        Started: {formatDate(subscription.created_at)}
                                                     </div>
-                                                    <div className="flex-shrink-0">
-                                                        <p className="font-medium text-sm text-zinc-900 dark:text-zinc-100">Quantity</p>
-                                                        <p className="text-sm text-zinc-600 dark:text-zinc-300">{subscription.plan.quantity}</p>
+                                                    <div className="flex items-center">
+                                                        <Calendar className="w-4 h-4 mr-2" />
+                                                        {subscription.ends_at ? 
+                                                            `Ends: ${formatDate(subscription.ends_at)}` : 
+                                                            `Renews: ${formatDate(subscription.next_billing_at)}`
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {/* Features */}
-                                        <div className="mb-4 sm:mb-6 rounded-lg bg-gray-50 p-3 sm:p-4 dark:bg-zinc-700">
-                                            <h3 className="text-md mb-3 font-semibold text-zinc-900 dark:text-zinc-50">Features Included</h3>
-                                            <div className="grid grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
-                                                {subscription.plan.details &&
-                                                    subscription.plan.details.map((detail, index) => (
-                                                        <div className="flex items-start" key={index}>
-                                                            <Check className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                                            <span className="text-sm text-zinc-700 dark:text-zinc-300 break-words">{detail}</span>
-                                                        </div>
-                                                    ))}
-                                            </div>
-                                        </div>
                                     </div>
 
-                                    {/* Action Buttons */}
-                                    <div className="flex flex-col gap-3 bg-zinc-50 p-4 sm:p-6 sm:flex-row sm:gap-4 dark:bg-zinc-900">
-                                        <button
-                                            onClick={handleUpdatePaymentMethod}
-                                            disabled={isUpdating}
-                                            className="w-full sm:flex-1 cursor-pointer rounded-lg bg-[#012A38] px-4 py-3 text-center font-medium text-white transition-all disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] flex items-center justify-center hover:bg-[#012A38]/90"
-                                        >
-                                            {isUpdating ? (
-                                                <>
-                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                    <span className="text-sm">Updating...</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <CreditCard className="mr-2 h-4 w-4"/>
-                                                    <span className="text-sm">Update Payment</span>
-                                                </>
-                                            )}
-                                        </button>
-                                        
-                                        {canResumeSubscription ? (
-                                            <button
-                                                onClick={handleResumeSubscription}
-                                                disabled={loading}
-                                                className="w-full sm:flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700 disabled:opacity-50 min-h-[44px] flex items-center justify-center"
+                                    <div className="p-8">
+                                        {/* Payment & Billing Info Grid */}
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                                                <div className="flex items-center mb-3">
+                                                    <CreditCard className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mr-2" />
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white">Payment Method</h3>
+                                                </div>
+                                                <p className="text-2xl font-mono text-gray-700 dark:text-gray-300">
+                                                    •••• •••• •••• {auth?.user.pm_last_four || '••••'}
+                                                </p>
+                                            </div>
+
+                                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                                                <div className="flex items-center mb-3">
+                                                    <Calendar className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mr-2" />
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white">Billing Cycle</h3>
+                                                </div>
+                                                <p className="text-lg text-gray-700 dark:text-gray-300">
+                                                    {subscription.chargebee_price?.match(/Monthly/i) ? 'Monthly' : 'Yearly'}
+                                                </p>
+                                            </div>
+
+                                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                                                <div className="flex items-center mb-3">
+                                                    <DollarSign className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mr-2" />
+                                                    <h3 className="font-semibold text-gray-900 dark:text-white">Currency</h3>
+                                                </div>
+                                                <p className="text-lg text-gray-700 dark:text-gray-300">
+                                                    {subscription.plan.currency}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Subscription Details */}
+                                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 mb-8 border border-blue-200 dark:border-blue-700">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Current Plan Details</h3>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="font-medium text-gray-900 dark:text-white">{subscription.plan.display_name}</p>
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400">Quantity: {subscription.plan.quantity}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <a 
+                                                        href="/user/invoice/1" 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                                                    >
+                                                        <Download className="w-4 h-4 mr-2" />
+                                                        Download Invoice
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Features Grid */}
+                                        <div className="mb-8">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Plan Features</h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {subscription.plan.details?.map((detail, index) => (
+                                                    <div 
+                                                        key={index}
+                                                        className="flex items-start p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800"
+                                                    >
+                                                        <Check className="w-5 h-5 text-green-600 dark:text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                                                        <span className="text-gray-700 dark:text-gray-300">{detail}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                            <Button
+                                                onClick={handleUpdatePaymentMethod}
+                                                disabled={isUpdating}
+                                                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200 h-12"
                                             >
-                                                {loading ? (
+                                                {isUpdating ? (
                                                     <>
                                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                        <span className="text-sm">Processing...</span>
+                                                        Updating...
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <XCircle className="mr-2 h-4 w-4"/>
-                                                        <span className="text-sm">Resume</span>
+                                                        <CreditCard className="mr-2 h-4 w-4"/>
+                                                        Update Payment Method
                                                     </>
                                                 )}
-                                            </button>
-                                        ) : subscription?.chargebee_status.toLowerCase() === 'active' ? (
-                                            <button
-                                                onClick={() => setCancelSubscriptionModalOpen(true)}
-                                                className="w-full sm:flex-1 cursor-pointer rounded-lg border border-gray-300 px-4 py-3 text-center font-medium text-zinc-700 transition-all hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700 min-h-[44px] flex items-center justify-center"
-                                            >
-                                                <X className="mr-2 h-4 w-4" />
-                                                <span className="text-sm">Cancel</span>
-                                            </button>
-                                        ) : null}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Modal */}
-                        {cancelSubscriptionModalOpen && (
-                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-                                <div className="w-full max-w-md rounded-lg bg-white p-4 sm:p-6 dark:bg-zinc-800">
-                                    <h3 className="mb-3 sm:mb-4 text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-50">Confirm Cancellation</h3>
-                                    <p className="mb-4 sm:mb-6 text-sm sm:text-base text-zinc-600 dark:text-zinc-300">
-                                        Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your
-                                        current billing cycle.
-                                    </p>
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-end">
-                                        <button
-                                            onClick={() => {
-                                                if (!isLoading) {
-                                                    setCancelSubscriptionModalOpen(false);
-                                                }
-                                            }}
-                                            disabled={isLoading}
-                                            className="w-full sm:w-auto cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-300 dark:hover:bg-zinc-700 disabled:cursor-wait disabled:opacity-50 min-h-[44px] flex items-center justify-center order-2 sm:order-1"
-                                        >
-                                            Keep Subscription
-                                        </button>
-                                        <div className="order-1 sm:order-2">
-                                            <CancelSubscriptionButton />
+                                            </Button>
+                                            
+                                            {canResumeSubscription ? (
+                                                <Button
+                                                    onClick={handleResumeSubscription}
+                                                    disabled={loading}
+                                                    variant="outline"
+                                                    className="flex-1 h-12 border-green-300 text-green-700 hover:bg-green-50 dark:border-green-600 dark:text-green-400 dark:hover:bg-green-900/20"
+                                                >
+                                                    {loading ? (
+                                                        <>
+                                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                            Processing...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Shield className="mr-2 h-4 w-4"/>
+                                                            Resume Subscription
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            ) : subscription?.chargebee_status.toLowerCase() === 'active' ? (
+                                                <Button
+                                                    onClick={() => setCancelSubscriptionModalOpen(true)}
+                                                    variant="outline"
+                                                    className="flex-1 h-12 border-red-300 text-red-700 hover:bg-red-50 dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900/20"
+                                                >
+                                                    <X className="mr-2 h-4 w-4" />
+                                                    Cancel Subscription
+                                                </Button>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* FIXED: Wrap Pricing component to constrain its width */}
-                        {!canResumeSubscription && (
-                            <div className="mt-8 sm:mt-12 w-full overflow-x-hidden">
-                                <div className="w-full max-w-full overflow-x-hidden -mx-3 px-3 sm:-mx-6 sm:px-6">
-                                    <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
+                        {/* Enhanced Modal */}
+                        {cancelSubscriptionModalOpen && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                                <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                    <div className="bg-red-50 dark:bg-red-900/20 px-6 py-4 border-b border-red-200 dark:border-red-800">
+                                        <div className="flex items-center">
+                                            <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400 mr-3" />
+                                            <h3 className="text-lg font-semibold text-red-900 dark:text-red-100">
+                                                Confirm Cancellation
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-6">
+                                        <p className="text-gray-600 dark:text-gray-300 mb-6">
+                                            Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your current billing cycle.
+                                        </p>
+                                        
+                                        <div className="flex flex-col sm:flex-row gap-3">
+                                            <Button
+                                                onClick={() => {
+                                                    if (!isLoading) {
+                                                        setCancelSubscriptionModalOpen(false);
+                                                    }
+                                                }}
+                                                disabled={isLoading}
+                                                variant="outline"
+                                                className="flex-1"
+                                            >
+                                                Keep Subscription
+                                            </Button>
+                                            <div className="flex-1">
+                                                <CancelSubscriptionButton />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        )}
+
+                        {/* Pricing Section */}
+                        {!canResumeSubscription && (
+                            <div className="mt-16">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                                        {isSubscribed ? 'Upgrade Your Plan' : 'Choose Your Plan'}
+                                    </h2>
+                                    <p className="text-xl text-gray-600 dark:text-gray-300">
+                                        {isSubscribed ? 'Switch to a different plan that better fits your needs' : 'Select the perfect plan for your requirements'}
+                                    </p>
+                                </div>
+                                <Pricing plans={plans} subscription={subscription} isSubscribed={isSubscribed} />
                             </div>
                         )}
                     </div>
