@@ -15,7 +15,8 @@ import {
     Target,
     Activity,
     BarChart3,
-    Zap
+    BarChart2,
+    GitBranch
 } from 'lucide-react';
 import { CustomChartConfig } from '../../pages/charts/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -39,9 +40,9 @@ const chartTypes = [
     { type: 'funnel' as const, label: 'Funnel Chart', icon: GitFork },
     { type: 'treemap' as const, label: 'Treemap', icon: LayoutGrid },
     { type: 'composed' as const, label: 'Composed', icon: Layers },
-    { type: 'stackedBar' as const, label: 'Stacked Bar', icon: BarChart3 },
+    { type: 'stackedBar' as const, label: 'Stacked Bar', icon: BarChart2 },
     { type: 'stackedArea' as const, label: 'Stacked Area', icon: Activity },
-    { type: 'waterfall' as const, label: 'Waterfall', icon: Zap },
+    { type: 'waterfall' as const, label: 'Waterfall', icon: GitBranch },
 ];
 
 const colorSchemes = [
@@ -108,14 +109,18 @@ const defaultCardContentClasses = {
 export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses = defaultCardContentClasses,}) => {
     const { config, setConfig, columns} = useChartEditor();
 
+    // Define chart type categories for better handling
+    const singleSeriesCharts = ['pie', 'radar', 'radialBar', 'funnel', 'treemap'];
+    const multiSeriesCharts = ['composed', 'stackedBar', 'stackedArea'];
+    const axisBasedCharts = ['bar', 'line', 'area', 'scatter', 'composed', 'stackedBar', 'stackedArea', 'waterfall'];
+
     const handleChartTypeChange = (type: CustomChartConfig['type']) => {
         if (type === '') {
             return;
         }
         
-        // Handle special cases for different chart types
-        if (['pie', 'radar', 'radialBar', 'funnel', 'treemap'].includes(type)) {
-            // These charts don't use traditional X/Y axis
+        // Handle single series charts (pie, radar, radialBar, funnel, treemap)
+        if (singleSeriesCharts.includes(type)) {
             setConfig({
                 ...config,
                 type: type,
@@ -124,18 +129,28 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
             return;
         }
         
-        if (type !== 'composed' && !['stackedBar', 'stackedArea'].includes(type)) {
-            // Single series charts
-            if (config.series.length) {
-                setConfig({
-                    ...config,
-                    type: type,
-                    series: [config.series[0]]
-                });
-                return;
-            }
+        // Handle multi-series charts (composed, stackedBar, stackedArea)
+        if (multiSeriesCharts.includes(type)) {
+            setConfig({
+                ...config,
+                type: type,
+                // Keep existing series for multi-series charts
+                series: config.series.length ? config.series : []
+            });
+            return;
+        }
+        
+        // Handle single series axis-based charts (bar, line, area, scatter, waterfall)
+        if (['bar', 'line', 'area', 'scatter', 'waterfall'].includes(type)) {
+            setConfig({
+                ...config,
+                type: type,
+                series: config.series.length ? [config.series[0]] : []
+            });
+            return;
         }
 
+        // Default case
         setConfig({...config, type });
     }
 
@@ -157,12 +172,14 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
             stroke: getNextColor(),
         };
 
-        if (['composed', 'stackedBar', 'stackedArea'].includes(config.type)) {
+        // Multi-series charts can have multiple series
+        if (multiSeriesCharts.includes(config.type)) {
             setConfig({
                 ...config,
                 series: [...config.series, defaultSeriesConfig]
             });
         } else {
+            // Single series charts replace existing series
             setConfig({
                 ...config,
                 series: [defaultSeriesConfig]
@@ -172,12 +189,29 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
 
     const getDefaultChartTypeForSeries = (chartType: string) => {
         switch (chartType) {
+            case 'bar':
             case 'stackedBar':
                 return 'bar';
+            case 'line':
+                return 'line';
+            case 'area':
             case 'stackedArea':
                 return 'area';
             case 'scatter':
                 return 'scatter';
+            case 'pie':
+                return 'pie';
+            case 'radar':
+                return 'radar';
+            case 'radialBar':
+                return 'radialBar';
+            case 'funnel':
+                return 'funnel';
+            case 'treemap':
+                return 'treemap';
+            case 'waterfall':
+                return 'bar'; // Waterfall typically uses bar-like rendering
+            case 'composed':
             default:
                 return 'line';
         }
@@ -223,8 +257,9 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
         })
     };
 
-    const isAxisBasedChart = !['pie', 'radar', 'radialBar', 'funnel', 'treemap'].includes(config.type);
-    const isMultiSeriesChart = ['composed', 'stackedBar', 'stackedArea', 'radar'].includes(config.type);
+    // Use the categorized chart types
+    const isAxisBasedChart = axisBasedCharts.includes(config.type);
+    const isMultiSeriesChart = multiSeriesCharts.includes(config.type) || config.type === 'radar';
 
     return (
         <Card>
@@ -424,29 +459,31 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                                         {yaxis.dataKey} Configuration
                                     </h5>
 
-                                    {/* Chart type selector */}
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                                            Chart Type
-                                        </label>
-                                        <Select
-                                            value={yaxis.chartType}
-                                            onValueChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {chartType: val}})}
-                                        >
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select Series Type" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {chartTypes.filter(chartType => 
-                                                    !['composed', 'stackedBar', 'stackedArea'].includes(chartType.type)
-                                                ).map(({ type, label }) => (
-                                                    <SelectItem key={type} value={type}>
-                                                        {label}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                    {/* Chart type selector for composed charts */}
+                                    {config.type === 'composed' && (
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                                Chart Type
+                                            </label>
+                                            <Select
+                                                value={yaxis.chartType}
+                                                onValueChange={(val) => updateSeries({ itemIndex: yaxisIndex, itemValue: {chartType: val}})}
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Series Type" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {chartTypes.filter(chartType => 
+                                                        ['bar', 'line', 'area', 'scatter'].includes(chartType.type)
+                                                    ).map(({ type, label }) => (
+                                                        <SelectItem key={type} value={type}>
+                                                            {label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
 
                                     {/* Color controls */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -489,6 +526,62 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                                 </div>
                             ))}
                         </div>
+                    </div>
+                )}
+
+                {/* Non-axis based chart configuration (pie, radar, etc.) */}
+                {!isAxisBasedChart && (
+                    <div className="space-y-4">
+                        <h4 className="mb-3 text-sm font-semibold">Data Configuration</h4>
+                        <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select Data Column" />
+                            </SelectTrigger>
+                            <SelectContent className="w-full">
+                                {columns.map((column, index) => (
+                                    <SelectItem key={index} value={column}>
+                                        {column}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {config.series.map((series, seriesIndex) => (
+                            <div key={seriesIndex} className="space-y-3 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800/50 relative">
+                                {/* Remove button */}
+                                <button
+                                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs font-bold hover:bg-red-600 flex items-center justify-center"
+                                    onClick={() => removeSeries(seriesIndex)}
+                                    aria-label={`Remove ${series.dataKey} series`}
+                                >
+                                    ×
+                                </button>
+
+                                {/* Series name */}
+                                <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 pr-8">
+                                    {series.dataKey} Configuration
+                                </h5>
+
+                                {/* Color controls */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                        Color
+                                    </label>
+                                    <div className="flex items-center space-x-2">
+                                        <ColorPicker
+                                            value={series.fill || series.stroke}
+                                            onChange={(val) => updateSeries({ itemIndex: seriesIndex, itemValue: {fill: val, stroke: val}})}
+                                        />
+                                        <Input
+                                            value={series.fill || series.stroke || ''}
+                                            onChange={(e) => updateSeries({ itemIndex: seriesIndex, itemValue: {fill: e.target.value, stroke: e.target.value}})}
+                                            placeholder="#3b82f6"
+                                            className="text-xs"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
 
