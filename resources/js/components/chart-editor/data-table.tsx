@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Upload, FileText, Trash2, Download } from 'lucide-react';
+import { Plus, Upload, FileText, Trash2, Download, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useChartEditor } from '@/contexts/chart-editor-context';
@@ -7,7 +7,7 @@ import { memo, useState, useRef } from 'react';
 import { toast } from 'sonner';
 
 const DataTableComponent: React.FC = () => {
-    const { data, setData, columns, setColumns } = useChartEditor();
+    const { data, setData, columns, setColumns, config, setConfig } = useChartEditor();
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     // Pagination state
@@ -26,6 +26,25 @@ const DataTableComponent: React.FC = () => {
             newRow[col] = '';
         });
         setData([...data, newRow]);
+    };
+
+    const loadQuickStartData = () => {
+        const quickStartData = {
+            columns: ['Month', 'Sales', 'Profit'],
+            data: [
+                { Month: 'Jan', Sales: 1200, Profit: 300 },
+                { Month: 'Feb', Sales: 1900, Profit: 450 },
+                { Month: 'Mar', Sales: 800, Profit: 200 },
+                { Month: 'Apr', Sales: 1700, Profit: 400 },
+                { Month: 'May', Sales: 2100, Profit: 500 },
+                { Month: 'Jun', Sales: 1500, Profit: 350 }
+            ]
+        };
+        
+        setColumns(quickStartData.columns);
+        setData(quickStartData.data);
+        
+        toast.success('Quick start data loaded! Ready to create your first chart.');
     };
 
     const clearData = () => {
@@ -276,12 +295,11 @@ const DataTableComponent: React.FC = () => {
                         <span className="text-gray-400">or</span>
                         <Button 
                             variant="outline" 
-                            onClick={() => {
-                                setColumns(['Column 1', 'Column 2', 'Column 3']);
-                                onAddRow();
-                            }}
+                            onClick={loadQuickStartData}
+                            className="flex items-center gap-2"
                         >
-                            Start with Empty Table
+                            <Zap className="w-4 h-4" />
+                            Quick Start Data
                         </Button>
                     </div>
                 </div>
