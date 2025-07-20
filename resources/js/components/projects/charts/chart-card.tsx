@@ -24,7 +24,13 @@ import {
     LineChart,
     LoaderCircle,
     MoreHorizontal,
-    Users
+    Users,
+    PieChart,
+    ScatterChart,
+    TrendingUp,
+    BarChart2,
+    Activity,
+    Zap
 } from 'lucide-react';
 import { FormEventHandler, useMemo } from 'react';
 import { toast } from 'sonner';
@@ -35,7 +41,24 @@ const MotionCard = motion(Card);
 const icons = {
     area: AreaChart,
     bar: BarChart,
-    line: LineChart
+    line: LineChart,
+    pie: PieChart,
+    scatter: ScatterChart,
+    'stacked-area': TrendingUp,
+    'stacked-bar': BarChart2,
+    column: BarChart3,
+    donut: PieChart,
+    histogram: BarChart2,
+    bubble: ScatterChart,
+    spline: Activity,
+    step: Activity,
+    candlestick: BarChart2,
+    heatmap: Zap,
+    radar: Activity,
+    treemap: BarChart3,
+    funnel: TrendingUp,
+    waterfall: BarChart2,
+    gauge: Activity
 }
 
 export default function ChartCard({ index = 1, chart }) {
