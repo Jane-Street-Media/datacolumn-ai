@@ -107,7 +107,145 @@ const defaultCardContentClasses = {
 };
 
 export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses = defaultCardContentClasses,}) => {
-    const { config, setConfig, columns} = useChartEditor();
+    const { config, setConfig, columns, data, setData, setColumns} = useChartEditor();
+
+    // Chart-specific sample data
+    const getSampleDataForChartType = (chartType: string) => {
+        switch (chartType) {
+            case 'bar':
+            case 'line':
+            case 'area':
+                return {
+                    columns: ['Month', 'Sales', 'Profit'],
+                    data: [
+                        { Month: 'Jan', Sales: 1200, Profit: 300 },
+                        { Month: 'Feb', Sales: 1900, Profit: 450 },
+                        { Month: 'Mar', Sales: 800, Profit: 200 },
+                        { Month: 'Apr', Sales: 1700, Profit: 400 },
+                        { Month: 'May', Sales: 2100, Profit: 500 },
+                        { Month: 'Jun', Sales: 1500, Profit: 350 }
+                    ]
+                };
+            
+            case 'stackedBar':
+            case 'stackedArea':
+                return {
+                    columns: ['Quarter', 'Product A', 'Product B', 'Product C'],
+                    data: [
+                        { Quarter: 'Q1', 'Product A': 400, 'Product B': 300, 'Product C': 200 },
+                        { Quarter: 'Q2', 'Product A': 500, 'Product B': 250, 'Product C': 300 },
+                        { Quarter: 'Q3', 'Product A': 300, 'Product B': 400, 'Product C': 250 },
+                        { Quarter: 'Q4', 'Product A': 600, 'Product B': 350, 'Product C': 400 }
+                    ]
+                };
+
+            case 'pie':
+            case 'funnel':
+                return {
+                    columns: ['Category', 'Value'],
+                    data: [
+                        { Category: 'Desktop', Value: 45 },
+                        { Category: 'Mobile', Value: 35 },
+                        { Category: 'Tablet', Value: 20 }
+                    ]
+                };
+
+            case 'scatter':
+                return {
+                    columns: ['Height', 'Weight'],
+                    data: [
+                        { Height: 160, Weight: 55 },
+                        { Height: 165, Weight: 60 },
+                        { Height: 170, Weight: 65 },
+                        { Height: 175, Weight: 70 },
+                        { Height: 180, Weight: 75 },
+                        { Height: 185, Weight: 80 }
+                    ]
+                };
+
+            case 'radar':
+                return {
+                    columns: ['Skill', 'John', 'Jane', 'Mike'],
+                    data: [
+                        { Skill: 'Speed', John: 8, Jane: 6, Mike: 9 },
+                        { Skill: 'Strength', John: 7, Jane: 8, Mike: 6 },
+                        { Skill: 'Agility', John: 9, Jane: 7, Mike: 8 },
+                        { Skill: 'Endurance', John: 6, Jane: 9, Mike: 7 },
+                        { Skill: 'Intelligence', John: 8, Jane: 9, Mike: 7 }
+                    ]
+                };
+
+            case 'radialBar':
+                return {
+                    columns: ['Metric', 'Score'],
+                    data: [
+                        { Metric: 'Performance', Score: 85 },
+                        { Metric: 'Quality', Score: 92 },
+                        { Metric: 'Efficiency', Score: 78 },
+                        { Metric: 'Satisfaction', Score: 88 }
+                    ]
+                };
+
+            case 'waterfall':
+                return {
+                    columns: ['Stage', 'Amount'],
+                    data: [
+                        { Stage: 'Starting', Amount: 1000 },
+                        { Stage: 'Q1 Sales', Amount: 500 },
+                        { Stage: 'Q1 Costs', Amount: -200 },
+                        { Stage: 'Q2 Sales', Amount: 300 },
+                        { Stage: 'Q2 Costs', Amount: -150 },
+                        { Stage: 'Q3 Sales', Amount: 400 },
+                        { Stage: 'Q3 Costs', Amount: -100 }
+                    ]
+                };
+
+            case 'treemap':
+                return {
+                    columns: ['Region', 'Sales'],
+                    data: [
+                        { Region: 'North America', Sales: 2500 },
+                        { Region: 'Europe', Sales: 1800 },
+                        { Region: 'Asia Pacific', Sales: 2200 },
+                        { Region: 'Latin America', Sales: 900 },
+                        { Region: 'Middle East', Sales: 600 },
+                        { Region: 'Africa', Sales: 400 }
+                    ]
+                };
+
+            case 'composed':
+                return {
+                    columns: ['Month', 'Revenue', 'Users', 'Conversion'],
+                    data: [
+                        { Month: 'Jan', Revenue: 4000, Users: 240, Conversion: 16.7 },
+                        { Month: 'Feb', Revenue: 3000, Users: 198, Conversion: 15.1 },
+                        { Month: 'Mar', Revenue: 5000, Users: 300, Conversion: 16.7 },
+                        { Month: 'Apr', Revenue: 4500, Users: 278, Conversion: 16.2 },
+                        { Month: 'May', Revenue: 6000, Users: 350, Conversion: 17.1 },
+                        { Month: 'Jun', Revenue: 5500, Users: 325, Conversion: 16.9 }
+                    ]
+                };
+
+            default:
+                return {
+                    columns: ['Category', 'Value'],
+                    data: [
+                        { Category: 'A', Value: 400 },
+                        { Category: 'B', Value: 300 },
+                        { Category: 'C', Value: 200 },
+                        { Category: 'D', Value: 278 }
+                    ]
+                };
+        }
+    };
+
+    const loadSampleData = (chartType: string) => {
+        const sampleData = getSampleDataForChartType(chartType);
+        setColumns(sampleData.columns);
+        setData(sampleData.data);
+        
+        toast.success(`Loaded sample data for ${chartTypes.find(ct => ct.type === chartType)?.label || chartType}`);
+    };
 
     // Define chart type categories for better handling
     const singleSeriesCharts = ['pie', 'radialBar', 'funnel', 'treemap'];
@@ -119,6 +257,10 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
             return;
         }
         
+        // Auto-load sample data if no data exists
+        const hasData = data && data.length > 0;
+        const shouldLoadSample = !hasData;
+        
         // Handle single series charts (pie, radialBar, funnel, treemap)
         if (singleSeriesCharts.includes(type)) {
             setConfig({
@@ -126,6 +268,11 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                 type: type,
                 series: config.series.length ? [config.series[0]] : []
             });
+            
+            if (shouldLoadSample) {
+                loadSampleData(type);
+                return;
+            }
             return;
         }
         
@@ -137,6 +284,11 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                 // Keep existing series for multi-series charts, but ensure at least one
                 series: config.series.length ? config.series : []
             });
+            
+            if (shouldLoadSample) {
+                loadSampleData(type);
+                return;
+            }
             return;
         }
         
@@ -147,11 +299,19 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                 type: type,
                 series: config.series.length ? [config.series[0]] : []
             });
+            
+            if (shouldLoadSample) {
+                loadSampleData(type);
+                return;
+            }
             return;
         }
 
         // Default case
         setConfig({...config, type });
+        if (shouldLoadSample) {
+            loadSampleData(type);
+        }
     }
 
     const seriesColumns = useMemo(
@@ -436,7 +596,17 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                         />
 
                         <div className="space-y-4">
-                            <h4 className="mb-3 text-sm font-semibold">Data to Chart</h4>
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-semibold">Data to Chart</h4>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => loadSampleData(config.type)}
+                                    className="text-xs"
+                                >
+                                    Load Sample Data
+                                </Button>
+                            </div>
                             <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select Data Column" />
@@ -539,7 +709,17 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                 {/* Non-axis based chart configuration (pie, radar, etc.) */}
                 {!isAxisBasedChart && (
                     <div className="space-y-4">
-                        <h4 className="mb-3 text-sm font-semibold">Data to Chart</h4>
+                        <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-semibold">Data to Chart</h4>
+                            <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => loadSampleData(config.type)}
+                                className="text-xs"
+                            >
+                                Load Sample Data
+                            </Button>
+                        </div>
                         <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select Data Column" />
