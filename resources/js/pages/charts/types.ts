@@ -1,6 +1,5 @@
 export interface CustomChartConfig {
-    type: 'bar' | 'line' | 'area' | 'pie' | 'scatter' | 'radar' | 'radialBar' | 'funnel' | 'treemap' | 'composed';
-    title: string;
+type: 'bar' | 'line' | 'area' | 'pie' | 'scatter' | 'radar' | 'radialBar' | 'funnel' | 'treemap' | 'composed' | 'stackedBar' | 'stackedArea' | 'waterfall';    title: string;
     titleAlignment: 'left' | 'center' | 'right';
     titleColor: string;
     titleWeight: 'normal' | 'bold';
