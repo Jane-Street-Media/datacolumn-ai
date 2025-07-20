@@ -1,10 +1,35 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Upload, FileText, Trash2, Download, Zap } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useChartEditor } from '@/contexts/chart-editor-context';
 import { memo, useState, useRef } from 'react';
 import { toast } from 'sonner';
+
+// Custom button component to avoid import issues
+const CustomButton = ({ children, onClick, disabled = false, variant = 'default', size = 'default', className = '', ...props }) => {
+    const baseClasses = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+    
+    const variantClasses = {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+    };
+    
+    const sizeClasses = {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 rounded-md px-3'
+    };
+    
+    return (
+        <button
+            className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+            onClick={onClick}
+            disabled={disabled}
+            {...props}
+        >
+            {children}
+        </button>
+    );
+};
 
 const DataTableComponent: React.FC = () => {
     const { data, setData, columns, setColumns } = useChartEditor();
@@ -207,34 +232,34 @@ const DataTableComponent: React.FC = () => {
             {/* Action Buttons */}
             <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                    <Button 
+                    <CustomButton 
                         variant="outline" 
                         onClick={triggerFileUpload}
                         className="flex items-center gap-2"
                     >
                         <Upload className="w-4 h-4" />
                         <span>Upload CSV</span>
-                    </Button>
+                    </CustomButton>
                     
                     {data.length > 0 && (
                         <>
-                            <Button 
+                            <CustomButton 
                                 variant="outline" 
                                 onClick={downloadCSV}
                                 className="flex items-center gap-2"
                             >
                                 <Download className="w-4 h-4" />
                                 <span>Download CSV</span>
-                            </Button>
+                            </CustomButton>
                             
-                            <Button 
+                            <CustomButton 
                                 variant="outline" 
                                 onClick={clearData}
                                 className="flex items-center gap-2 text-red-600 hover:text-red-700"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 <span>Clear Data</span>
-                            </Button>
+                            </CustomButton>
                         </>
                     )}
                 </div>
@@ -246,10 +271,10 @@ const DataTableComponent: React.FC = () => {
                         </span>
                     )}
                     
-                    <Button onClick={onAddRow} disabled={columns.length === 0}>
+                    <CustomButton onClick={onAddRow} disabled={columns.length === 0}>
                         <Plus className="w-4 h-4" />
                         <span>Add Row</span>
-                    </Button>
+                    </CustomButton>
                 </div>
             </div>
 
@@ -273,19 +298,19 @@ const DataTableComponent: React.FC = () => {
                         Upload a CSV file to get started, or manually add data using the table below.
                     </p>
                     <div className="flex items-center justify-center gap-4">
-                        <Button onClick={triggerFileUpload} className="flex items-center gap-2">
+                        <CustomButton onClick={triggerFileUpload} className="flex items-center gap-2">
                             <Upload className="w-4 h-4" />
                             Upload CSV File
-                        </Button>
+                        </CustomButton>
                         <span className="text-gray-400">or</span>
-                        <Button 
+                        <CustomButton 
                             variant="outline" 
                             onClick={loadQuickStartData}
                             className="flex items-center gap-2"
                         >
                             <Zap className="w-4 h-4" />
                             Quick Start Data
-                        </Button>
+                        </CustomButton>
                     </div>
                 </div>
             ) : (
@@ -329,12 +354,12 @@ const DataTableComponent: React.FC = () => {
                             </div>
                             
                             <div className="flex items-center gap-2">
-                                <Button size="sm" disabled={page === 0} onClick={() => setPage(0)}>
+                                <CustomButton size="sm" disabled={page === 0} onClick={() => setPage(0)}>
                                     First
-                                </Button>
-                                <Button size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
+                                </CustomButton>
+                                <CustomButton size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
                                     Prev
-                                </Button>
+                                </CustomButton>
                                 <span className="flex items-center gap-1 text-sm">
                                     Page
                                     <input
@@ -350,12 +375,12 @@ const DataTableComponent: React.FC = () => {
                                     />
                                     of {pageCount}
                                 </span>
-                                <Button size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)}>
+                                <CustomButton size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)}>
                                     Next
-                                </Button>
-                                <Button size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(pageCount - 1)}>
+                                </CustomButton>
+                                <CustomButton size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(pageCount - 1)}>
                                     Last
-                                </Button>
+                                </CustomButton>
                             </div>
                         </div>
                     )}
