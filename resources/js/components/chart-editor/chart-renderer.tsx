@@ -29,6 +29,7 @@ import {
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
+  ReferenceLine,
 } from 'recharts';
 import { ChartConfig, DataPoint } from '../types';
 import { useChartEditor } from '@/contexts/chart-editor-context';
@@ -81,6 +82,50 @@ const CustomTooltip = ({ active, payload, label, config }: TooltipProps<number, 
           </span>
         </div>
       ))}
+    </div>
+  );
+};
+
+// Custom Waterfall Tooltip
+const WaterfallTooltip = ({ active, payload, label, config }: TooltipProps<number, string> & { config: ChartConfig }) => {
+  if (!active || !payload || payload.length === 0) return null;
+
+  const formatValue = (value: number | string) => {
+    if (typeof value === 'string'){
+      value = Number(value)
+    }
+    switch (config.tooltipFormat) {
+      case 'currency':
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+      case 'percentage':
+        return `${value.toFixed(2)}%`;
+      case 'decimal':
+        return value.toFixed(2);
+      case 'thousands':
+        return `${(value / 1000).toFixed(1)}K`;
+      case 'millions':
+        return `${(value / 1000000).toFixed(1)}M`;
+      default:
+        return value.toString();
+    }
+  };
+
+  const isDarkTheme = config.theme === 'dark' ||
+                     (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const data = payload[0]?.payload;
+  
+  return (
+    <div className={`${isDarkTheme ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-900'} p-3 border rounded-lg shadow-lg`}>
+      <p className={`font-medium ${isDarkTheme ? 'text-white' : 'text-gray-900'} mb-2`}>{label}</p>
+      <div className="space-y-1">
+        <div className={`text-sm ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>
+          Change: {formatValue(data?.originalValue || 0)}
+        </div>
+        <div className={`text-sm ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>
+          Running Total: {formatValue(data?.runningTotal || 0)}
+        </div>
+      </div>
     </div>
   );
 };
@@ -138,19 +183,35 @@ export const ChartRenderer: React.FC = () => {
       return chartData;
     }
     
-    let cumulative = config.waterfallStartValue || 0;
+    let runningTotal = 0;
+    const valueKey = config.series[0]?.dataKey;
+    
     return chartData.map((item, index) => {
-      const value = item[config.series[0]?.dataKey || 'value'];
-      const result = {
+      const originalValue = Number(item[valueKey] || 0);
+      const isPositive = originalValue >= 0;
+      
+      // For positive values, start from running total
+      // For negative values, start from running total + value
+      const startValue = isPositive ? runningTotal : runningTotal + originalValue;
+      const endValue = runningTotal + originalValue;
+      
+      runningTotal += originalValue;
+      
+      return {
         ...item,
-        value: value,
-        cumulative: cumulative,
-        total: cumulative + value
+        [config.xAxis]: item[config.xAxis],
+        // Invisible bar to position the visible bar correctly
+        base: startValue,
+        // The visible bar value
+        value: Math.abs(originalValue),
+        // Store original for tooltip
+        originalValue: originalValue,
+        runningTotal: runningTotal,
+        isPositive: isPositive,
+        fill: isPositive ? '#22c55e' : '#ef4444' // Green for positive, red for negative
       };
-      cumulative += value;
-      return result;
     });
-  }, [chartData, config.type, config.series, config.waterfallStartValue]);
+  }, [chartData, config.type, config.series, config.xAxis]);
 
   if (!data.length || !config.xAxis) {
     return (
@@ -258,10 +319,10 @@ export const ChartRenderer: React.FC = () => {
                     key={seriesData.dataKey} 
                     {...seriesData} 
                     stackId={config.type === 'stackedBar' ? 'stack' : undefined}
-                    radius={[4, 4, 0, 0]}
+                    radius={config.type === 'stackedBar' ? [0, 0, 0, 0] : [4, 4, 0, 0]}
                     {...animationProps}
                   />
-                )) : (<Bar dataKey={config.yAxis} {...animationProps} />)}
+                )) : (<Bar dataKey={config.yAxis} radius={[4, 4, 0, 0]} {...animationProps} />)}
             </BarChart>
         );
 
@@ -310,6 +371,7 @@ export const ChartRenderer: React.FC = () => {
                       <Area 
                         key={seriesData.dataKey} 
                         {...seriesData} 
+                        type="monotone"
                         stackId={config.type === 'stackedArea' ? 'stack' : undefined}
                         fillOpacity={seriesData.fillOpacity || 0.6}
                         {...animationProps}
@@ -380,19 +442,32 @@ export const ChartRenderer: React.FC = () => {
         );
 
       case 'scatter':
+        // Transform data for scatter plot - ensure numeric values
+        const scatterData = useMemo(() => {
+          if (!chartData.length || !config.series.length) return [];
+          
+          return chartData.map(item => ({
+            ...item,
+            x: Number(item[config.xAxis] || 0),
+            y: Number(item[config.series[0]?.dataKey] || 0),
+            z: config.series[1] ? Number(item[config.series[1]?.dataKey] || 5) : 5 // Size of dots
+          }));
+        }, [chartData, config.xAxis, config.series]);
+
         return (
-          <ScatterChart {...commonProps}>
+          <ScatterChart {...commonProps} data={scatterData}>
             {config.showGrid && <CartesianGrid {...config.grid} />}
-            <XAxis dataKey={config.xAxis} type="number" {...xAxisProps} />
-            <YAxis dataKey={config.series[0]?.dataKey} type="number" {...yAxisProps} />
-            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            <XAxis dataKey="x" type="number" name={config.xAxisLabel || config.xAxis} {...xAxisProps} />
+            <YAxis dataKey="y" type="number" name={config.yAxisLabel || config.series[0]?.dataKey} {...yAxisProps} />
+            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} cursor={{ strokeDasharray: '3 3' }} />}
             {config.showLegend && <Legend {...legendProps} />}
             {config.series.map((seriesData, index) => (
               <Scatter
                 key={seriesData.dataKey}
                 name={seriesData.dataKey}
-                data={chartData}
-                fill={seriesData.fill}
+                data={scatterData}
+                fill={seriesData.fill || config.colors[index % config.colors.length]}
+                shape="circle"
                 {...animationProps}
               />
             ))}
@@ -400,11 +475,24 @@ export const ChartRenderer: React.FC = () => {
         );
 
       case 'radar':
+        // Ensure radar chart has proper data structure
+        const radarData = useMemo(() => {
+          if (!chartData.length || !config.series.length) return [];
+          
+          return chartData.map(item => {
+            const result = { [config.xAxis]: item[config.xAxis] };
+            config.series.forEach(series => {
+              result[series.dataKey] = Number(item[series.dataKey] || 0);
+            });
+            return result;
+          });
+        }, [chartData, config.xAxis, config.series]);
+
         return (
-          <RadarChart {...commonProps}>
+          <RadarChart {...commonProps} data={radarData}>
             <PolarGrid />
             <PolarAngleAxis dataKey={config.xAxis} />
-            <PolarRadiusAxis />
+            <PolarRadiusAxis angle={30} domain={[0, 'dataMax']} />
             {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
             {config.showLegend && <Legend {...legendProps} />}
             {config.series.map((seriesData, index) => (
@@ -412,9 +500,10 @@ export const ChartRenderer: React.FC = () => {
                 key={seriesData.dataKey}
                 name={seriesData.dataKey}
                 dataKey={seriesData.dataKey}
-                stroke={seriesData.stroke}
-                fill={seriesData.fill}
-                fillOpacity={seriesData.fillOpacity || 0.6}
+                stroke={seriesData.stroke || config.colors[index % config.colors.length]}
+                fill={seriesData.fill || config.colors[index % config.colors.length]}
+                fillOpacity={seriesData.fillOpacity || 0.3}
+                strokeWidth={2}
                 {...animationProps}
               />
             ))}
@@ -422,33 +511,75 @@ export const ChartRenderer: React.FC = () => {
         );
 
       case 'radialBar':
+        // Transform data for radial bar - needs to be in percentage format
+        const radialBarData = useMemo(() => {
+          if (!chartData.length || !config.series.length) return [];
+          
+          const valueKey = config.series[0]?.dataKey;
+          const maxValue = Math.max(...chartData.map(item => Number(item[valueKey] || 0)));
+          
+          return chartData.map((item, index) => ({
+            ...item,
+            value: Number(item[valueKey] || 0),
+            // Convert to percentage for radial bar (0-100)
+            percentage: maxValue > 0 ? Math.round((Number(item[valueKey] || 0) / maxValue) * 100) : 0,
+            fill: config.colors?.[index % config.colors.length] || config.series[0]?.fill || '#8884d8'
+          }));
+        }, [chartData, config.series, config.colors]);
+
         return (
-          <RadialBarChart {...commonProps}>
+          <RadialBarChart {...commonProps} data={radialBarData} innerRadius="10%" outerRadius="80%">
             {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
             {config.showLegend && <Legend {...legendProps} />}
             <RadialBar
-              dataKey={config.series[0]?.dataKey || 'value'}
+              dataKey="percentage"
               cornerRadius={10}
-              fill={config.series[0]?.fill || '#8884d8'}
+              startAngle={90}
+              endAngle={450}
               {...animationProps}
-            />
+            >
+              {radialBarData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={entry.fill}
+                />
+              ))}
+            </RadialBar>
           </RadialBarChart>
         );
 
       case 'funnel':
+        // Transform data for funnel chart - calculate conversion rates
+        const funnelData = useMemo(() => {
+          if (!chartData.length || !config.series.length) return [];
+          
+          const valueKey = config.series[0]?.dataKey;
+          const totalValue = chartData.reduce((sum, item) => sum + Number(item[valueKey] || 0), 0);
+          
+          return chartData.map((item, index) => ({
+            ...item,
+            value: Number(item[valueKey] || 0),
+            // Calculate percentage of total for funnel visualization
+            percentage: totalValue > 0 ? Math.round((Number(item[valueKey] || 0) / totalValue) * 100) : 0,
+            name: item[config.xAxis] || `Stage ${index + 1}`,
+            fill: config.colors?.[index % config.colors.length] || `hsl(${index * 45}, 70%, 60%)`
+          })).sort((a, b) => b.value - a.value); // Sort descending for funnel effect
+        }, [chartData, config.series, config.colors, config.xAxis]);
+
         return (
-          <FunnelChart {...commonProps}>
+          <FunnelChart {...commonProps} data={funnelData}>
             {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
             {config.showLegend && <Legend {...legendProps} />}
             <Funnel
-              dataKey={config.series[0]?.dataKey || 'value'}
-              data={chartData}
+              dataKey="value"
+              nameKey="name"
               isAnimationActive={config.enableAnimation !== false}
+              animationDuration={config.animationDuration || 1000}
             >
-              {chartData.map((entry, index) => (
+              {funnelData.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
-                  fill={config.colors?.[index % config.colors.length] || `hsl(${index * 45}, 70%, 60%)`} 
+                  fill={entry.fill}
                 />
               ))}
             </Funnel>
@@ -456,15 +587,30 @@ export const ChartRenderer: React.FC = () => {
         );
 
       case 'treemap':
+        // Transform data for treemap - needs hierarchical structure
+        const treemapData = useMemo(() => {
+          if (!chartData.length || !config.series.length) return [];
+          
+          const valueKey = config.series[0]?.dataKey;
+          
+          return chartData.map((item, index) => ({
+            name: item[config.xAxis] || `Item ${index + 1}`,
+            size: Number(item[valueKey] || 0),
+            value: Number(item[valueKey] || 0), // Recharts treemap uses 'value' by default
+            fill: config.colors?.[index % config.colors.length] || `hsl(${index * 45}, 70%, 60%)`
+          })).filter(item => item.size > 0); // Remove zero/negative values
+        }, [chartData, config.series, config.colors, config.xAxis]);
+
         return (
           <Treemap
             {...commonProps}
-            data={chartData}
-            dataKey={config.series[0]?.dataKey || 'value'}
+            data={treemapData}
+            dataKey="value"
             aspectRatio={config.aspectRatio || 4/3}
             stroke="#fff"
-            fill="#8884d8"
+            strokeWidth={2}
             content={<CustomTreemapContent colors={config.colors} />}
+            {...animationProps}
           />
         );
 
@@ -474,10 +620,34 @@ export const ChartRenderer: React.FC = () => {
             {config.showGrid && <CartesianGrid {...config.grid} />}
             <XAxis dataKey={config.xAxis} {...xAxisProps} />
             <YAxis {...yAxisProps} />
-            {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
+            {config.showTooltip !== false && <Tooltip content={(props) => <WaterfallTooltip {...props} config={config} />} />}
             {config.showLegend && <Legend {...legendProps} />}
-            <Bar dataKey="value" fill="#8884d8" {...animationProps} />
-            <Bar dataKey="cumulative" fill="transparent" {...animationProps} />
+            
+            {/* Invisible base bars to position the visible bars correctly */}
+            <Bar 
+              dataKey="base" 
+              stackId="waterfall" 
+              fill="transparent" 
+              {...animationProps} 
+            />
+            
+            {/* Visible bars with conditional colors */}
+            <Bar 
+              dataKey="value" 
+              stackId="waterfall" 
+              radius={[4, 4, 0, 0]}
+              {...animationProps}
+            >
+              {waterfallData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={entry.isPositive ? '#22c55e' : '#ef4444'} 
+                />
+              ))}
+            </Bar>
+            
+            {/* Optional: Add a reference line at zero */}
+            <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
           </BarChart>
         );
 
