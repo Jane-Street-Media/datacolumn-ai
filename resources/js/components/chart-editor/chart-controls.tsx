@@ -436,10 +436,10 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                         />
 
                         <div className="space-y-4">
-                            <h4 className="mb-3 text-sm font-semibold">Data Selection</h4>
+                            <h4 className="mb-3 text-sm font-semibold">Data to Chart</h4>
                             <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select Y Series" />
+                                    <SelectValue placeholder="Select Data Column" />
                                 </SelectTrigger>
                                 <SelectContent className="w-full">
                                     {seriesColumns.map((column, index) => (
@@ -539,7 +539,7 @@ export const ChartControls: React.FC<ChartControlsProps> = ({cardContentClasses 
                 {/* Non-axis based chart configuration (pie, radar, etc.) */}
                 {!isAxisBasedChart && (
                     <div className="space-y-4">
-                        <h4 className="mb-3 text-sm font-semibold">Data Configuration</h4>
+                        <h4 className="mb-3 text-sm font-semibold">Data to Chart</h4>
                         <Select onValueChange={(value) => addSeries(value)} className={'w-full'}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select Data Column" />
