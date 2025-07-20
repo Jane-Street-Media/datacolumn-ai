@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Upload, FileText, Trash2, Download, Zap } from 'lucide-react';
+import { Plus, Upload, FileText, Trash2, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useChartEditor } from '@/contexts/chart-editor-context';
 import { memo, useState, useRef } from 'react';
@@ -11,7 +12,7 @@ const DataTableComponent: React.FC = () => {
     
     // Pagination state
     const [page, setPage] = useState(0);
-    const rowsPerPage = 30;
+    const rowsPerPage = 30; // Change as needed
 
     const handleCellEdit = (rowIndex: number, column: string, value: string) => {
         const newData = [...data];
@@ -27,25 +28,6 @@ const DataTableComponent: React.FC = () => {
         setData([...data, newRow]);
     };
 
-    const loadQuickStartData = () => {
-        const quickStartData = {
-            columns: ['Month', 'Sales', 'Profit'],
-            data: [
-                { Month: 'Jan', Sales: 1200, Profit: 300 },
-                { Month: 'Feb', Sales: 1900, Profit: 450 },
-                { Month: 'Mar', Sales: 800, Profit: 200 },
-                { Month: 'Apr', Sales: 1700, Profit: 400 },
-                { Month: 'May', Sales: 2100, Profit: 500 },
-                { Month: 'Jun', Sales: 1500, Profit: 350 }
-            ]
-        };
-        
-        setColumns(quickStartData.columns);
-        setData(quickStartData.data);
-        
-        toast.success('Quick start data loaded! Ready to create your first chart.');
-    };
-
     const clearData = () => {
         setData([]);
         setColumns([]);
@@ -56,6 +38,7 @@ const DataTableComponent: React.FC = () => {
         const file = event.target.files?.[0];
         if (!file) return;
 
+        // Check if it's a CSV file
         if (!file.name.toLowerCase().endsWith('.csv')) {
             toast.error('Please upload a CSV file');
             return;
@@ -72,6 +55,7 @@ const DataTableComponent: React.FC = () => {
                     return;
                 }
 
+                // Extract columns from the first row (headers)
                 const newColumns = Object.keys(parsedData[0]);
                 setColumns(newColumns);
                 setData(parsedData);
@@ -89,6 +73,7 @@ const DataTableComponent: React.FC = () => {
 
         reader.readAsText(file);
         
+        // Reset file input
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -98,8 +83,10 @@ const DataTableComponent: React.FC = () => {
         const lines = csvContent.trim().split('\n');
         if (lines.length === 0) return [];
 
+        // Parse headers
         const headers = parseCSVRow(lines[0]);
         
+        // Parse data rows
         const dataRows = lines.slice(1).map(line => {
             const values = parseCSVRow(line);
             const row: any = {};
@@ -125,12 +112,15 @@ const DataTableComponent: React.FC = () => {
             
             if (char === '"') {
                 if (inQuotes && nextChar === '"') {
+                    // Handle escaped quotes
                     current += '"';
-                    i++;
+                    i++; // Skip next quote
                 } else {
+                    // Toggle quote state
                     inQuotes = !inQuotes;
                 }
             } else if (char === ',' && !inQuotes) {
+                // End of field
                 result.push(current);
                 current = '';
             } else {
@@ -138,6 +128,7 @@ const DataTableComponent: React.FC = () => {
             }
         }
         
+        // Add the last field
         result.push(current);
         return result;
     };
@@ -152,6 +143,7 @@ const DataTableComponent: React.FC = () => {
             const csvContent = generateCSV();
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             
+            // Create download link
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             
@@ -159,10 +151,12 @@ const DataTableComponent: React.FC = () => {
             link.setAttribute('download', `chart-data-${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             
+            // Append to body, click, and remove
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
+            // Clean up the URL object
             URL.revokeObjectURL(url);
             
             toast.success('CSV downloaded successfully');
@@ -174,11 +168,14 @@ const DataTableComponent: React.FC = () => {
 
     const generateCSV = (): string => {
         try {
+            // Create headers row
             const headers = columns.join(',');
             
+            // Create data rows
             const rows = data.map(row => {
                 return columns.map(col => {
                     const value = String(row[col] || '');
+                    // Escape quotes and wrap in quotes if contains comma, quote, or newline
                     if (value.includes(',') || value.includes('"') || value.includes('\n') || value.includes('\r')) {
                         return `"${value.replace(/"/g, '""')}"`;
                     }
@@ -201,40 +198,39 @@ const DataTableComponent: React.FC = () => {
     const paginatedData = data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
     const pageCount = Math.ceil(data.length / rowsPerPage);
 
-    // Button styles as inline classes
-    const buttonClass = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2";
-    const buttonSmClass = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3";
-
     return (
         <>
             {/* Action Buttons */}
             <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                    <button 
+                    <Button 
+                        variant="outline" 
                         onClick={triggerFileUpload}
-                        className={buttonClass}
+                        className="flex items-center gap-2"
                     >
                         <Upload className="w-4 h-4" />
                         <span>Upload CSV</span>
-                    </button>
+                    </Button>
                     
                     {data.length > 0 && (
                         <>
-                            <button 
+                            <Button 
+                                variant="outline" 
                                 onClick={downloadCSV}
-                                className={buttonClass}
+                                className="flex items-center gap-2"
                             >
                                 <Download className="w-4 h-4" />
                                 <span>Download CSV</span>
-                            </button>
+                            </Button>
                             
-                            <button 
+                            <Button 
+                                variant="outline" 
                                 onClick={clearData}
-                                className={`${buttonClass} text-red-600 hover:text-red-700`}
+                                className="flex items-center gap-2 text-red-600 hover:text-red-700"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 <span>Clear Data</span>
-                            </button>
+                            </Button>
                         </>
                     )}
                 </div>
@@ -246,14 +242,10 @@ const DataTableComponent: React.FC = () => {
                         </span>
                     )}
                     
-                    <button 
-                        onClick={onAddRow} 
-                        disabled={columns.length === 0}
-                        className={buttonClass}
-                    >
+                    <Button onClick={onAddRow} disabled={columns.length === 0}>
                         <Plus className="w-4 h-4" />
                         <span>Add Row</span>
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -277,18 +269,20 @@ const DataTableComponent: React.FC = () => {
                         Upload a CSV file to get started, or manually add data using the table below.
                     </p>
                     <div className="flex items-center justify-center gap-4">
-                        <button onClick={triggerFileUpload} className={buttonClass}>
+                        <Button onClick={triggerFileUpload} className="flex items-center gap-2">
                             <Upload className="w-4 h-4" />
                             Upload CSV File
-                        </button>
+                        </Button>
                         <span className="text-gray-400">or</span>
-                        <button 
-                            onClick={loadQuickStartData}
-                            className={buttonClass}
+                        <Button 
+                            variant="outline" 
+                            onClick={() => {
+                                setColumns(['Column 1', 'Column 2', 'Column 3']);
+                                onAddRow();
+                            }}
                         >
-                            <Zap className="w-4 h-4" />
-                            Quick Start Data
-                        </button>
+                            Start with Empty Table
+                        </Button>
                     </div>
                 </div>
             ) : (
@@ -332,20 +326,12 @@ const DataTableComponent: React.FC = () => {
                             </div>
                             
                             <div className="flex items-center gap-2">
-                                <button 
-                                    disabled={page === 0} 
-                                    onClick={() => setPage(0)}
-                                    className={buttonSmClass}
-                                >
+                                <Button size="sm" disabled={page === 0} onClick={() => setPage(0)}>
                                     First
-                                </button>
-                                <button 
-                                    disabled={page === 0} 
-                                    onClick={() => setPage(page - 1)}
-                                    className={buttonSmClass}
-                                >
+                                </Button>
+                                <Button size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
                                     Prev
-                                </button>
+                                </Button>
                                 <span className="flex items-center gap-1 text-sm">
                                     Page
                                     <input
@@ -361,20 +347,12 @@ const DataTableComponent: React.FC = () => {
                                     />
                                     of {pageCount}
                                 </span>
-                                <button 
-                                    disabled={page + 1 >= pageCount} 
-                                    onClick={() => setPage(page + 1)}
-                                    className={buttonSmClass}
-                                >
+                                <Button size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)}>
                                     Next
-                                </button>
-                                <button 
-                                    disabled={page + 1 >= pageCount} 
-                                    onClick={() => setPage(pageCount - 1)}
-                                    className={buttonSmClass}
-                                >
+                                </Button>
+                                <Button size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage(pageCount - 1)}>
                                     Last
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}
