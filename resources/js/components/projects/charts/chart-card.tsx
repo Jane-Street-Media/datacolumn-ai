@@ -28,9 +28,12 @@ import {
     PieChart,
     ScatterChart,
     TrendingUp,
-    BarChart2,
     Activity,
-    Zap
+    Target,
+    TreePine,
+    Layers,
+    BarChart2,
+    GitBranch
 } from 'lucide-react';
 import { FormEventHandler, useMemo } from 'react';
 import { toast } from 'sonner';
@@ -39,26 +42,27 @@ import { Badge } from '@/components/ui/badge';
 
 const MotionCard = motion(Card);
 const icons = {
-    area: AreaChart,
     bar: BarChart,
+    'bar chart': BarChart,
     line: LineChart,
+    'line chart': LineChart,
+    area: AreaChart,
+    'area chart': AreaChart,
     pie: PieChart,
+    'pie chart': PieChart,
     scatter: ScatterChart,
-    'stacked-area': TrendingUp,
-    'stacked-bar': BarChart2,
-    column: BarChart3,
-    donut: PieChart,
-    histogram: BarChart2,
-    bubble: ScatterChart,
-    spline: Activity,
-    step: Activity,
-    candlestick: BarChart2,
-    heatmap: Zap,
-    radar: Activity,
-    treemap: BarChart3,
+    'scatter plot': ScatterChart,
+    radar: Target,
+    'radar chart': Target,
+    radialBar: Activity,
+    'radial bar': Activity,
     funnel: TrendingUp,
-    waterfall: BarChart2,
-    gauge: Activity
+    'funnel chart': TrendingUp,
+    treemap: TreePine,
+    composed: Layers,
+    'stacked bar': BarChart2,
+    'stacked area': AreaChart,
+    waterfall: GitBranch
 }
 
 export default function ChartCard({ index = 1, chart }) {
