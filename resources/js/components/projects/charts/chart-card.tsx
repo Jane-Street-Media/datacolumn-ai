@@ -43,25 +43,17 @@ import { Badge } from '@/components/ui/badge';
 const MotionCard = motion(Card);
 const icons = {
     bar: BarChart,
-    'bar chart': BarChart,
     line: LineChart,
-    'line chart': LineChart,
     area: AreaChart,
-    'area chart': AreaChart,
     pie: PieChart,
-    'pie chart': PieChart,
     scatter: ScatterChart,
-    'scatter plot': ScatterChart,
     radar: Target,
-    'radar chart': Target,
     radialBar: Activity,
-    'radial bar': Activity,
     funnel: TrendingUp,
-    'funnel chart': TrendingUp,
     treemap: TreePine,
     composed: Layers,
-    'stacked bar': BarChart2,
-    'stacked area': AreaChart,
+    stackedBar: BarChart2,
+    stackedArea: AreaChart,
     waterfall: GitBranch
 }
 
