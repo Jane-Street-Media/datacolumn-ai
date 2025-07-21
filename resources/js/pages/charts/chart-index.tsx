@@ -14,6 +14,17 @@ import { BarChart, BarChart3, FolderOpen, LineChart, Loader2, Search, UserPlus, 
 import { useEffect, useState } from 'react';
 import ProjectCard from '@/components/projects/project-card';
 import { toast } from 'sonner';
+import {
+    Dialog, DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { CreateChart } from '@/components/create-chart';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -63,19 +74,20 @@ export default function ChartIndex({ charts, project }) {
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                        <Button variant="ghost" className="border" onClick={(e) => createChart(e)}>
-                                            {processing ? (
-                                                <>
-                                                    <Loader2 className="w-5 h-5 animate-spin"/>
-                                                    Processing...
-                                                </>
-                                            ) : (
-                                                <span className="flex items-center">
-                                                    <BarChart className="mr-2 h-4 w-4" />
-                                                    <span>Create a chart</span>
-                                                </span>
-                                            ) }
-                                        </Button>
+                                <CreateChart />
+                                        {/*<Button variant="ghost" className="border" onClick={(e) => createChart(e)}>*/}
+                                        {/*    {processing ? (*/}
+                                        {/*        <>*/}
+                                        {/*            <Loader2 className="w-5 h-5 animate-spin"/>*/}
+                                        {/*            Processing...*/}
+                                        {/*        </>*/}
+                                        {/*    ) : (*/}
+                                        {/*        <span className="flex items-center">*/}
+                                        {/*            <BarChart className="mr-2 h-4 w-4" />*/}
+                                        {/*            <span>Create a chart</span>*/}
+                                        {/*        </span>*/}
+                                        {/*    ) }*/}
+                                        {/*</Button>*/}
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>
