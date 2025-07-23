@@ -1,15 +1,5 @@
 import {
-    Activity,
-    BarChart, BarChart2,
-    Circle, GitBranch,
-    GitFork,
-    Layers,
-    LayoutGrid,
-    LineChart,
-    PieChart,
-    Radar,
-    Target,
-    TrendingUp
+    BarChart
 } from 'lucide-react';
 import {
     Dialog,
@@ -22,27 +12,13 @@ import {
     DialogTrigger
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ChartRenderer } from '@/components/chart-editor/chart-renderer';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChartEditorProvider } from '@/contexts/chart-editor-context';
-
-const chartTypes = [
-    { type: 'bar' as const, label: 'Bar Chart', icon: BarChart },
-    { type: 'line' as const, label: 'Line Chart', icon: LineChart },
-    { type: 'area' as const, label: 'Area Chart', icon: TrendingUp },
-    { type: 'pie' as const, label: 'Pie Chart', icon: PieChart },
-    { type: 'scatter' as const, label: 'Scatter Plot', icon: Target },
-    { type: 'radar' as const, label: 'Radar Chart', icon: Radar },
-    { type: 'radialBar' as const, label: 'Radial Bar', icon: Circle },
-    { type: 'funnel' as const, label: 'Funnel Chart', icon: GitFork },
-    { type: 'treemap' as const, label: 'Treemap', icon: LayoutGrid },
-    { type: 'composed' as const, label: 'Composed', icon: Layers },
-    { type: 'stackedBar' as const, label: 'Stacked Bar', icon: BarChart2 },
-    { type: 'stackedArea' as const, label: 'Stacked Area', icon: Activity },
-    { type: 'waterfall' as const, label: 'Waterfall', icon: GitBranch },
-];
+import { useAppearanceContext } from '@/contexts/appearance-context';
+import { useForm } from '@inertiajs/react';
+import { toast } from 'sonner';
 
 export const chartConfigs: (ChartConfig & {
     data: any[];
@@ -81,7 +57,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -123,7 +99,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -165,7 +141,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -207,7 +183,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: false,
         width: 400,
         height: 250,
-        paddingOption: 'none',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'transparent',
         enableAnimation: true,
@@ -253,7 +229,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -295,7 +271,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: false,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -338,7 +314,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: false,
         width: 400,
         height: 250,
-        paddingOption: 'none',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'transparent',
         enableAnimation: true,
@@ -384,7 +360,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: false,
         width: 400,
         height: 250,
-        paddingOption: 'none',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -430,7 +406,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: false,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -464,8 +440,8 @@ export const chartConfigs: (ChartConfig & {
         xAxisLabelFontSize: 10,
         yAxisLabelFontSize: 10,
         series: [
-            { dataKey: 'valueBar', name: 'Bar' },
-            { dataKey: 'valueLine', name: 'Line' },
+            { dataKey: 'valueBar', name: 'Bar', chartType: 'bar' },
+            { dataKey: 'valueLine', name: 'Line', chartType: 'line' },
         ],
         tooltipFormat: 'default',
         showTooltip: true,
@@ -479,7 +455,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -525,7 +501,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -571,7 +547,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -614,7 +590,7 @@ export const chartConfigs: (ChartConfig & {
         showCartesianGrid: true,
         width: 400,
         height: 250,
-        paddingOption: 'default',
+        paddingOption: 'small',
         theme: 'light',
         backgroundColor: 'default',
         enableAnimation: true,
@@ -630,32 +606,48 @@ export const chartConfigs: (ChartConfig & {
 ];
 
 
-export function CreateChart() {
+export function CreateChart({ project }) {
 
     const [selectedType, setSelectedType] = useState<typeof chartConfigs[number]['type']>(
         chartConfigs[0].type
     );
 
-    const selectedConfig = chartConfigs.find(c => c.type === selectedType)!;
+    const { appearance } = useAppearanceContext();
 
-    return <>
-        <Dialog>
-            <form>
+    useEffect(() => {
+        setData(chartConfigs.find(c => c.type === selectedType))
+    }, [selectedType])
+
+    const {data, setData, post, processing} = useForm({})
+    const createChart = () => {
+        post(route('projects.charts.store', project.id), {
+            showProgress: false,
+            onError: (errors) => {
+                if(errors.package_restriction){
+                    toast.error(errors.package_restriction)
+                }
+            },
+        })
+    }
+
+    return (
+        <>
+            <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="ghost" className="border">
-                                                <span className="flex items-center">
-                                                    <BarChart className="mr-2 h-4 w-4" />
-                                                    <span>Create a chart</span>
-                                                </span>
+                        <span className="flex items-center">
+                            <BarChart className="mr-2 h-4 w-4" />
+                            <span>Create a Chart</span>
+                        </span>
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="h-screen w-screen max-w-screen min-w-full overflow-y-auto">
                     <DialogHeader className="h-fit">
-                        <DialogTitle>Edit profile</DialogTitle>
-                        <DialogDescription>
-                            Make changes to your profile here. Click save when you&apos;re
-                            done.
-                        </DialogDescription>
+                        <DialogTitle>Choose a Chart</DialogTitle>
+                        <DialogDescription>Select from a variety of charts supported by datacolumn.ai</DialogDescription>
+                        <div className="flex justify-end">
+                            <Button onClick={() => createChart()} className="">Create</Button>
+                        </div>
                     </DialogHeader>
 
                     {/*define a grid with */}
@@ -663,14 +655,14 @@ export function CreateChart() {
                     <RadioGroup
                         value={selectedType}
                         onValueChange={setSelectedType}
-                        className={`grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4`}
+                        className={`grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}
                     >
-                        {chartConfigs.map(cfg => (
-                            <div key={cfg.type} className="border">
+                        {chartConfigs.map((cfg) => (
+                            <div key={cfg.type} className={`border ${cfg.type === selectedType ? 'border-primary' : ''} rounded-lg p-2`}>
                                 <RadioGroupItem value={cfg.type} id={cfg.type} className="hidden" />
-                                <label className="text-sm font-medium cursor-pointer" htmlFor="{cfg.type}">
+                                <label className="cursor-pointer text-sm font-medium" htmlFor={cfg.type}>
                                     {/*{cfg.type}*/}
-                                    <ChartEditorProvider chart={{ config: cfg, data: cfg.data }}>
+                                    <ChartEditorProvider chart={{ config: { ...cfg, theme: appearance }, data: cfg.data }}>
                                         <ChartRenderer />
                                     </ChartEditorProvider>
                                 </label>
@@ -679,13 +671,10 @@ export function CreateChart() {
                     </RadioGroup>
 
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button onClick={() => createChart()}>Create</Button>
                     </DialogFooter>
                 </DialogContent>
-            </form>
-        </Dialog>
-    </>
+            </Dialog>
+        </>
+    );
 }

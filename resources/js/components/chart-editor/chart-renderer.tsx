@@ -1,35 +1,36 @@
 import React, { useMemo } from 'react';
 import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-  ScatterChart,
-  Scatter,
-  RadarChart,
-  Radar,
-  RadialBarChart,
-  RadialBar,
-  FunnelChart,
-  Funnel,
-  Treemap,
-  ComposedChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  TooltipProps,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ReferenceLine,
+    BarChart,
+    Bar,
+    LineChart,
+    Line,
+    AreaChart,
+    Area,
+    PieChart,
+    Pie,
+    Cell,
+    ScatterChart,
+    Scatter,
+    RadarChart,
+    Radar,
+    RadialBarChart,
+    RadialBar,
+    FunnelChart,
+    Funnel,
+    Treemap,
+    ComposedChart,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    TooltipProps,
+    PolarGrid,
+    PolarAngleAxis,
+    PolarRadiusAxis,
+    ReferenceLine,
+    LabelList,
 } from 'recharts';
 import { ChartConfig, DataPoint } from '../types';
 import { useChartEditor } from '@/contexts/chart-editor-context';
@@ -266,6 +267,8 @@ export const ChartRenderer: React.FC = () => {
         } else if (config.paddingOption === 'custom') {
             const padding = parseInt(config.customPaddingValue) || 0;
             return { top: padding, right: padding, left: padding, bottom: (padding + 70) };
+        } else if (config.paddingOption === 'small') {
+            return { top: -20, right: 0, left: 0, bottom: 20 };
         }
         return baseMargin;
     };
@@ -518,18 +521,16 @@ export const ChartRenderer: React.FC = () => {
 
             case 'funnel':
                 return (
-                    <FunnelChart {...commonProps} data={transformedData.funnel}>
+                    <FunnelChart {...commonProps}>
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         <Funnel
                             dataKey="value"
-                            nameKey="name"
+                            data={transformedData.funnel}
                             isAnimationActive={config.enableAnimation !== false}
                             animationDuration={config.animationDuration || 1000}
                         >
-                            {transformedData.funnel.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                            ))}
+                            <LabelList position="center" fill="#fff" stroke="none" dataKey="name" />
                         </Funnel>
                     </FunnelChart>
                 );

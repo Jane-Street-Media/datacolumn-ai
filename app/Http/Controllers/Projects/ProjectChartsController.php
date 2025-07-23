@@ -12,6 +12,7 @@ use App\Http\Requests\Projects\Charts\UpdateChartRequest;
 use App\Models\Chart;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -30,10 +31,10 @@ class ProjectChartsController extends Controller
         ]);
     }
 
-    public function store(Project $project): RedirectResponse
+    public function store(Project $project, Request $request): RedirectResponse
     {
         try {
-            $chart = CreateSampleChart::handle(Auth::user(), $project);
+            $chart = CreateSampleChart::handle(Auth::user(), $project, $request->all());
             return redirect()->route('projects.charts.edit', [
                 'project' => $project,
                 'chart' => $chart,
