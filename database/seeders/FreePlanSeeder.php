@@ -75,7 +75,6 @@ class FreePlanSeeder extends Seeder
                     'branded_embeds' => true,
                     'community_support' => true,
                     'watermark' => true,
-                    'basic_export_options' => true,
                 ],
                 'limitations' => [
                     'Limited chart types',
