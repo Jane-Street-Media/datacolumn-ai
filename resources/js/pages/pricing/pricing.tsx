@@ -252,7 +252,7 @@ export default function Pricing({ plans, subscription, isSubscribed }) {
                                     <p className="text-secondary-foreground mt-2 text-sm sm:text-base">{`${plan.description ?? ''}`}</p>
                                 </div>
 
-                                <div className="bg-card p-4 sm:p-6">
+                                <div className="bg-card p-4 sm:p-6 pb-16 sm:pb-20">
                                     <ul className="space-y-2 sm:space-y-3 pt-3 sm:pt-4 mb-5">
                                         {plan.details &&
                                             plan.details.map((detail, i) => (
