@@ -10,6 +10,7 @@ class Subscription extends \Chargebee\Cashier\Subscription
     protected $casts = [
         'billing_cycle_anchor' => 'datetime',
         'ends_at' => 'datetime',
+        'trial_ends_at' => 'datetime',
     ];
 
     public function resumeCancelScheduled(): self
