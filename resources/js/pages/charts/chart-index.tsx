@@ -1,19 +1,14 @@
 import { LoadingSkeleton } from '@/components/loading-skeleton';
 import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
-import FolderDialog from '@/components/projects/folder-dialog';
 import ChartCard from '@/components/projects/charts/chart-card';
-import ProjectDialog from '@/components/projects/project-dialog';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Deferred, Head, router, useForm } from '@inertiajs/react';
-import { BarChart, BarChart3, FolderOpen, LineChart, Loader2, Search, UserPlus, X } from 'lucide-react';
+import { Deferred, Head, router } from '@inertiajs/react';
+import { BarChart3,  Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import ProjectCard from '@/components/projects/project-card';
-import { toast } from 'sonner';
+import { CreateChart } from '@/components/create-chart';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -40,19 +35,6 @@ export default function ChartIndex({ charts, project }) {
         return () => clearTimeout(debounce);
     }, [filters]);
 
-    const {data, setData, post, processing} = useForm({})
-    const createChart = (e) => {
-        e.preventDefault()
-        post(route('projects.charts.store', project.id), {
-            showProgress: false,
-            onError: (errors) => {
-                if(errors.package_restriction){
-                    toast.error(errors.package_restriction)
-                }
-            },
-        })
-    }
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -63,19 +45,7 @@ export default function ChartIndex({ charts, project }) {
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                        <Button variant="ghost" className="border" onClick={(e) => createChart(e)}>
-                                            {processing ? (
-                                                <>
-                                                    <Loader2 className="w-5 h-5 animate-spin"/>
-                                                    Processing...
-                                                </>
-                                            ) : (
-                                                <span className="flex items-center">
-                                                    <BarChart className="mr-2 h-4 w-4" />
-                                                    <span>Create a chart</span>
-                                                </span>
-                                            ) }
-                                        </Button>
+                                <CreateChart project={project} />
                             </div>
                         </PageHeaderAction>
                     </PageHeaderHead>

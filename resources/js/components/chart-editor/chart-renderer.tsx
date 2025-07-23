@@ -1,35 +1,36 @@
 import React, { useMemo } from 'react';
 import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-  ScatterChart,
-  Scatter,
-  RadarChart,
-  Radar,
-  RadialBarChart,
-  RadialBar,
-  FunnelChart,
-  Funnel,
-  Treemap,
-  ComposedChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  TooltipProps,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ReferenceLine,
+    BarChart,
+    Bar,
+    LineChart,
+    Line,
+    AreaChart,
+    Area,
+    PieChart,
+    Pie,
+    Cell,
+    ScatterChart,
+    Scatter,
+    RadarChart,
+    Radar,
+    RadialBarChart,
+    RadialBar,
+    FunnelChart,
+    Funnel,
+    Treemap,
+    ComposedChart,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    TooltipProps,
+    PolarGrid,
+    PolarAngleAxis,
+    PolarRadiusAxis,
+    ReferenceLine,
+    LabelList,
 } from 'recharts';
 import { ChartConfig, DataPoint } from '../types';
 import { useChartEditor } from '@/contexts/chart-editor-context';
@@ -114,7 +115,7 @@ const WaterfallTooltip = ({ active, payload, label, config }: TooltipProps<numbe
                      (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   const data = payload[0]?.payload;
-  
+
   return (
     <div className={`${isDarkTheme ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-900'} p-3 border rounded-lg shadow-lg`}>
       <p className={`font-medium ${isDarkTheme ? 'text-white' : 'text-gray-900'} mb-2`}>{label}</p>
@@ -134,7 +135,7 @@ export const ChartRenderer: React.FC = () => {
     const { config, data } = useChartEditor();
 
     // Basic data validation
-    const hasValidData = data && data.length > 0 && config.xAxis;
+    const hasValidData = data && data.length;
     const hasValidSeries = config.series && config.series.length > 0;
 
     // Get first series for single-series charts
@@ -213,7 +214,7 @@ export const ChartRenderer: React.FC = () => {
                     const isPositive = originalValue >= 0;
                     const startValue = isPositive ? runningTotal : runningTotal + originalValue;
                     runningTotal += originalValue;
-                    
+
                     return {
                         ...item,
                         [config.xAxis]: item[config.xAxis],
@@ -266,6 +267,8 @@ export const ChartRenderer: React.FC = () => {
         } else if (config.paddingOption === 'custom') {
             const padding = parseInt(config.customPaddingValue) || 0;
             return { top: padding, right: padding, left: padding, bottom: (padding + 70) };
+        } else if (config.paddingOption === 'small') {
+            return { top: -20, right: 0, left: 0, bottom: 20 };
         }
         return baseMargin;
     };
@@ -281,7 +284,7 @@ export const ChartRenderer: React.FC = () => {
     };
 
     const isDarkTheme = config.theme === 'dark' || (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
+
     // Grid configuration
     const gridConfig = {
         strokeDasharray: "3 3",
@@ -289,8 +292,8 @@ export const ChartRenderer: React.FC = () => {
     };
 
     // Axis props
-    const xAxisProps = config.showXAxis ? {} : { axisLine: false, tickLine: false };
-    const yAxisProps = config.showYAxis ? {} : { axisLine: false, tickLine: false };
+    const xAxisProps = config.showXAxis ? {} : { axisLine: false, tickLine: false, hide: true };
+    const yAxisProps = config.showYAxis ? {} : { axisLine: false, tickLine: false, hide: true };
 
     // Legend props
     const legendProps = config.showLegend ? {
@@ -313,8 +316,8 @@ export const ChartRenderer: React.FC = () => {
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         {config.series.map((seriesData, index) => (
-                            <Bar 
-                                key={seriesData.dataKey} 
+                            <Bar
+                                key={seriesData.dataKey}
                                 dataKey={seriesData.dataKey}
                                 fill={seriesData.fill || config.colors[index % config.colors.length]}
                                 radius={[4, 4, 0, 0]}
@@ -333,8 +336,8 @@ export const ChartRenderer: React.FC = () => {
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         {config.series.map((seriesData, index) => (
-                            <Bar 
-                                key={seriesData.dataKey} 
+                            <Bar
+                                key={seriesData.dataKey}
                                 dataKey={seriesData.dataKey}
                                 stackId="stack"
                                 fill={seriesData.fill || config.colors[index % config.colors.length]}
@@ -353,8 +356,8 @@ export const ChartRenderer: React.FC = () => {
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         {config.series.map((seriesData, index) => (
-                            <Line 
-                                key={seriesData.dataKey} 
+                            <Line
+                                key={seriesData.dataKey}
                                 type="monotone"
                                 dataKey={seriesData.dataKey}
                                 stroke={seriesData.stroke || config.colors[index % config.colors.length]}
@@ -376,8 +379,8 @@ export const ChartRenderer: React.FC = () => {
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         {config.series.map((seriesData, index) => (
-                            <Area 
-                                key={seriesData.dataKey} 
+                            <Area
+                                key={seriesData.dataKey}
                                 type="monotone"
                                 dataKey={seriesData.dataKey}
                                 stroke={seriesData.stroke || config.colors[index % config.colors.length]}
@@ -398,8 +401,8 @@ export const ChartRenderer: React.FC = () => {
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         {config.series.map((seriesData, index) => (
-                            <Area 
-                                key={seriesData.dataKey} 
+                            <Area
+                                key={seriesData.dataKey}
                                 type="monotone"
                                 dataKey={seriesData.dataKey}
                                 stackId="stack"
@@ -421,11 +424,11 @@ export const ChartRenderer: React.FC = () => {
                     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
                     return (
-                        <text 
-                            x={x} 
-                            y={y} 
-                            fill="white" 
-                            textAnchor={x > cx ? 'start' : 'end'} 
+                        <text
+                            x={x}
+                            y={y}
+                            fill="white"
+                            textAnchor={x > cx ? 'start' : 'end'}
                             dominantBaseline="central"
                             fontSize={12}
                             fontWeight="bold"
@@ -518,18 +521,16 @@ export const ChartRenderer: React.FC = () => {
 
             case 'funnel':
                 return (
-                    <FunnelChart {...commonProps} data={transformedData.funnel}>
+                    <FunnelChart {...commonProps}>
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         <Funnel
                             dataKey="value"
-                            nameKey="name"
+                            data={transformedData.funnel}
                             isAnimationActive={config.enableAnimation !== false}
                             animationDuration={config.animationDuration || 1000}
                         >
-                            {transformedData.funnel.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                            ))}
+                            <LabelList position="center" fill="#fff" stroke="none" dataKey="name" />
                         </Funnel>
                     </FunnelChart>
                 );
@@ -580,9 +581,9 @@ export const ChartRenderer: React.FC = () => {
                         {config.series.map((seriesData, index) => {
                             if (seriesData.chartType === 'line') {
                                 return (
-                                    <Line 
+                                    <Line
                                         key={seriesData.dataKey}
-                                        type="monotone" 
+                                        type="monotone"
                                         dataKey={seriesData.dataKey}
                                         stroke={seriesData.stroke || config.colors[index % config.colors.length]}
                                         strokeWidth={2}
@@ -593,9 +594,9 @@ export const ChartRenderer: React.FC = () => {
                                 );
                             } else if (seriesData.chartType === 'area') {
                                 return (
-                                    <Area 
+                                    <Area
                                         key={seriesData.dataKey}
-                                        type="monotone" 
+                                        type="monotone"
                                         dataKey={seriesData.dataKey}
                                         stroke={seriesData.stroke || config.colors[index % config.colors.length]}
                                         fill={seriesData.fill || config.colors[index % config.colors.length]}
@@ -605,7 +606,7 @@ export const ChartRenderer: React.FC = () => {
                                 );
                             } else {
                                 return (
-                                    <Bar 
+                                    <Bar
                                         key={seriesData.dataKey}
                                         dataKey={seriesData.dataKey}
                                         fill={seriesData.fill || config.colors[index % config.colors.length]}
@@ -658,12 +659,12 @@ export const ChartRenderer: React.FC = () => {
                 <div className={`px-10 mb-4 ${getTitleAlignment()}`}>
                     <h2
                         className={`text-2xl mb-0.5 ${
-                            config.titleWeight === 'bold' ? 'font-bold' : 
+                            config.titleWeight === 'bold' ? 'font-bold' :
                             config.titleWeight === 'light' ? 'font-light' :
                             config.titleWeight === 'semibold' ? 'font-semibold' :
                             'font-normal'
                         }`}
-                        style={{ color: config.titleColor }}
+                        style={{ color: config.titleColor, fontSize: config.titleSize || '1rem' }}
                     >
                         {config.title}
                     </h2>
@@ -671,7 +672,7 @@ export const ChartRenderer: React.FC = () => {
                     {config.subtitle && (
                         <p
                             className="text-lg opacity-80"
-                            style={{ color: config.subtitleColor }}
+                            style={{ color: config.subtitleColor, fontSize: config.subtitleSize || '0.9rem' }}
                         >
                             {config.subtitle}
                         </p>
