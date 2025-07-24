@@ -61,6 +61,12 @@ export default function Header(){
                         >
                             Pricing
                         </a>
+                        <a
+                            href="https://support.datacolumn.ai"
+                            className="cursor-pointer text-foreground hover:text-secondary-foreground font-medium transition-colors duration-200"
+                        >
+                            Support
+                        </a>
                         {user ? (
                             <Link
                                 href={route('dashboard')}
@@ -172,6 +178,12 @@ export default function Header(){
                             className="cursor-pointer block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
                         >
                             Pricing
+                        </a>
+                        <a
+                            href="https://support.datacolumn.ai"
+                            className="cursor-pointer block w-full text-left text-secondary-foreground hover:text-foreground font-medium py-2"
+                        >
+                            Support
                         </a>
                         <Link
                             href={route('login')}
