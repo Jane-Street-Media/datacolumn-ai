@@ -63,9 +63,9 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 500,
         animationType: 'ease-out',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             category: `Item ${i + 1}`,
-            value: Math.round(20 + Math.random() * 80)
+            value: Math.round(30 + Math.random() * 60)
         })),
     },
 
@@ -105,9 +105,9 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 400,
         animationType: 'ease-in-out',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             category: `P${i + 1}`,
-            value: Math.round(10 + Math.random() * 90)
+            value: Math.round(20 + Math.random() * 70)
         })),
     },
 
@@ -147,9 +147,9 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 600,
         animationType: 'ease-out',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             category: `P${i + 1}`,
-            value: Math.round(5 + Math.random() * 95)
+            value: Math.round(25 + Math.random() * 65)
         })),
     },
 
@@ -193,9 +193,9 @@ export const chartConfigs: (ChartConfig & {
         outerRadius: 70,
         startAngle: 0,
         endAngle: 360,
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 4 }, (_, i) => ({
             name: `Slice ${i + 1}`,
-            value: Math.round(5 + Math.random() * 95)
+            value: Math.round(20 + Math.random() * 60)
         })),
     },
 
@@ -235,9 +235,9 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 500,
         animationType: 'linear',
-        data: Array.from({ length: 10 }, (_, i) => ({
-            x: Math.round(10 + i * 5 + Math.random() * 10),
-            y: Math.round(10 + i * 3 + Math.random() * 15)
+        data: Array.from({ length: 6 }, (_, i) => ({
+            x: Math.round(15 + i * 8 + Math.random() * 8),
+            y: Math.round(20 + i * 5 + Math.random() * 12)
         })),
     },
 
@@ -278,9 +278,9 @@ export const chartConfigs: (ChartConfig & {
         animationDuration: 600,
         animationType: 'ease-in-out',
         radarKeys: ['value'],
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             subject: `Metric ${i + 1}`,
-            value: Math.round(20 + Math.random() * 80)
+            value: Math.round(30 + Math.random() * 60)
         })),
     },
 
@@ -324,9 +324,9 @@ export const chartConfigs: (ChartConfig & {
         outerRadius: 100,
         startAngle: 90,
         endAngle: -270,
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 3 }, (_, i) => ({
             name: `Arc ${i + 1}`,
-            value: Math.round(10 + Math.random() * 90)
+            value: Math.round(30 + Math.random() * 60)
         })),
     },
 
@@ -370,9 +370,9 @@ export const chartConfigs: (ChartConfig & {
         funnelHeight: 350,
         dataKey: 'value',
         nameKey: 'name',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 5 }, (_, i) => ({
             name: `Step ${i + 1}`,
-            value: 1600 - i * 100
+            value: 1000 - i * 150
         })),
     },
 
@@ -416,9 +416,9 @@ export const chartConfigs: (ChartConfig & {
         nameKey: 'name',
         valueKey: 'value',
         aspectRatio: 1.5,
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             name: `Node ${i + 1}`,
-            value: 1600 - i * 100
+            value: 1000 - i * 120
         })),
     },
 
@@ -461,10 +461,10 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 600,
         animationType: 'ease-in-out',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             category: `C${i + 1}`,
-            valueBar: Math.round(20 + Math.random() * 80),
-            valueLine: Math.round(10 + Math.random() * 90),
+            valueBar: Math.round(25 + Math.random() * 65),
+            valueLine: Math.round(20 + Math.random() * 70),
         })),
     },
 
@@ -507,10 +507,10 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 500,
         animationType: 'ease-out',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             category: `G${i + 1}`,
-            value1: Math.round(10 + Math.random() * 90),
-            value2: Math.round(5 + Math.random() * 45),
+            value1: Math.round(20 + Math.random() * 60),
+            value2: Math.round(15 + Math.random() * 35),
         })),
     },
 
@@ -553,10 +553,10 @@ export const chartConfigs: (ChartConfig & {
         enableAnimation: true,
         animationDuration: 600,
         animationType: 'ease-in-out',
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             category: `D${i + 1}`,
-            value1: Math.round(15 + Math.random() * 85),
-            value2: Math.round(10 + Math.random() * 70),
+            value1: Math.round(25 + Math.random() * 55),
+            value2: Math.round(20 + Math.random() * 50),
         })),
     },
 
@@ -598,9 +598,9 @@ export const chartConfigs: (ChartConfig & {
         animationType: 'ease-out',
         waterfallStartValue: 0,
         waterfallEndValue: 0, // ChartRenderer will compute running total
-        data: Array.from({ length: 10 }, (_, i) => ({
+        data: Array.from({ length: 6 }, (_, i) => ({
             name: `Step ${i + 1}`,
-            amount: (i % 2 === 0 ? 1 : -1) * Math.round(10 + Math.random() * 90)
+            amount: (i % 2 === 0 ? 1 : -1) * Math.round(20 + Math.random() * 60)
         })),
     },
 ];
@@ -718,19 +718,71 @@ export function CreateChart({ project }) {
                                                         config: { 
                                                             ...cfg, 
                                                             theme: appearance,
-                                                            width: 320,
-                                                            height: 200,
-                                                            paddingOption: 'none',
-                                                            titleFontSize: 12,
-                                                            subtitleFontSize: 10,
-                                                            xAxisLabelFontSize: 8,
-                                                            yAxisLabelFontSize: 8
+                                                            // Chart-specific optimizations
+                                                            ...(cfg.type === 'pie' && {
+                                                                width: 300,
+                                                                height: 200,
+                                                                innerRadius: 30,
+                                                                outerRadius: 80,
+                                                                showLegend: false,
+                                                                title: '',
+                                                                subtitle: ''
+                                                            }),
+                                                            ...(cfg.type === 'radialBar' && {
+                                                                width: 280,
+                                                                height: 200,
+                                                                innerRadius: 20,
+                                                                outerRadius: 80,
+                                                                showLegend: false,
+                                                                title: '',
+                                                                subtitle: ''
+                                                            }),
+                                                            ...(cfg.type === 'funnel' && {
+                                                                width: 300,
+                                                                height: 200,
+                                                                funnelWidth: 120,
+                                                                funnelHeight: 180,
+                                                                showLegend: false,
+                                                                title: '',
+                                                                subtitle: ''
+                                                            }),
+                                                            ...(cfg.type === 'treemap' && {
+                                                                width: 300,
+                                                                height: 200,
+                                                                title: '',
+                                                                subtitle: ''
+                                                            }),
+                                                            ...(cfg.type === 'radar' && {
+                                                                width: 280,
+                                                                height: 200,
+                                                                showLegend: false,
+                                                                title: '',
+                                                                subtitle: ''
+                                                            }),
+                                                            // Standard charts optimizations
+                                                            ...(['bar', 'line', 'area', 'scatter', 'composed', 'stackedBar', 'stackedArea', 'waterfall'].includes(cfg.type) && {
+                                                                width: 320,
+                                                                height: 200,
+                                                                titleFontSize: 11,
+                                                                subtitleFontSize: 9,
+                                                                xAxisLabelFontSize: 8,
+                                                                yAxisLabelFontSize: 8,
+                                                                title: cfg.type.charAt(0).toUpperCase() + cfg.type.slice(1).replace(/([A-Z])/g, ' $1'),
+                                                                subtitle: '',
+                                                                showLegend: cfg.series && cfg.series.length > 1
+                                                            }),
+                                                            paddingOption: 'none'
                                                         }, 
                                                         data: cfg.data 
                                                     }}
                                                 >
-                                                    <div className="flex items-center justify-center w-full h-full transform scale-90 sm:scale-95 origin-center">
-                                                        <div className="w-[320px] h-[200px] flex items-center justify-center">
+                                                    <div className="flex items-center justify-center w-full h-full">
+                                                        <div className={`
+                                                            flex items-center justify-center
+                                                            ${['pie', 'radialBar', 'radar'].includes(cfg.type) ? 'w-[280px] h-[200px]' : 
+                                                              cfg.type === 'funnel' ? 'w-[300px] h-[200px]' : 
+                                                              'w-[320px] h-[200px]'}
+                                                        `}>
                                                             <ChartRenderer />
                                                         </div>
                                                     </div>
