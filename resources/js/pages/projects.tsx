@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { BarChart3, FolderOpen, Plus, Search, UserPlus, X } from 'lucide-react';
+import { BarChart3, FolderOpen, Plus, Search, UserPlus, X, FolderPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
@@ -65,13 +65,20 @@ export default function Projects({ folders, projects, statuses }) {
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                <FolderDialog />
+                                <FolderDialog 
+                                    trigger={
+                                        <Button variant="outline" className="border">
+                                            <FolderPlus className="mr-2 h-4 w-4" />
+                                            <span className={'hidden lg:block'}>New Folder</span>
+                                        </Button>
+                                    }
+                                />
                                 <ProjectDialog
                                     folders={folders}
                                     statuses={statuses}
                                     trigger={
                                         <Button variant="ghost" className="border">
-                                            <UserPlus className="mr-2 h-4 w-4" />
+                                            <Plus className="mr-2 h-4 w-4" />
                                             <span className={'hidden lg:block'}>New Project</span>
                                         </Button>
                                     }
@@ -88,7 +95,7 @@ export default function Projects({ folders, projects, statuses }) {
                                 <div className="relative flex w-full lg:max-w-2xl items-center">
                                     <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
                                     <Input
-                                        placeholder="Your search..."
+                                        placeholder="Search projects..."
                                         className="pl-8"
                                         value={filters.search}
                                         onChange={(e) =>
@@ -110,13 +117,19 @@ export default function Projects({ folders, projects, statuses }) {
                                     }
                                 >
                                     <SelectTrigger className="w-full lg:w-[180px]">
-                                        <SelectValue placeholder="Select a folder" />
+                                        <div className="flex items-center gap-2">
+                                            <FolderOpen className="h-4 w-4" />
+                                            <SelectValue placeholder="Select a folder" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
                                             {folders?.map((folder) => (
                                                 <SelectItem key={folder.id} value={String(folder.id)}>
-                                                    {folder.name}
+                                                    <div className="flex items-center gap-2">
+                                                        <FolderOpen className="h-4 w-4 text-blue-500" />
+                                                        {folder.name}
+                                                    </div>
                                                 </SelectItem>
                                             ))}
                                         </SelectGroup>
@@ -153,6 +166,18 @@ export default function Projects({ folders, projects, statuses }) {
                                     <div className="py-8 text-center">
                                         <FolderOpen className="mx-auto mb-4 h-12 w-12" />
                                         <p className="text-secondary-foreground mb-4">No projects yet</p>
+                                        <div className="flex items-center justify-center gap-2">
+                                            <ProjectDialog
+                                                folders={folders}
+                                                statuses={statuses}
+                                                trigger={
+                                                    <Button>
+                                                        <Plus className="mr-2 h-4 w-4" />
+                                                        Create your first project
+                                                    </Button>
+                                                }
+                                            />
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
