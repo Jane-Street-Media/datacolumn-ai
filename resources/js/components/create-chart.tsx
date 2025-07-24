@@ -635,7 +635,7 @@ export function CreateChart({ project }) {
                 <Button variant="ghost" className="border hover:bg-accent/50 transition-colors duration-200">
                     <span className="flex items-center gap-2">
                         <BarChart className="h-4 w-4" />
-                        <span>Create a Chart</span>
+                        <span>Choose your chart style</span>
                     </span>
                 </Button>
             </DialogTrigger>
@@ -646,10 +646,10 @@ export function CreateChart({ project }) {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="space-y-1">
                             <DialogTitle className="text-xl sm:text-2xl font-semibold tracking-tight">
-                                Choose a Chart
+                                Choose your chart style
                             </DialogTitle>
                             <DialogDescription className="text-sm text-muted-foreground">
-                                Select from a variety of charts supported by datacolumn.ai
+                                Publication-ready visualizations that look great everywhere.
                             </DialogDescription>
                         </div>
                         
