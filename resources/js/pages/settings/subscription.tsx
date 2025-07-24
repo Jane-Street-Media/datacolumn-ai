@@ -24,7 +24,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const canResumeSubscription = useMemo(() => subscription?.chargebee_status === 'non_renewing', [subscription]);
-    
+    console.log(subscription.invoice);
     const CancelSubscriptionButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
@@ -79,10 +79,10 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
     // Format date for display
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
         });
     };
 
@@ -183,7 +183,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                 <span className="font-medium">Starting from $19/month</span>
                                             </div>
                                             <div className="mt-6">
-                                                <Button 
+                                                <Button
                                                     onClick={() => {
                                                         // Scroll to pricing section or navigate to upgrade
                                                         const pricingSection = document.querySelector('[data-pricing-section]');
@@ -222,8 +222,8 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     </div>
                                                     <div className="flex items-center">
                                                         <Calendar className="w-4 h-4 mr-2" />
-                                                        {subscription.ends_at ? 
-                                                            `Ends: ${formatDate(subscription.ends_at)}` : 
+                                                        {subscription.ends_at ?
+                                                            `Ends: ${formatDate(subscription.ends_at)}` :
                                                             `Renews: ${formatDate(subscription.next_billing_at)}`
                                                         }
                                                     </div>
@@ -275,10 +275,10 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     <p className="text-sm text-gray-600 dark:text-gray-400">Quantity: {subscription.plan.quantity}</p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <a 
-                                                        href="/user/invoice/1" 
-                                                        target="_blank" 
-                                                        rel="noopener noreferrer" 
+                                                    <a
+                                                        href={route('download-invoice', subscription.invoice.id)}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
                                                         className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                                                     >
                                                         <Download className="w-4 h-4 mr-2" />
@@ -293,7 +293,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Plan Features</h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {subscription.plan.details?.map((detail, index) => (
-                                                    <div 
+                                                    <div
                                                         key={index}
                                                         className="flex items-start p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800"
                                                     >
@@ -323,7 +323,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     </>
                                                 )}
                                             </Button>
-                                            
+
                                             {canResumeSubscription ? (
                                                 <Button
                                                     onClick={handleResumeSubscription}
@@ -371,12 +371,12 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                             </h3>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="p-6">
                                         <p className="text-gray-600 dark:text-gray-300 mb-6">
                                             Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your current billing cycle.
                                         </p>
-                                        
+
                                         <div className="flex flex-col sm:flex-row gap-3">
                                             <Button
                                                 onClick={() => {

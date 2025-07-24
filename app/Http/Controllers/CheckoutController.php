@@ -88,8 +88,8 @@ class CheckoutController extends Controller
     {
         return $request->user()->currentTeam->checkout([], [
             'mode' => Session::MODE_SETUP,
-            'success_url' => route('billing'), // Ensure this route uses port 80 or 443
-            'cancel_url' => route('billing'),  // Optional: allow cancel fallback
+            'success_url' => route('subscription-settings'), // Ensure this route uses port 80 or 443
+            'cancel_url' => route('subscription-settings'),  // Optional: allow cancel fallback
         ]);
     }
 }
