@@ -711,82 +711,200 @@ export function CreateChart({ project }) {
                                         htmlFor={cfg.type}
                                     >
                                         {/* Chart Preview Container */}
-                                        <div className="aspect-[4/3] p-2 sm:p-3 flex items-center justify-center bg-gradient-to-br from-background to-muted/20 overflow-hidden">
-                                            <div className="w-full h-full flex items-center justify-center relative">
-                                                <ChartEditorProvider 
-                                                    chart={{ 
-                                                        config: { 
-                                                            ...cfg, 
-                                                            theme: appearance,
-                                                            // Chart-specific optimizations
-                                                            ...(cfg.type === 'pie' && {
-                                                                width: 300,
-                                                                height: 200,
-                                                                innerRadius: 30,
-                                                                outerRadius: 80,
-                                                                showLegend: false,
-                                                                title: '',
-                                                                subtitle: ''
-                                                            }),
-                                                            ...(cfg.type === 'radialBar' && {
-                                                                width: 280,
-                                                                height: 200,
-                                                                innerRadius: 20,
-                                                                outerRadius: 80,
-                                                                showLegend: false,
-                                                                title: '',
-                                                                subtitle: ''
-                                                            }),
-                                                            ...(cfg.type === 'funnel' && {
-                                                                width: 300,
-                                                                height: 200,
-                                                                funnelWidth: 120,
-                                                                funnelHeight: 180,
-                                                                showLegend: false,
-                                                                title: '',
-                                                                subtitle: ''
-                                                            }),
-                                                            ...(cfg.type === 'treemap' && {
-                                                                width: 300,
-                                                                height: 200,
-                                                                title: '',
-                                                                subtitle: ''
-                                                            }),
-                                                            ...(cfg.type === 'radar' && {
-                                                                width: 280,
-                                                                height: 200,
-                                                                showLegend: false,
-                                                                title: '',
-                                                                subtitle: ''
-                                                            }),
-                                                            // Standard charts optimizations
-                                                            ...(['bar', 'line', 'area', 'scatter', 'composed', 'stackedBar', 'stackedArea', 'waterfall'].includes(cfg.type) && {
-                                                                width: 320,
-                                                                height: 200,
-                                                                titleFontSize: 11,
-                                                                subtitleFontSize: 9,
-                                                                xAxisLabelFontSize: 8,
-                                                                yAxisLabelFontSize: 8,
-                                                                title: cfg.type.charAt(0).toUpperCase() + cfg.type.slice(1).replace(/([A-Z])/g, ' $1'),
-                                                                subtitle: '',
-                                                                showLegend: cfg.series && cfg.series.length > 1
-                                                            }),
-                                                            paddingOption: 'none'
-                                                        }, 
-                                                        data: cfg.data 
-                                                    }}
-                                                >
-                                                    <div className="flex items-center justify-center w-full h-full">
-                                                        <div className={`
-                                                            flex items-center justify-center
-                                                            ${['pie', 'radialBar', 'radar'].includes(cfg.type) ? 'w-[280px] h-[200px]' : 
-                                                              cfg.type === 'funnel' ? 'w-[300px] h-[200px]' : 
-                                                              'w-[320px] h-[200px]'}
-                                                        `}>
-                                                            <ChartRenderer />
-                                                        </div>
-                                                    </div>
-                                                </ChartEditorProvider>
+                                        <div className="aspect-[4/3] p-4 sm:p-6 flex items-center justify-center bg-gradient-to-br from-background to-muted/20 overflow-hidden">
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                {/* Chart Type Illustrations */}
+                                                {cfg.type === 'bar' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <rect x="20" y="80" width="25" height="30" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="55" y="60" width="25" height="50" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="90" y="40" width="25" height="70" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="125" y="70" width="25" height="40" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="160" y="50" width="25" height="60" fill="hsl(var(--primary))" rx="2" />
+                                                        <line x1="15" y1="115" x2="190" y2="115" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="15" y1="20" x2="15" y2="115" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'line' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <polyline points="20,90 50,60 80,45 110,70 140,35 170,55" 
+                                                                  fill="none" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <circle cx="20" cy="90" r="4" fill="hsl(var(--primary))" />
+                                                        <circle cx="50" cy="60" r="4" fill="hsl(var(--primary))" />
+                                                        <circle cx="80" cy="45" r="4" fill="hsl(var(--primary))" />
+                                                        <circle cx="110" cy="70" r="4" fill="hsl(var(--primary))" />
+                                                        <circle cx="140" cy="35" r="4" fill="hsl(var(--primary))" />
+                                                        <circle cx="170" cy="55" r="4" fill="hsl(var(--primary))" />
+                                                        <line x1="15" y1="100" x2="175" y2="100" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="15" y1="20" x2="15" y2="100" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'area' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <defs>
+                                                            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
+                                                                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <polygon points="20,100 20,70 50,50 80,35 110,60 140,25 170,45 170,100" 
+                                                                 fill="url(#areaGradient)" />
+                                                        <polyline points="20,70 50,50 80,35 110,60 140,25 170,45" 
+                                                                  fill="none" stroke="hsl(var(--primary))" strokeWidth="2" />
+                                                        <line x1="15" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="15" y1="20" x2="15" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'pie' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <circle cx="100" cy="60" r="45" fill="hsl(var(--primary))" />
+                                                        <path d="M 100 60 L 100 15 A 45 45 0 0 1 131.82 39.09 Z" fill="hsl(var(--secondary))" />
+                                                        <path d="M 100 60 L 131.82 39.09 A 45 45 0 0 1 131.82 80.91 Z" fill="hsl(var(--accent))" />
+                                                        <path d="M 100 60 L 131.82 80.91 A 45 45 0 0 1 100 105 Z" fill="hsl(var(--muted))" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'scatter' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <circle cx="30" cy="80" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="45" cy="65" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="60" cy="50" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="75" cy="70" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="90" cy="45" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="105" cy="60" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="120" cy="35" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="135" cy="55" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="150" cy="40" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <circle cx="165" cy="30" r="5" fill="hsl(var(--primary))" opacity="0.8" />
+                                                        <line x1="20" y1="95" x2="175" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="20" y1="20" x2="20" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'radar' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <polygon points="100,25 142,45 130,85 70,85 58,45" 
+                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <polygon points="100,35 125,48 118,75 82,75 75,48" 
+                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <polygon points="100,45 108,50 106,65 94,65 92,50" 
+                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <polygon points="100,30 135,50 125,80 75,80 65,50" 
+                                                                 fill="hsl(var(--primary))" fillOpacity="0.3" stroke="hsl(var(--primary))" strokeWidth="2" />
+                                                        <line x1="100" y1="60" x2="100" y2="25" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="100" y1="60" x2="142" y2="45" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="100" y1="60" x2="130" y2="85" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="100" y1="60" x2="70" y2="85" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="100" y1="60" x2="58" y2="45" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'radialBar' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <circle cx="100" cy="60" r="40" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+                                                        <circle cx="100" cy="60" r="32" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
+                                                        <circle cx="100" cy="60" r="24" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
+                                                        <circle cx="100" cy="60" r="40" fill="none" stroke="hsl(var(--primary))" strokeWidth="8" 
+                                                                strokeDasharray="188.5" strokeDashoffset="47" transform="rotate(-90 100 60)" strokeLinecap="round" />
+                                                        <circle cx="100" cy="60" r="32" fill="none" stroke="hsl(var(--secondary))" strokeWidth="6" 
+                                                                strokeDasharray="201.1" strokeDashoffset="67" transform="rotate(-90 100 60)" strokeLinecap="round" />
+                                                        <circle cx="100" cy="60" r="24" fill="none" stroke="hsl(var(--accent))" strokeWidth="4" 
+                                                                strokeDasharray="150.8" strokeDashoffset="90" transform="rotate(-90 100 60)" strokeLinecap="round" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'funnel' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <polygon points="50,25 150,25 140,40 60,40" fill="hsl(var(--primary))" />
+                                                        <polygon points="60,45 140,45 130,60 70,60" fill="hsl(var(--secondary))" />
+                                                        <polygon points="70,65 130,65 120,80 80,80" fill="hsl(var(--accent))" />
+                                                        <polygon points="80,85 120,85 110,100 90,100" fill="hsl(var(--muted))" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'treemap' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <rect x="20" y="20" width="80" height="50" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="110" y="20" width="70" height="30" fill="hsl(var(--secondary))" rx="2" />
+                                                        <rect x="110" y="55" width="70" height="15" fill="hsl(var(--accent))" rx="2" />
+                                                        <rect x="20" y="75" width="50" height="25" fill="hsl(var(--muted))" rx="2" />
+                                                        <rect x="75" y="75" width="25" height="25" fill="hsl(var(--primary))" opacity="0.7" rx="2" />
+                                                        <rect x="110" y="75" width="35" height="25" fill="hsl(var(--secondary))" opacity="0.7" rx="2" />
+                                                        <rect x="150" y="75" width="30" height="25" fill="hsl(var(--accent))" opacity="0.7" rx="2" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'composed' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <rect x="25" y="70" width="20" height="30" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="55" y="50" width="20" height="50" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="85" y="60" width="20" height="40" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="115" y="40" width="20" height="60" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="145" y="65" width="20" height="35" fill="hsl(var(--primary))" rx="2" />
+                                                        <polyline points="35,80 65,55 95,45 125,65 155,35" 
+                                                                  fill="none" stroke="hsl(var(--secondary))" strokeWidth="3" strokeLinecap="round" />
+                                                        <circle cx="35" cy="80" r="3" fill="hsl(var(--secondary))" />
+                                                        <circle cx="65" cy="55" r="3" fill="hsl(var(--secondary))" />
+                                                        <circle cx="95" cy="45" r="3" fill="hsl(var(--secondary))" />
+                                                        <circle cx="125" cy="65" r="3" fill="hsl(var(--secondary))" />
+                                                        <circle cx="155" cy="35" r="3" fill="hsl(var(--secondary))" />
+                                                        <line x1="20" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="20" y1="30" x2="20" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'stackedBar' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <rect x="30" y="60" width="25" height="25" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="30" y="85" width="25" height="15" fill="hsl(var(--secondary))" rx="2" />
+                                                        <rect x="65" y="40" width="25" height="35" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="65" y="75" width="25" height="25" fill="hsl(var(--secondary))" rx="2" />
+                                                        <rect x="100" y="50" width="25" height="30" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="100" y="80" width="25" height="20" fill="hsl(var(--secondary))" rx="2" />
+                                                        <rect x="135" y="35" width="25" height="40" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="135" y="75" width="25" height="25" fill="hsl(var(--secondary))" rx="2" />
+                                                        <line x1="25" y1="105" x2="170" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="25" y1="30" x2="25" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'stackedArea' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <defs>
+                                                            <linearGradient id="stackedGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
+                                                                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+                                                            </linearGradient>
+                                                            <linearGradient id="stackedGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="hsl(var(--secondary))" stopOpacity="0.8" />
+                                                                <stop offset="100%" stopColor="hsl(var(--secondary))" stopOpacity="0.3" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <polygon points="30,90 30,60 60,50 90,45 120,65 150,35 170,45 170,90" fill="url(#stackedGradient1)" />
+                                                        <polygon points="30,60 30,45 60,35 90,30 120,50 150,20 170,30 170,45 150,35 120,65 90,45 60,50" fill="url(#stackedGradient2)" />
+                                                        <line x1="25" y1="95" x2="175" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="25" y1="15" x2="25" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
+                                                
+                                                {cfg.type === 'waterfall' && (
+                                                    <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <rect x="25" y="80" width="20" height="20" fill="hsl(var(--primary))" rx="2" />
+                                                        <rect x="55" y="60" width="20" height="20" fill="hsl(var(--secondary))" rx="2" />
+                                                        <rect x="85" y="70" width="20" height="10" fill="hsl(var(--destructive))" rx="2" />
+                                                        <rect x="115" y="50" width="20" height="20" fill="hsl(var(--secondary))" rx="2" />
+                                                        <rect x="145" y="45" width="20" height="25" fill="hsl(var(--primary))" rx="2" />
+                                                        <line x1="45" y1="80" x2="55" y2="80" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
+                                                        <line x1="75" y1="60" x2="85" y2="70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
+                                                        <line x1="105" y1="70" x2="115" y2="70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
+                                                        <line x1="135" y1="50" x2="145" y2="70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
+                                                        <line x1="20" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <line x1="20" y1="40" x2="20" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                    </svg>
+                                                )}
                                             </div>
                                         </div>
                                         
