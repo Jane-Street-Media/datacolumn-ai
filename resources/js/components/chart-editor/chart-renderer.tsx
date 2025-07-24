@@ -259,24 +259,32 @@ export const ChartRenderer: React.FC = () => {
         );
     }
 
-    // Chart configuration
+    // Chart configuration - FIXED to truly respect padding options
     const getChartMargin = () => {
-        const baseMargin = { top: 20, right: 30, left: 20, bottom: 70 };
         if (config.paddingOption === 'none') {
-            return { top: 0, right: 0, left: 0, bottom: 70 };
+            return { top: 0, right: 0, left: 0, bottom: 0 };
         } else if (config.paddingOption === 'custom') {
             const padding = parseInt(config.customPaddingValue) || 0;
-            return { top: padding, right: padding, left: padding, bottom: (padding + 70) };
+            return { top: padding, right: padding, left: padding, bottom: padding };
         } else if (config.paddingOption === 'small') {
-            return { top: -20, right: 0, left: 0, bottom: 20 };
+            return { top: 10, right: 10, left: 10, bottom: 10 };
         }
-        return baseMargin;
+        // Default padding
+        return { top: 20, right: 30, left: 20, bottom: 70 };
     };
 
     const getAnimationProps = () => ({
         isAnimationActive: config.enableAnimation !== false,
         animationDuration: config.animationDuration || 1000
     });
+
+    // Get responsive dimensions for circular charts
+    const getCircularChartRadius = (outerRadiusPercent = 85, innerRadiusPercent = 0) => {
+        return {
+            outerRadius: `${outerRadiusPercent}%`,
+            innerRadius: `${innerRadiusPercent}%`
+        };
+    };
 
     const commonProps = {
         data: chartData,
@@ -417,6 +425,8 @@ export const ChartRenderer: React.FC = () => {
 
             case 'pie':
                 const pieData = transformedData.pie;
+                const pieRadius = getCircularChartRadius(config.outerRadius || 85, config.innerRadius || 0);
+                
                 const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
                     const RADIAN = Math.PI / 180;
                     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -450,7 +460,8 @@ export const ChartRenderer: React.FC = () => {
                             cy="50%"
                             labelLine={false}
                             label={renderPieLabel}
-                            outerRadius={80}
+                            outerRadius={pieRadius.outerRadius}
+                            innerRadius={pieRadius.innerRadius}
                             {...animationProps}
                         >
                             {pieData.map((entry, index) => (
@@ -501,15 +512,16 @@ export const ChartRenderer: React.FC = () => {
                 );
 
             case 'radialBar':
+                const radialRadius = getCircularChartRadius(config.outerRadius || 80, config.innerRadius || 10);
                 return (
-                    <RadialBarChart {...commonProps} data={transformedData.radialBar} innerRadius="10%" outerRadius="80%">
+                    <RadialBarChart {...commonProps} data={transformedData.radialBar} innerRadius={radialRadius.innerRadius} outerRadius={radialRadius.outerRadius}>
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
                         <RadialBar
                             dataKey="percentage"
                             cornerRadius={10}
-                            startAngle={90}
-                            endAngle={450}
+                            startAngle={config.startAngle || 90}
+                            endAngle={config.endAngle || 450}
                             {...animationProps}
                         >
                             {transformedData.radialBar.map((entry, index) => (
@@ -541,7 +553,7 @@ export const ChartRenderer: React.FC = () => {
                         {...commonProps}
                         data={transformedData.treemap}
                         dataKey="value"
-                        aspectRatio={4/3}
+                        aspectRatio={config.aspectRatio || 4/3}
                         stroke="#fff"
                         strokeWidth={2}
                         {...animationProps}
@@ -648,15 +660,38 @@ export const ChartRenderer: React.FC = () => {
         bgColorStyle = { backgroundColor: config.backgroundColor };
     }
 
+    // Container padding - respect the padding settings for the entire container
+    const getContainerPadding = () => {
+        if (config.paddingOption === 'none') {
+            return 'p-0';
+        } else if (config.paddingOption === 'small') {
+            return 'py-2 px-1';
+        } else if (config.paddingOption === 'custom') {
+            const padding = parseInt(config.customPaddingValue) || 0;
+            return `p-${Math.min(padding / 4, 12)}`; // Convert to Tailwind classes (approximate)
+        }
+        return 'py-8 px-4'; // default
+    };
+
+    // Title padding - also respect padding settings
+    const getTitlePadding = () => {
+        if (config.paddingOption === 'none') {
+            return 'px-0 mb-0';
+        } else if (config.paddingOption === 'small') {
+            return 'px-2 mb-1';
+        }
+        return 'px-10 mb-4'; // default
+    };
+
     return (
         <div
-            className={`rounded-lg py-8 px-4 ${bgColorClass}`}
+            className={`rounded-lg ${getContainerPadding()} ${bgColorClass}`}
             id="chart-container"
             style={bgColorStyle}
         >
             {/* Title */}
             {config.title && (
-                <div className={`px-10 mb-4 ${getTitleAlignment()}`}>
+                <div className={`${getTitlePadding()} ${getTitleAlignment()}`}>
                     <h2
                         className={`text-2xl mb-0.5 ${
                             config.titleWeight === 'bold' ? 'font-bold' :
