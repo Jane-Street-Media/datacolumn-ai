@@ -605,9 +605,7 @@ export const chartConfigs: (ChartConfig & {
     },
 ];
 
-
 export function CreateChart({ project }) {
-
     const [selectedType, setSelectedType] = useState<typeof chartConfigs[number]['type']>(
         chartConfigs[0].type
     );
@@ -618,12 +616,13 @@ export function CreateChart({ project }) {
         setData(chartConfigs.find(c => c.type === selectedType))
     }, [selectedType])
 
-    const {data, setData, post, processing} = useForm({})
+    const { data, setData, post, processing } = useForm({})
+    
     const createChart = () => {
         post(route('projects.charts.store', project.id), {
             showProgress: false,
             onError: (errors) => {
-                if(errors.package_restriction){
+                if (errors.package_restriction) {
                     toast.error(errors.package_restriction)
                 }
             },
@@ -631,50 +630,134 @@ export function CreateChart({ project }) {
     }
 
     return (
-        <>
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button variant="ghost" className="border">
-                        <span className="flex items-center">
-                            <BarChart className="mr-2 h-4 w-4" />
-                            <span>Create a Chart</span>
-                        </span>
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className="h-screen w-screen max-w-screen min-w-full overflow-y-auto">
-                    <DialogHeader className="h-fit">
-                        <DialogTitle>Choose a Chart</DialogTitle>
-                        <DialogDescription>Select from a variety of charts supported by datacolumn.ai</DialogDescription>
-                        <div className="flex justify-end">
-                            <Button onClick={() => createChart()} className="">Create</Button>
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="ghost" className="border hover:bg-accent/50 transition-colors duration-200">
+                    <span className="flex items-center gap-2">
+                        <BarChart className="h-4 w-4" />
+                        <span>Create a Chart</span>
+                    </span>
+                </Button>
+            </DialogTrigger>
+            
+            <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full sm:max-w-[90vw] lg:max-w-6xl xl:max-w-7xl overflow-hidden flex flex-col">
+                {/* Header - Fixed */}
+                <DialogHeader className="flex-none px-4 py-6 sm:px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="space-y-1">
+                            <DialogTitle className="text-xl sm:text-2xl font-semibold tracking-tight">
+                                Choose a Chart
+                            </DialogTitle>
+                            <DialogDescription className="text-sm text-muted-foreground">
+                                Select from a variety of charts supported by datacolumn.ai
+                            </DialogDescription>
                         </div>
-                    </DialogHeader>
+                        
+                        {/* Desktop Create Button */}
+                        <div className="hidden sm:flex">
+                            <Button 
+                                onClick={createChart} 
+                                disabled={processing}
+                                className="min-w-[100px] h-10 font-medium"
+                            >
+                                {processing ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        Creating...
+                                    </div>
+                                ) : (
+                                    'Create Chart'
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </DialogHeader>
 
-                    {/*define a grid with */}
-
+                {/* Chart Grid - Scrollable */}
+                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                     <RadioGroup
                         value={selectedType}
                         onValueChange={setSelectedType}
-                        className={`grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}
+                        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
                     >
-                        {chartConfigs.map((cfg) => (
-                            <div key={cfg.type} className={`border ${cfg.type === selectedType ? 'border-primary' : ''} rounded-lg p-2`}>
-                                <RadioGroupItem value={cfg.type} id={cfg.type} className="hidden" />
-                                <label className="cursor-pointer text-sm font-medium" htmlFor={cfg.type}>
-                                    {/*{cfg.type}*/}
-                                    <ChartEditorProvider chart={{ config: { ...cfg, theme: appearance }, data: cfg.data }}>
-                                        <ChartRenderer />
-                                    </ChartEditorProvider>
-                                </label>
-                            </div>
-                        ))}
+                        {chartConfigs.map((cfg) => {
+                            const isSelected = cfg.type === selectedType;
+                            return (
+                                <div 
+                                    key={cfg.type} 
+                                    className={`
+                                        group relative overflow-hidden rounded-xl border-2 transition-all duration-200 cursor-pointer
+                                        ${isSelected 
+                                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-md scale-[1.02]' 
+                                            : 'border-border bg-card hover:border-primary/50 hover:bg-accent/30 hover:shadow-sm hover:scale-[1.01]'
+                                        }
+                                    `}
+                                >
+                                    <RadioGroupItem 
+                                        value={cfg.type} 
+                                        id={cfg.type} 
+                                        className="sr-only" 
+                                    />
+                                    
+                                    {/* Selection Indicator */}
+                                    {isSelected && (
+                                        <div className="absolute top-2 right-2 z-10 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                            <div className="w-2 h-2 bg-primary-foreground rounded-full" />
+                                        </div>
+                                    )}
+                                    
+                                    <label 
+                                        className="block w-full h-full cursor-pointer" 
+                                        htmlFor={cfg.type}
+                                    >
+                                        {/* Chart Preview Container */}
+                                        <div className="aspect-[4/3] p-3 sm:p-4 flex items-center justify-center bg-gradient-to-br from-background to-muted/20">
+                                            <div className="w-full h-full min-h-0 flex items-center justify-center">
+                                                <ChartEditorProvider 
+                                                    chart={{ 
+                                                        config: { ...cfg, theme: appearance }, 
+                                                        data: cfg.data 
+                                                    }}
+                                                >
+                                                    <div className="transform scale-75 sm:scale-85 lg:scale-90 origin-center">
+                                                        <ChartRenderer />
+                                                    </div>
+                                                </ChartEditorProvider>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Chart Type Label */}
+                                        <div className="px-3 py-2 sm:px-4 sm:py-3 border-t bg-background/50 backdrop-blur">
+                                            <h3 className="font-medium text-sm sm:text-base text-center capitalize tracking-tight">
+                                                {cfg.type.replace(/([A-Z])/g, ' $1').trim()}
+                                            </h3>
+                                        </div>
+                                    </label>
+                                </div>
+                            );
+                        })}
                     </RadioGroup>
+                </div>
 
-                    <DialogFooter>
-                        <Button onClick={() => createChart()}>Create</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </>
+                {/* Mobile Footer - Fixed */}
+                <div className="sm:hidden flex-none px-4 py-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <Button 
+                        onClick={createChart} 
+                        disabled={processing}
+                        className="w-full h-12 font-medium text-base"
+                        size="lg"
+                    >
+                        {processing ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                Creating Chart...
+                            </div>
+                        ) : (
+                            'Create Chart'
+                        )}
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }
