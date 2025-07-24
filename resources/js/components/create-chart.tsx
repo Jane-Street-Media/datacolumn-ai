@@ -716,28 +716,57 @@ export function CreateChart({ project }) {
                                                 {/* Chart Type Illustrations */}
                                                 {cfg.type === 'bar' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <rect x="20" y="80" width="25" height="30" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="55" y="60" width="25" height="50" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="90" y="40" width="25" height="70" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="125" y="70" width="25" height="40" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="160" y="50" width="25" height="60" fill="hsl(var(--primary))" rx="2" />
-                                                        <line x1="15" y1="115" x2="190" y2="115" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="15" y1="20" x2="15" y2="115" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <defs>
+                                                            <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#8B5CF6" />
+                                                                <stop offset="100%" stopColor="#A855F7" />
+                                                            </linearGradient>
+                                                            <linearGradient id="barGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#06B6D4" />
+                                                                <stop offset="100%" stopColor="#0891B2" />
+                                                            </linearGradient>
+                                                            <linearGradient id="barGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#10B981" />
+                                                                <stop offset="100%" stopColor="#059669" />
+                                                            </linearGradient>
+                                                            <linearGradient id="barGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#F59E0B" />
+                                                                <stop offset="100%" stopColor="#D97706" />
+                                                            </linearGradient>
+                                                            <linearGradient id="barGrad5" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#EF4444" />
+                                                                <stop offset="100%" stopColor="#DC2626" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <rect x="20" y="80" width="25" height="30" fill="url(#barGrad1)" rx="3" />
+                                                        <rect x="55" y="60" width="25" height="50" fill="url(#barGrad2)" rx="3" />
+                                                        <rect x="90" y="40" width="25" height="70" fill="url(#barGrad3)" rx="3" />
+                                                        <rect x="125" y="70" width="25" height="40" fill="url(#barGrad4)" rx="3" />
+                                                        <rect x="160" y="50" width="25" height="60" fill="url(#barGrad5)" rx="3" />
+                                                        <line x1="15" y1="115" x2="190" y2="115" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="15" y1="20" x2="15" y2="115" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'line' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <defs>
+                                                            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" stopColor="#8B5CF6" />
+                                                                <stop offset="50%" stopColor="#06B6D4" />
+                                                                <stop offset="100%" stopColor="#10B981" />
+                                                            </linearGradient>
+                                                        </defs>
                                                         <polyline points="20,90 50,60 80,45 110,70 140,35 170,55" 
-                                                                  fill="none" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                                                        <circle cx="20" cy="90" r="4" fill="hsl(var(--primary))" />
-                                                        <circle cx="50" cy="60" r="4" fill="hsl(var(--primary))" />
-                                                        <circle cx="80" cy="45" r="4" fill="hsl(var(--primary))" />
-                                                        <circle cx="110" cy="70" r="4" fill="hsl(var(--primary))" />
-                                                        <circle cx="140" cy="35" r="4" fill="hsl(var(--primary))" />
-                                                        <circle cx="170" cy="55" r="4" fill="hsl(var(--primary))" />
-                                                        <line x1="15" y1="100" x2="175" y2="100" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="15" y1="20" x2="15" y2="100" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                  fill="none" stroke="url(#lineGrad)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <circle cx="20" cy="90" r="5" fill="#8B5CF6" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="50" cy="60" r="5" fill="#7C3AED" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="80" cy="45" r="5" fill="#06B6D4" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="110" cy="70" r="5" fill="#0891B2" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="140" cy="35" r="5" fill="#10B981" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="170" cy="55" r="5" fill="#059669" stroke="#fff" strokeWidth="2" />
+                                                        <line x1="15" y1="100" x2="175" y2="100" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="15" y1="20" x2="15" y2="100" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
@@ -745,129 +774,235 @@ export function CreateChart({ project }) {
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
                                                         <defs>
                                                             <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
-                                                                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+                                                                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.8" />
+                                                                <stop offset="50%" stopColor="#06B6D4" stopOpacity="0.6" />
+                                                                <stop offset="100%" stopColor="#10B981" stopOpacity="0.2" />
+                                                            </linearGradient>
+                                                            <linearGradient id="areaStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" stopColor="#8B5CF6" />
+                                                                <stop offset="50%" stopColor="#06B6D4" />
+                                                                <stop offset="100%" stopColor="#10B981" />
                                                             </linearGradient>
                                                         </defs>
                                                         <polygon points="20,100 20,70 50,50 80,35 110,60 140,25 170,45 170,100" 
                                                                  fill="url(#areaGradient)" />
                                                         <polyline points="20,70 50,50 80,35 110,60 140,25 170,45" 
-                                                                  fill="none" stroke="hsl(var(--primary))" strokeWidth="2" />
-                                                        <line x1="15" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="15" y1="20" x2="15" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                  fill="none" stroke="url(#areaStroke)" strokeWidth="3" />
+                                                        <line x1="15" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="15" y1="20" x2="15" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'pie' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <circle cx="100" cy="60" r="45" fill="hsl(var(--primary))" />
-                                                        <path d="M 100 60 L 100 15 A 45 45 0 0 1 131.82 39.09 Z" fill="hsl(var(--secondary))" />
-                                                        <path d="M 100 60 L 131.82 39.09 A 45 45 0 0 1 131.82 80.91 Z" fill="hsl(var(--accent))" />
-                                                        <path d="M 100 60 L 131.82 80.91 A 45 45 0 0 1 100 105 Z" fill="hsl(var(--muted))" />
+                                                        <defs>
+                                                            <radialGradient id="pieGrad1" cx="50%" cy="40%">
+                                                                <stop offset="0%" stopColor="#A855F7" />
+                                                                <stop offset="100%" stopColor="#8B5CF6" />
+                                                            </radialGradient>
+                                                            <radialGradient id="pieGrad2" cx="50%" cy="40%">
+                                                                <stop offset="0%" stopColor="#22D3EE" />
+                                                                <stop offset="100%" stopColor="#06B6D4" />
+                                                            </radialGradient>
+                                                            <radialGradient id="pieGrad3" cx="50%" cy="40%">
+                                                                <stop offset="0%" stopColor="#34D399" />
+                                                                <stop offset="100%" stopColor="#10B981" />
+                                                            </radialGradient>
+                                                            <radialGradient id="pieGrad4" cx="50%" cy="40%">
+                                                                <stop offset="0%" stopColor="#FBBF24" />
+                                                                <stop offset="100%" stopColor="#F59E0B" />
+                                                            </radialGradient>
+                                                        </defs>
+                                                        <circle cx="100" cy="60" r="45" fill="url(#pieGrad1)" stroke="#fff" strokeWidth="2" />
+                                                        <path d="M 100 60 L 100 15 A 45 45 0 0 1 131.82 39.09 Z" fill="url(#pieGrad2)" stroke="#fff" strokeWidth="2" />
+                                                        <path d="M 100 60 L 131.82 39.09 A 45 45 0 0 1 131.82 80.91 Z" fill="url(#pieGrad3)" stroke="#fff" strokeWidth="2" />
+                                                        <path d="M 100 60 L 131.82 80.91 A 45 45 0 0 1 100 105 Z" fill="url(#pieGrad4)" stroke="#fff" strokeWidth="2" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'scatter' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <circle cx="30" cy="80" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="45" cy="65" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="60" cy="50" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="75" cy="70" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="90" cy="45" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="105" cy="60" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="120" cy="35" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="135" cy="55" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="150" cy="40" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <circle cx="165" cy="30" r="5" fill="hsl(var(--primary))" opacity="0.8" />
-                                                        <line x1="20" y1="95" x2="175" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="20" y1="20" x2="20" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <circle cx="30" cy="80" r="6" fill="#8B5CF6" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="45" cy="65" r="6" fill="#7C3AED" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="60" cy="50" r="6" fill="#06B6D4" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="75" cy="70" r="6" fill="#0891B2" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="90" cy="45" r="6" fill="#10B981" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="105" cy="60" r="6" fill="#059669" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="120" cy="35" r="6" fill="#F59E0B" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="135" cy="55" r="6" fill="#D97706" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="150" cy="40" r="6" fill="#EF4444" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <circle cx="165" cy="30" r="6" fill="#DC2626" stroke="#fff" strokeWidth="2" opacity="0.9" />
+                                                        <line x1="20" y1="95" x2="175" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="20" y1="20" x2="20" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'radar' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
+                                                        <defs>
+                                                            <radialGradient id="radarGrad" cx="50%" cy="50%">
+                                                                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.6" />
+                                                                <stop offset="70%" stopColor="#06B6D4" stopOpacity="0.3" />
+                                                                <stop offset="100%" stopColor="#10B981" stopOpacity="0.1" />
+                                                            </radialGradient>
+                                                        </defs>
                                                         <polygon points="100,25 142,45 130,85 70,85 58,45" 
-                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.3" />
                                                         <polygon points="100,35 125,48 118,75 82,75 75,48" 
-                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.5" />
                                                         <polygon points="100,45 108,50 106,65 94,65 92,50" 
-                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                 fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.7" />
                                                         <polygon points="100,30 135,50 125,80 75,80 65,50" 
-                                                                 fill="hsl(var(--primary))" fillOpacity="0.3" stroke="hsl(var(--primary))" strokeWidth="2" />
-                                                        <line x1="100" y1="60" x2="100" y2="25" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="100" y1="60" x2="142" y2="45" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="100" y1="60" x2="130" y2="85" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="100" y1="60" x2="70" y2="85" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="100" y1="60" x2="58" y2="45" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                 fill="url(#radarGrad)" stroke="#8B5CF6" strokeWidth="3" />
+                                                        <line x1="100" y1="60" x2="100" y2="25" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.4" />
+                                                        <line x1="100" y1="60" x2="142" y2="45" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.4" />
+                                                        <line x1="100" y1="60" x2="130" y2="85" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.4" />
+                                                        <line x1="100" y1="60" x2="70" y2="85" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.4" />
+                                                        <line x1="100" y1="60" x2="58" y2="45" stroke="hsl(var(--muted-foreground))" strokeWidth="1" opacity="0.4" />
+                                                        <circle cx="100" cy="30" r="3" fill="#8B5CF6" />
+                                                        <circle cx="135" cy="50" r="3" fill="#06B6D4" />
+                                                        <circle cx="125" cy="80" r="3" fill="#10B981" />
+                                                        <circle cx="75" cy="80" r="3" fill="#F59E0B" />
+                                                        <circle cx="65" cy="50" r="3" fill="#EF4444" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'radialBar' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <circle cx="100" cy="60" r="40" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
-                                                        <circle cx="100" cy="60" r="32" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
-                                                        <circle cx="100" cy="60" r="24" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
-                                                        <circle cx="100" cy="60" r="40" fill="none" stroke="hsl(var(--primary))" strokeWidth="8" 
+                                                        <defs>
+                                                            <linearGradient id="radialGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" stopColor="#8B5CF6" />
+                                                                <stop offset="100%" stopColor="#A855F7" />
+                                                            </linearGradient>
+                                                            <linearGradient id="radialGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" stopColor="#06B6D4" />
+                                                                <stop offset="100%" stopColor="#22D3EE" />
+                                                            </linearGradient>
+                                                            <linearGradient id="radialGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" stopColor="#10B981" />
+                                                                <stop offset="100%" stopColor="#34D399" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <circle cx="100" cy="60" r="40" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" opacity="0.2" />
+                                                        <circle cx="100" cy="60" r="32" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" opacity="0.2" />
+                                                        <circle cx="100" cy="60" r="24" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" opacity="0.2" />
+                                                        <circle cx="100" cy="60" r="40" fill="none" stroke="url(#radialGrad1)" strokeWidth="8" 
                                                                 strokeDasharray="188.5" strokeDashoffset="47" transform="rotate(-90 100 60)" strokeLinecap="round" />
-                                                        <circle cx="100" cy="60" r="32" fill="none" stroke="hsl(var(--secondary))" strokeWidth="6" 
+                                                        <circle cx="100" cy="60" r="32" fill="none" stroke="url(#radialGrad2)" strokeWidth="6" 
                                                                 strokeDasharray="201.1" strokeDashoffset="67" transform="rotate(-90 100 60)" strokeLinecap="round" />
-                                                        <circle cx="100" cy="60" r="24" fill="none" stroke="hsl(var(--accent))" strokeWidth="4" 
-                                                                strokeDasharray="150.8" strokeDashoffset="90" transform="rotate(-90 100 60)" strokeLinecap="round" />
+                                                        <circle cx="100" cy="60" r="24" fill="none" stroke="url(#radialGrad3)" strokeWidth="4" 
+                                                                strokeDasharray="150.8" strokeDashoffset="50" transform="rotate(-90 100 60)" strokeLinecap="round" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'funnel' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <polygon points="50,25 150,25 140,40 60,40" fill="hsl(var(--primary))" />
-                                                        <polygon points="60,45 140,45 130,60 70,60" fill="hsl(var(--secondary))" />
-                                                        <polygon points="70,65 130,65 120,80 80,80" fill="hsl(var(--accent))" />
-                                                        <polygon points="80,85 120,85 110,100 90,100" fill="hsl(var(--muted))" />
+                                                        <defs>
+                                                            <linearGradient id="funnelGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#A855F7" />
+                                                                <stop offset="100%" stopColor="#8B5CF6" />
+                                                            </linearGradient>
+                                                            <linearGradient id="funnelGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#22D3EE" />
+                                                                <stop offset="100%" stopColor="#06B6D4" />
+                                                            </linearGradient>
+                                                            <linearGradient id="funnelGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#34D399" />
+                                                                <stop offset="100%" stopColor="#10B981" />
+                                                            </linearGradient>
+                                                            <linearGradient id="funnelGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#FBBF24" />
+                                                                <stop offset="100%" stopColor="#F59E0B" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <polygon points="50,25 150,25 140,40 60,40" fill="url(#funnelGrad1)" stroke="#fff" strokeWidth="1.5" />
+                                                        <polygon points="60,45 140,45 130,60 70,60" fill="url(#funnelGrad2)" stroke="#fff" strokeWidth="1.5" />
+                                                        <polygon points="70,65 130,65 120,80 80,80" fill="url(#funnelGrad3)" stroke="#fff" strokeWidth="1.5" />
+                                                        <polygon points="80,85 120,85 110,100 90,100" fill="url(#funnelGrad4)" stroke="#fff" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'treemap' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <rect x="20" y="20" width="80" height="50" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="110" y="20" width="70" height="30" fill="hsl(var(--secondary))" rx="2" />
-                                                        <rect x="110" y="55" width="70" height="15" fill="hsl(var(--accent))" rx="2" />
-                                                        <rect x="20" y="75" width="50" height="25" fill="hsl(var(--muted))" rx="2" />
-                                                        <rect x="75" y="75" width="25" height="25" fill="hsl(var(--primary))" opacity="0.7" rx="2" />
-                                                        <rect x="110" y="75" width="35" height="25" fill="hsl(var(--secondary))" opacity="0.7" rx="2" />
-                                                        <rect x="150" y="75" width="30" height="25" fill="hsl(var(--accent))" opacity="0.7" rx="2" />
+                                                        <defs>
+                                                            <linearGradient id="treeGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" stopColor="#A855F7" />
+                                                                <stop offset="100%" stopColor="#8B5CF6" />
+                                                            </linearGradient>
+                                                            <linearGradient id="treeGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" stopColor="#22D3EE" />
+                                                                <stop offset="100%" stopColor="#06B6D4" />
+                                                            </linearGradient>
+                                                            <linearGradient id="treeGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" stopColor="#34D399" />
+                                                                <stop offset="100%" stopColor="#10B981" />
+                                                            </linearGradient>
+                                                            <linearGradient id="treeGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" stopColor="#FBBF24" />
+                                                                <stop offset="100%" stopColor="#F59E0B" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <rect x="20" y="20" width="80" height="50" fill="url(#treeGrad1)" rx="4" stroke="#fff" strokeWidth="2" />
+                                                        <rect x="110" y="20" width="70" height="30" fill="url(#treeGrad2)" rx="4" stroke="#fff" strokeWidth="2" />
+                                                        <rect x="110" y="55" width="70" height="15" fill="url(#treeGrad3)" rx="4" stroke="#fff" strokeWidth="2" />
+                                                        <rect x="20" y="75" width="50" height="25" fill="url(#treeGrad4)" rx="4" stroke="#fff" strokeWidth="2" />
+                                                        <rect x="75" y="75" width="25" height="25" fill="#EC4899" rx="4" stroke="#fff" strokeWidth="2" />
+                                                        <rect x="110" y="75" width="35" height="25" fill="#F97316" rx="4" stroke="#fff" strokeWidth="2" />
+                                                        <rect x="150" y="75" width="30" height="25" fill="#84CC16" rx="4" stroke="#fff" strokeWidth="2" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'composed' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <rect x="25" y="70" width="20" height="30" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="55" y="50" width="20" height="50" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="85" y="60" width="20" height="40" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="115" y="40" width="20" height="60" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="145" y="65" width="20" height="35" fill="hsl(var(--primary))" rx="2" />
+                                                        <defs>
+                                                            <linearGradient id="compGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#A855F7" />
+                                                                <stop offset="100%" stopColor="#8B5CF6" />
+                                                            </linearGradient>
+                                                            <linearGradient id="compGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" stopColor="#06B6D4" />
+                                                                <stop offset="100%" stopColor="#10B981" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <rect x="25" y="70" width="20" height="30" fill="url(#compGrad1)" rx="3" />
+                                                        <rect x="55" y="50" width="20" height="50" fill="url(#compGrad1)" rx="3" />
+                                                        <rect x="85" y="60" width="20" height="40" fill="url(#compGrad1)" rx="3" />
+                                                        <rect x="115" y="40" width="20" height="60" fill="url(#compGrad1)" rx="3" />
+                                                        <rect x="145" y="65" width="20" height="35" fill="url(#compGrad1)" rx="3" />
                                                         <polyline points="35,80 65,55 95,45 125,65 155,35" 
-                                                                  fill="none" stroke="hsl(var(--secondary))" strokeWidth="3" strokeLinecap="round" />
-                                                        <circle cx="35" cy="80" r="3" fill="hsl(var(--secondary))" />
-                                                        <circle cx="65" cy="55" r="3" fill="hsl(var(--secondary))" />
-                                                        <circle cx="95" cy="45" r="3" fill="hsl(var(--secondary))" />
-                                                        <circle cx="125" cy="65" r="3" fill="hsl(var(--secondary))" />
-                                                        <circle cx="155" cy="35" r="3" fill="hsl(var(--secondary))" />
-                                                        <line x1="20" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="20" y1="30" x2="20" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                                  fill="none" stroke="url(#compGrad2)" strokeWidth="4" strokeLinecap="round" />
+                                                        <circle cx="35" cy="80" r="4" fill="#06B6D4" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="65" cy="55" r="4" fill="#0891B2" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="95" cy="45" r="4" fill="#0E7490" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="125" cy="65" r="4" fill="#10B981" stroke="#fff" strokeWidth="2" />
+                                                        <circle cx="155" cy="35" r="4" fill="#059669" stroke="#fff" strokeWidth="2" />
+                                                        <line x1="20" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="20" y1="30" x2="20" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'stackedBar' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <rect x="30" y="60" width="25" height="25" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="30" y="85" width="25" height="15" fill="hsl(var(--secondary))" rx="2" />
-                                                        <rect x="65" y="40" width="25" height="35" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="65" y="75" width="25" height="25" fill="hsl(var(--secondary))" rx="2" />
-                                                        <rect x="100" y="50" width="25" height="30" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="100" y="80" width="25" height="20" fill="hsl(var(--secondary))" rx="2" />
-                                                        <rect x="135" y="35" width="25" height="40" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="135" y="75" width="25" height="25" fill="hsl(var(--secondary))" rx="2" />
-                                                        <line x1="25" y1="105" x2="170" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="25" y1="30" x2="25" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <defs>
+                                                            <linearGradient id="stackGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#A855F7" />
+                                                                <stop offset="100%" stopColor="#8B5CF6" />
+                                                            </linearGradient>
+                                                            <linearGradient id="stackGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#22D3EE" />
+                                                                <stop offset="100%" stopColor="#06B6D4" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <rect x="30" y="60" width="25" height="25" fill="url(#stackGrad1)" rx="3" />
+                                                        <rect x="30" y="85" width="25" height="15" fill="url(#stackGrad2)" rx="3" />
+                                                        <rect x="65" y="40" width="25" height="35" fill="url(#stackGrad1)" rx="3" />
+                                                        <rect x="65" y="75" width="25" height="25" fill="url(#stackGrad2)" rx="3" />
+                                                        <rect x="100" y="50" width="25" height="30" fill="url(#stackGrad1)" rx="3" />
+                                                        <rect x="100" y="80" width="25" height="20" fill="url(#stackGrad2)" rx="3" />
+                                                        <rect x="135" y="35" width="25" height="40" fill="url(#stackGrad1)" rx="3" />
+                                                        <rect x="135" y="75" width="25" height="25" fill="url(#stackGrad2)" rx="3" />
+                                                        <line x1="25" y1="105" x2="170" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="25" y1="30" x2="25" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
@@ -875,34 +1010,46 @@ export function CreateChart({ project }) {
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
                                                         <defs>
                                                             <linearGradient id="stackedGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
-                                                                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+                                                                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.8" />
+                                                                <stop offset="100%" stopColor="#A855F7" stopOpacity="0.4" />
                                                             </linearGradient>
                                                             <linearGradient id="stackedGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                                <stop offset="0%" stopColor="hsl(var(--secondary))" stopOpacity="0.8" />
-                                                                <stop offset="100%" stopColor="hsl(var(--secondary))" stopOpacity="0.3" />
+                                                                <stop offset="0%" stopColor="#06B6D4" stopOpacity="0.8" />
+                                                                <stop offset="100%" stopColor="#22D3EE" stopOpacity="0.4" />
                                                             </linearGradient>
                                                         </defs>
                                                         <polygon points="30,90 30,60 60,50 90,45 120,65 150,35 170,45 170,90" fill="url(#stackedGradient1)" />
                                                         <polygon points="30,60 30,45 60,35 90,30 120,50 150,20 170,30 170,45 150,35 120,65 90,45 60,50" fill="url(#stackedGradient2)" />
-                                                        <line x1="25" y1="95" x2="175" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="25" y1="15" x2="25" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <polyline points="30,60 60,50 90,45 120,65 150,35 170,45" fill="none" stroke="#8B5CF6" strokeWidth="2" />
+                                                        <polyline points="30,45 60,35 90,30 120,50 150,20 170,30" fill="none" stroke="#06B6D4" strokeWidth="2" />
+                                                        <line x1="25" y1="95" x2="175" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="25" y1="15" x2="25" y2="95" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                                 
                                                 {cfg.type === 'waterfall' && (
                                                     <svg viewBox="0 0 200 120" className="w-full h-full max-w-[180px] max-h-[108px]">
-                                                        <rect x="25" y="80" width="20" height="20" fill="hsl(var(--primary))" rx="2" />
-                                                        <rect x="55" y="60" width="20" height="20" fill="hsl(var(--secondary))" rx="2" />
-                                                        <rect x="85" y="70" width="20" height="10" fill="hsl(var(--destructive))" rx="2" />
-                                                        <rect x="115" y="50" width="20" height="20" fill="hsl(var(--secondary))" rx="2" />
-                                                        <rect x="145" y="45" width="20" height="25" fill="hsl(var(--primary))" rx="2" />
-                                                        <line x1="45" y1="80" x2="55" y2="80" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
-                                                        <line x1="75" y1="60" x2="85" y2="70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
-                                                        <line x1="105" y1="70" x2="115" y2="70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
-                                                        <line x1="135" y1="50" x2="145" y2="70" stroke="hsl(var(--muted-foreground))" strokeWidth="1" strokeDasharray="2,2" />
-                                                        <line x1="20" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
-                                                        <line x1="20" y1="40" x2="20" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1" />
+                                                        <defs>
+                                                            <linearGradient id="waterfallPos" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#34D399" />
+                                                                <stop offset="100%" stopColor="#10B981" />
+                                                            </linearGradient>
+                                                            <linearGradient id="waterfallNeg" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                <stop offset="0%" stopColor="#F87171" />
+                                                                <stop offset="100%" stopColor="#EF4444" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <rect x="25" y="80" width="20" height="20" fill="url(#waterfallPos)" rx="3" stroke="#fff" strokeWidth="1" />
+                                                        <rect x="55" y="60" width="20" height="20" fill="url(#waterfallPos)" rx="3" stroke="#fff" strokeWidth="1" />
+                                                        <rect x="85" y="70" width="20" height="10" fill="url(#waterfallNeg)" rx="3" stroke="#fff" strokeWidth="1" />
+                                                        <rect x="115" y="50" width="20" height="20" fill="url(#waterfallPos)" rx="3" stroke="#fff" strokeWidth="1" />
+                                                        <rect x="145" y="45" width="20" height="25" fill="url(#waterfallPos)" rx="3" stroke="#fff" strokeWidth="1" />
+                                                        <line x1="45" y1="80" x2="55" y2="80" stroke="#06B6D4" strokeWidth="2" strokeDasharray="3,3" />
+                                                        <line x1="75" y1="60" x2="85" y2="70" stroke="#06B6D4" strokeWidth="2" strokeDasharray="3,3" />
+                                                        <line x1="105" y1="70" x2="115" y2="70" stroke="#06B6D4" strokeWidth="2" strokeDasharray="3,3" />
+                                                        <line x1="135" y1="50" x2="145" y2="70" stroke="#06B6D4" strokeWidth="2" strokeDasharray="3,3" />
+                                                        <line x1="20" y1="105" x2="175" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
+                                                        <line x1="20" y1="40" x2="20" y2="105" stroke="hsl(var(--muted-foreground))" strokeWidth="1.5" />
                                                     </svg>
                                                 )}
                                             </div>
