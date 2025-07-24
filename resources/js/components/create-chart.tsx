@@ -711,16 +711,28 @@ export function CreateChart({ project }) {
                                         htmlFor={cfg.type}
                                     >
                                         {/* Chart Preview Container */}
-                                        <div className="aspect-[4/3] p-3 sm:p-4 flex items-center justify-center bg-gradient-to-br from-background to-muted/20">
-                                            <div className="w-full h-full min-h-0 flex items-center justify-center">
+                                        <div className="aspect-[4/3] p-2 sm:p-3 flex items-center justify-center bg-gradient-to-br from-background to-muted/20 overflow-hidden">
+                                            <div className="w-full h-full flex items-center justify-center relative">
                                                 <ChartEditorProvider 
                                                     chart={{ 
-                                                        config: { ...cfg, theme: appearance }, 
+                                                        config: { 
+                                                            ...cfg, 
+                                                            theme: appearance,
+                                                            width: 320,
+                                                            height: 200,
+                                                            paddingOption: 'none',
+                                                            titleFontSize: 12,
+                                                            subtitleFontSize: 10,
+                                                            xAxisLabelFontSize: 8,
+                                                            yAxisLabelFontSize: 8
+                                                        }, 
                                                         data: cfg.data 
                                                     }}
                                                 >
-                                                    <div className="transform scale-75 sm:scale-85 lg:scale-90 origin-center">
-                                                        <ChartRenderer />
+                                                    <div className="flex items-center justify-center w-full h-full transform scale-90 sm:scale-95 origin-center">
+                                                        <div className="w-[320px] h-[200px] flex items-center justify-center">
+                                                            <ChartRenderer />
+                                                        </div>
                                                     </div>
                                                 </ChartEditorProvider>
                                             </div>
