@@ -7,11 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Deferred, Head, router } from '@inertiajs/react';
-import { BarChart3, FolderPlus, Plus, Search, FolderIcon, Filter, X, Layers3, Grid3X3 } from 'lucide-react';
+import { BarChart3, FolderOpen, Plus, Search, UserPlus, X, FolderPlus, Filter, Layers3 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
@@ -28,8 +27,6 @@ export default function Projects({ folders, projects, statuses }) {
         search: '',
         folder: '',
     });
-
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
     useEffect(() => {
         const debounce = setTimeout(() => {
@@ -69,20 +66,13 @@ export default function Projects({ folders, projects, statuses }) {
                 <PageHeader>
                     <PageHeaderHead>
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
-                                <Layers3 className="h-6 w-6 text-primary" />
+                            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 border border-primary/20">
+                                <BarChart3 className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                                <PageHeaderTitle className="flex items-center gap-2">
-                                    Projects
-                                    {projects?.length > 0 && (
-                                        <Badge variant="secondary" className="text-xs">
-                                            {projects.length}
-                                        </Badge>
-                                    )}
-                                </PageHeaderTitle>
+                                <PageHeaderTitle>Projects</PageHeaderTitle>
                                 <PageHeaderDescription>
-                                    Organize your data visualization projects and collaborate with your team
+                                    Manage your data visualization projects and collaborate with your team.
                                 </PageHeaderDescription>
                             </div>
                         </div>
@@ -91,9 +81,9 @@ export default function Projects({ folders, projects, statuses }) {
                             <div className="flex items-center gap-2">
                                 <FolderDialog 
                                     trigger={
-                                        <Button variant="outline" size="sm" className="gap-2">
+                                        <Button variant="outline" className="border gap-2">
                                             <FolderPlus className="h-4 w-4" />
-                                            <span className="hidden sm:inline">New Folder</span>
+                                            <span className="hidden lg:block">New Folder</span>
                                         </Button>
                                     }
                                 />
@@ -101,9 +91,9 @@ export default function Projects({ folders, projects, statuses }) {
                                     folders={folders}
                                     statuses={statuses}
                                     trigger={
-                                        <Button size="sm" className="gap-2">
+                                        <Button variant="ghost" className="border gap-2">
                                             <Plus className="h-4 w-4" />
-                                            <span className="hidden sm:inline">New Project</span>
+                                            <span className="hidden lg:block">New Project</span>
                                         </Button>
                                     }
                                 />
@@ -113,36 +103,16 @@ export default function Projects({ folders, projects, statuses }) {
                 </PageHeader>
 
                 {/* Enhanced Filters Card */}
-                <Card className="border-l-4 border-l-primary/20">
-                    <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Filter className="h-4 w-4 text-muted-foreground" />
-                                <CardTitle className="text-sm font-medium">Filters & Search</CardTitle>
-                                {hasActiveFilters && (
-                                    <Badge variant="outline" className="text-xs">
-                                        Active
-                                    </Badge>
-                                )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant={viewMode === 'grid' ? 'default' : 'outline'}
-                                    size="sm"
-                                    onClick={() => setViewMode('grid')}
-                                    className="h-8 w-8 p-0"
-                                >
-                                    <Grid3X3 className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                    variant={viewMode === 'list' ? 'default' : 'outline'}
-                                    size="sm"
-                                    onClick={() => setViewMode('list')}
-                                    className="h-8 w-8 p-0"
-                                >
-                                    <Layers3 className="h-4 w-4" />
-                                </Button>
-                            </div>
+                <Card className="shadow-sm">
+                    <CardHeader className="pb-4">
+                        <div className="flex items-center gap-2">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                            <CardTitle className="text-base">Search & Filter</CardTitle>
+                            {hasActiveFilters && (
+                                <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                                    Active
+                                </span>
+                            )}
                         </div>
                     </CardHeader>
                     
@@ -153,8 +123,8 @@ export default function Projects({ folders, projects, statuses }) {
                                 <div className="relative">
                                     <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                     <Input
-                                        placeholder="Search projects..."
-                                        className="pl-10 h-10"
+                                        placeholder="Search projects by name..."
+                                        className="pl-10"
                                         value={filters.search || ''}
                                         onChange={(e) =>
                                             setFilters((prev) => ({
@@ -163,16 +133,6 @@ export default function Projects({ folders, projects, statuses }) {
                                             }))
                                         }
                                     />
-                                    {filters.search && (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                                            onClick={() => setFilters(prev => ({ ...prev, search: '' }))}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </Button>
-                                    )}
                                 </div>
                             </div>
 
@@ -187,9 +147,9 @@ export default function Projects({ folders, projects, statuses }) {
                                         }))
                                     }
                                 >
-                                    <SelectTrigger className="h-10">
+                                    <SelectTrigger>
                                         <div className="flex items-center gap-2">
-                                            <FolderIcon className="h-4 w-4 text-muted-foreground" />
+                                            <FolderOpen className="h-4 w-4 text-muted-foreground" />
                                             <SelectValue placeholder="All folders" />
                                         </div>
                                     </SelectTrigger>
@@ -204,7 +164,7 @@ export default function Projects({ folders, projects, statuses }) {
                                             {folders?.map((folder) => (
                                                 <SelectItem key={folder.id} value={String(folder.id)}>
                                                     <div className="flex items-center gap-2">
-                                                        <FolderIcon className="h-4 w-4 text-primary" />
+                                                        <FolderOpen className="h-4 w-4 text-amber-500" />
                                                         {folder.name}
                                                     </div>
                                                 </SelectItem>
@@ -219,9 +179,8 @@ export default function Projects({ folders, projects, statuses }) {
                                 {hasActiveFilters && (
                                     <Button 
                                         variant="outline" 
-                                        size="sm"
                                         onClick={clearFilters}
-                                        className="h-10 gap-2"
+                                        className="gap-2"
                                     >
                                         <X className="h-4 w-4" />
                                         Clear
@@ -230,37 +189,21 @@ export default function Projects({ folders, projects, statuses }) {
                             </div>
                         </div>
 
-                        {/* Active Filter Indicators */}
+                        {/* Active Filter Summary */}
                         {hasActiveFilters && (
-                            <div className="mt-4 pt-4 border-t border-border/50">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="text-sm text-muted-foreground">Active filters:</span>
+                            <div className="mt-4 pt-4 border-t">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <span>Showing results for:</span>
                                     {filters.search && (
-                                        <Badge variant="secondary" className="gap-1">
-                                            Search: "{filters.search}"
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="h-auto w-auto p-0 hover:bg-transparent"
-                                                onClick={() => setFilters(prev => ({ ...prev, search: '' }))}
-                                            >
-                                                <X className="h-3 w-3" />
-                                            </Button>
-                                        </Badge>
+                                        <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                                            "{filters.search}"
+                                        </span>
                                     )}
                                     {selectedFolder && (
-                                        <Badge variant="secondary" className="gap-1">
-                                            <FolderIcon className="h-3 w-3" />
+                                        <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">
+                                            <FolderOpen className="h-3 w-3 mr-1" />
                                             {selectedFolder.name}
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="h-auto w-auto p-0 hover:bg-transparent"
-                                                onClick={() => setFilters(prev => ({ ...prev, folder: '' }))}
-                                            >
-                                                <X className="h-3 w-3" />
-                                            </Button>
-                                        </Badge>
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -268,12 +211,8 @@ export default function Projects({ folders, projects, statuses }) {
                     </CardContent>
                 </Card>
 
-                {/* Projects Grid/List */}
-                <div className={`mb-8 grid gap-4 ${
-                    viewMode === 'grid' 
-                        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
-                        : 'grid-cols-1'
-                }`}>
+                {/* Projects Grid */}
+                <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <Deferred
                         data="projects"
                         fallback={
@@ -290,37 +229,41 @@ export default function Projects({ folders, projects, statuses }) {
                             projects?.map((project, index) => (
                                 <motion.div
                                     key={project.id}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                                    transition={{ duration: 0.2, delay: index * 0.05 }}
                                 >
                                     <ProjectCard 
+                                        key={project.id} 
+                                        index={index} 
                                         project={project} 
                                         folders={folders} 
                                         statuses={statuses}
-                                        viewMode={viewMode}
                                     />
                                 </motion.div>
                             ))
                         ) : (
-                            <Card className="col-span-full border-dashed border-2">
+                            <Card className="col-span-full border-2 border-dashed border-muted-foreground/25">
                                 <CardContent className="flex flex-col items-center justify-center py-12">
-                                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                                    <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
                                         {hasActiveFilters ? (
                                             <Search className="h-8 w-8 text-muted-foreground" />
                                         ) : (
                                             <BarChart3 className="h-8 w-8 text-muted-foreground" />
                                         )}
                                     </div>
-                                    <h3 className="text-lg font-semibold mb-2">
+                                    
+                                    <h3 className="text-xl font-semibold mb-2">
                                         {hasActiveFilters ? 'No projects found' : 'No projects yet'}
                                     </h3>
+                                    
                                     <p className="text-muted-foreground text-center mb-6 max-w-md">
                                         {hasActiveFilters 
-                                            ? 'Try adjusting your search or filter criteria to find what you\'re looking for.'
-                                            : 'Create your first data visualization project to get started with building charts and dashboards.'
+                                            ? 'Try adjusting your search terms or changing the selected folder to find what you\'re looking for.'
+                                            : 'Create your first project to start building amazing data visualizations and dashboards.'
                                         }
                                     </p>
+                                    
                                     <div className="flex items-center gap-3">
                                         {hasActiveFilters ? (
                                             <Button onClick={clearFilters} variant="outline">
