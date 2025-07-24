@@ -425,7 +425,7 @@ export const ChartRenderer: React.FC = () => {
 
             case 'pie':
                 const pieData = transformedData.pie;
-                const pieRadius = getCircularChartRadius(config.outerRadius || 85, config.innerRadius || 0);
+                const pieOuterRadius = `${config.outerRadius || 85}%`;
                 
                 const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
                     const RADIAN = Math.PI / 180;
@@ -448,22 +448,27 @@ export const ChartRenderer: React.FC = () => {
                     );
                 };
 
+                // Pie chart props - only add innerRadius if it's actually specified and > 0
+                const pieProps = {
+                    data: pieData,
+                    dataKey: "value",
+                    nameKey: "name",
+                    cx: "50%",
+                    cy: "50%",
+                    labelLine: false,
+                    label: renderPieLabel,
+                    outerRadius: pieOuterRadius,
+                    ...animationProps,
+                    ...(config.innerRadius && config.innerRadius > 0 && {
+                        innerRadius: `${config.innerRadius}%`
+                    })
+                };
+
                 return (
                     <PieChart {...commonProps}>
                         {config.showTooltip !== false && <Tooltip content={(props) => <CustomTooltip {...props} config={config} />} />}
                         {config.showLegend && <Legend {...legendProps} />}
-                        <Pie
-                            data={pieData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={renderPieLabel}
-                            outerRadius={pieRadius.outerRadius}
-                            innerRadius={pieRadius.innerRadius}
-                            {...animationProps}
-                        >
+                        <Pie {...pieProps}>
                             {pieData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.fill} />
                             ))}
