@@ -240,8 +240,8 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     <CreditCard className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mr-2" />
                                                     <h3 className="font-semibold text-gray-900 dark:text-white">Payment Method</h3>
                                                 </div>
-                                                <p className="text-2xl font-mono text-gray-700 dark:text-gray-300">
-                                                    •••• •••• •••• {auth?.user.pm_last_four || '••••'}
+                                                <p className="text-lg font-mono text-gray-700 dark:text-gray-300">
+                                                    •••• •••• •••• {auth?.user.current_team.pm_last_four || '••••'}
                                                 </p>
                                             </div>
 
