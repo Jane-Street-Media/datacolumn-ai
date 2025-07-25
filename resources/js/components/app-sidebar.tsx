@@ -18,7 +18,7 @@ export function AppSidebar() {
     const folderLinks = page.props.auth.folders.map(folder => {
         return {
             title: folder.name,
-            url: route('projects.index', { folder: folder.id }),
+            url: route('projects.index', { folder: folder.id, search: '' }),
             icon: Folder,
             isVisible: true,
         };
