@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\RoleEnum;
+use App\Models\Folder;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -57,8 +58,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'subscription' => $request?->user()?->currentTeam?->subscriptionWithProductDetails() ?? null,
                 'teams' => $request->user()?->teams,
+                'folders' => Folder::query()->get()
             ],
-
         ];
     }
 }

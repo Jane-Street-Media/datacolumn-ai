@@ -19,7 +19,8 @@ export interface NavItem {
     url: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
-    isVisible?: true
+    isVisible?: true,
+    children?: NavItem[]; // expects array of NavItem
 }
 
 export interface SharedData {
@@ -49,19 +50,19 @@ export interface Stat {
 }
 
 // Enhanced chart types
-export type ChartType = 
-    | 'bar' 
-    | 'line' 
-    | 'area' 
-    | 'pie' 
-    | 'scatter' 
-    | 'radar' 
-    | 'radialBar' 
-    | 'funnel' 
-    | 'treemap' 
-    | 'composed' 
-    | 'stackedBar' 
-    | 'stackedArea' 
+export type ChartType =
+    | 'bar'
+    | 'line'
+    | 'area'
+    | 'pie'
+    | 'scatter'
+    | 'radar'
+    | 'radialBar'
+    | 'funnel'
+    | 'treemap'
+    | 'composed'
+    | 'stackedBar'
+    | 'stackedArea'
     | 'waterfall';
 
 // Series configuration for multi-series and composed charts
@@ -90,24 +91,24 @@ export interface ChartConfig {
     titleWeight: 'normal' | 'bold' | 'light' | 'semibold';
     subtitle: string;
     subtitleColor: string;
-    
+
     // Axis configuration
     xAxis: string;
     yAxis: string; // Keep for backward compatibility
     xAxisLabel: string;
     yAxisLabel: string;
-    
+
     // Series configuration (new multi-series support)
     series: SeriesConfig[];
-    
+
     // Tooltip configuration
     tooltipFormat: 'default' | 'currency' | 'percentage' | 'decimal' | 'thousands' | 'millions' | 'custom';
     tooltipCustomFormat?: string;
     showTooltip: boolean;
-    
+
     // Colors and styling
     colors: string[];
-    
+
     // Grid and display options
     showGrid: boolean;
     grid: ChartGrid;
@@ -116,24 +117,24 @@ export interface ChartConfig {
     showXAxis: boolean;
     showYAxis: boolean;
     showCartesianGrid: boolean;
-    
+
     // Dimensions
     width: number;
     height: number;
-    
+
     // Padding
     paddingOption: 'none' | 'default' | 'custom';
     customPaddingValue?: number;
-    
+
     // Theme
     theme: 'light' | 'dark' | 'system';
     backgroundColor?: 'default' | 'transparent' | string;
-    
+
     // Animation settings
     enableAnimation: boolean;
     animationDuration: number;
     animationType: 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear';
-    
+
     // Chart-specific options for special chart types
     // Pie/Radial chart options
     innerRadius?: number;
@@ -143,17 +144,17 @@ export interface ChartConfig {
     dataKey?: string; // For pie/treemap charts
     nameKey?: string; // For pie charts
     valueKey?: string; // For treemap charts
-    
+
     // Radar specific
     radarKeys?: string[];
-    
+
     // Treemap specific
     aspectRatio?: number;
-    
+
     // Funnel specific
     funnelWidth?: number;
     funnelHeight?: number;
-    
+
     // Waterfall specific
     waterfallStartValue?: number;
     waterfallEndValue?: number;

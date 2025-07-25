@@ -23,9 +23,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Projects({ folders, projects, statuses }) {
+    // get folder from query params
+    const folderId = new URLSearchParams(window.location.search).get('folder') ?? '';
     const [filters, setFilters] = useState({
         search: '',
-        folder: '',
+        folder: folderId,
     });
 
     useEffect(() => {
@@ -45,7 +47,7 @@ export default function Projects({ folders, projects, statuses }) {
     }, [filters]);
 
     const clearFilters = () => {
-        setFilters({ search: null, folder: null });
+        setFilters({ search: '', folder: '' });
         router.reload({
             only: ['projects'],
             data: {
@@ -65,7 +67,7 @@ export default function Projects({ folders, projects, statuses }) {
                         <PageHeaderDescription>Manage your data visualization projects and collaborate with your team.</PageHeaderDescription>
                         <PageHeaderAction>
                             <div className="flex items-center gap-2">
-                                <FolderDialog 
+                                <FolderDialog
                                     trigger={
                                         <Button variant="outline" className="border">
                                             <FolderPlus className="mr-2 h-4 w-4" />
