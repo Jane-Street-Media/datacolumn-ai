@@ -21,7 +21,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
             <SidebarMenu>
                 {visibleItems.map((item) => (
                     item.children ? (
-                        <Collapsible key={`c-${item.title}`} defaultOpen className="group/collapsible">
+                        <Collapsible key={`c-${item.title}`} className="group/collapsible">
                             <SidebarMenuItem key={item.title}>
                                 <CollapsibleTrigger asChild>
                                     <SidebarMenuButton>
