@@ -1,7 +1,7 @@
 import {
     SidebarGroup,
     SidebarGroupLabel,
-    SidebarMenu,
+    SidebarMenu, SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
@@ -21,7 +21,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
             <SidebarMenu>
                 {visibleItems.map((item) => (
                     item.children ? (
-                        <Collapsible key={`c-${item.title}`} className="group/collapsible">
+                        <Collapsible key={`c-${item.title}`} defaultOpen={item.children.map(item => item.url).includes(page.props.full_page_url)} className="group/collapsible">
                             <SidebarMenuItem key={item.title}>
                                 <CollapsibleTrigger asChild>
                                     <SidebarMenuButton>
@@ -36,12 +36,13 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                     <SidebarMenuSub>
                                         {item.children.map((subItem) => (
                                             <SidebarMenuSubItem key={subItem.title}>
-                                                <SidebarMenuButton asChild isActive={subItem.url === page.url} className={'!sidebar-link'}>
+                                                <SidebarMenuButton asChild isActive={subItem.url === page.props.full_page_url} className={'!sidebar-link'}>
                                                     <Link href={subItem.url} prefetch>
                                                         {subItem.icon && <subItem.icon />}
                                                         <span>{subItem.title}</span>
                                                     </Link>
                                                 </SidebarMenuButton>
+                                                <SidebarMenuBadge>{subItem.badgeText}</SidebarMenuBadge>
                                             </SidebarMenuSubItem>
                                         ))}
                                     </SidebarMenuSub>

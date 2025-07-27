@@ -21,6 +21,7 @@ export function AppSidebar() {
             url: route('projects.index', { folder: folder.id, search: '' }),
             icon: Folder,
             isVisible: true,
+            badgeText: folder.projects_count
         };
     })
     const mainNavItems: NavItem[] = [

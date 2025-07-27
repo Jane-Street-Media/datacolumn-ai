@@ -58,8 +58,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'subscription' => $request?->user()?->currentTeam?->subscriptionWithProductDetails() ?? null,
                 'teams' => $request->user()?->teams,
-                'folders' => Folder::query()->get()
+                'folders' => Folder::query()->withCount('projects')->get()
             ],
+            'full_page_url' => $request->fullUrl(),
         ];
     }
 }
