@@ -300,8 +300,8 @@ export const ChartRenderer: React.FC = () => {
     };
 
     // Axis props
-    const xAxisProps = config.showXAxis ? {} : { axisLine: false, tickLine: false, hide: true };
-    const yAxisProps = config.showYAxis ? {} : { axisLine: false, tickLine: false, hide: true };
+    const xAxisProps = config.showXAxis ? { } : { axisLine: false, tickLine: false, hide: false };
+    const yAxisProps = config.showYAxis ? {} : { axisLine: false, tickLine: false, hide: false };
 
     // Legend props
     const legendProps = config.showLegend ? {
@@ -425,7 +425,7 @@ export const ChartRenderer: React.FC = () => {
 
             case 'pie':
                 const pieData = transformedData.pie;
-                
+
                 const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
                     const RADIAN = Math.PI / 180;
                     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
