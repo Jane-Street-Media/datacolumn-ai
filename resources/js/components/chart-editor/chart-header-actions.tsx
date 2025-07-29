@@ -72,15 +72,15 @@ export function ChartHeaderActions() {
 
             <Card className="border-0 shadow-none md:border md:shadow-sm overflow-hidden">
                 <CardContent className="p-4 md:p-6">
-                    {/* Mobile Layout - Simplified without PageHeader components */}
-                    <div className="md:hidden">
-                        <div className="space-y-3">
-                            <div className="flex items-start justify-between gap-2">
+                    {/* Mobile Layout - Force contain width */}
+                    <div className="md:hidden w-full max-w-full overflow-hidden">
+                        <div className="space-y-3 max-w-full px-0">
+                            <div className="flex items-start justify-between gap-2 max-w-full">
                                 <div className="flex-1 min-w-0 overflow-hidden">
-                                    <h1 className="text-base font-semibold truncate">
+                                    <h1 className="text-base font-semibold truncate max-w-full">
                                         {config.title || 'Q1 Sales Analysis'}
                                     </h1>
-                                    <p className="text-xs text-muted-foreground truncate">
+                                    <p className="text-xs text-muted-foreground truncate max-w-full">
                                         Create and customize your data visualizations.
                                     </p>
                                 </div>
@@ -127,7 +127,7 @@ export function ChartHeaderActions() {
                             </div>
 
                             {/* Mobile Quick Actions */}
-                            <div className="flex gap-2 w-full">
+                            <div className="flex gap-2 w-full max-w-full">
                                 <Button 
                                     size="sm" 
                                     variant="outline"
@@ -135,8 +135,8 @@ export function ChartHeaderActions() {
                                     disabled={isImporting}
                                     className="flex-1 min-w-0"
                                 >
-                                    <Import className="h-4 w-4 mr-1" />
-                                    Import
+                                    <Import className="h-4 w-4 mr-1 flex-shrink-0" />
+                                    <span className="truncate">Import</span>
                                 </Button>
                                 <Button 
                                     size="sm"
@@ -145,11 +145,11 @@ export function ChartHeaderActions() {
                                     className="flex-1 min-w-0"
                                 >
                                     {updating ? (
-                                        <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                                        <Loader2 className="h-4 w-4 mr-1 animate-spin flex-shrink-0" />
                                     ) : (
-                                        <Save className="h-4 w-4 mr-1" />
+                                        <Save className="h-4 w-4 mr-1 flex-shrink-0" />
                                     )}
-                                    Save
+                                    <span className="truncate">Save</span>
                                 </Button>
                             </div>
                         </div>
