@@ -261,8 +261,8 @@ export default function EmbedDialog({
                         <TabsContent value="settings" className="mt-4">
                             <ChartControls cardContentClasses="max-h-full p-0" />
                         </TabsContent>
-                    </Tabs>
-                </div>
+                    </div>
+                </Tabs>
             </div>
         </DialogContent>
     );
