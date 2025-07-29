@@ -11,6 +11,7 @@ import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronRight, Folders } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
@@ -25,7 +26,14 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             <SidebarMenuItem key={item.title}>
                                 <CollapsibleTrigger asChild>
                                     <SidebarMenuButton>
-                                        {item.icon && <item.icon />}
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                {item.icon && <item.icon />}
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <span>{item.title}</span>
+                                            </TooltipContent>
+                                        </Tooltip>
                                         <span>{item.title}</span>
                                         <span className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90">
                                             <ChevronRight className="h-4 w-4" />
@@ -53,7 +61,14 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton asChild isActive={item.url === page.url} className={'!sidebar-link'}>
                                 <Link href={item.url} prefetch>
-                                    {item.icon && <item.icon />}
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            {item.icon && <item.icon />}
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <span>{item.title}</span>
+                                        </TooltipContent>
+                                    </Tooltip>
                                     <span>{item.title}</span>
                                 </Link>
                             </SidebarMenuButton>
