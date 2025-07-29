@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { PageHeader, PageHeaderAction, PageHeaderDescription, PageHeaderHead, PageHeaderTitle } from '@/components/page-header';
 import { Import, Save, Loader2, MoreVertical, FileText, Download, Code } from 'lucide-react';
 import * as React from 'react';
 import { toast } from 'sonner';
@@ -58,26 +57,38 @@ export function ChartHeaderActions() {
     };
 
     return (
-        <Card className="border-0 shadow-none md:border md:shadow-sm">
-            <CardContent className="p-4 md:p-6">
-                <PageHeader className="py-0">
-                    <PageHeaderHead>
-                        {/* Mobile Layout */}
-                        <div className="flex flex-col space-y-4 md:hidden">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1 min-w-0 pr-4">
-                                    <PageHeaderTitle className="text-lg sm:text-xl truncate">
+        <>
+            {/* Add global style to prevent horizontal scroll */}
+            <style jsx global>{`
+                @media (max-width: 767px) {
+                    body {
+                        overflow-x: hidden !important;
+                    }
+                    .max-w-full {
+                        max-width: 100% !important;
+                    }
+                }
+            `}</style>
+
+            <Card className="border-0 shadow-none md:border md:shadow-sm overflow-hidden">
+                <CardContent className="p-4 md:p-6">
+                    {/* Mobile Layout - Simplified without PageHeader components */}
+                    <div className="md:hidden">
+                        <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1 min-w-0 overflow-hidden">
+                                    <h1 className="text-base font-semibold truncate">
                                         {config.title || 'Q1 Sales Analysis'}
-                                    </PageHeaderTitle>
-                                    <PageHeaderDescription className="text-xs sm:text-sm line-clamp-2">
+                                    </h1>
+                                    <p className="text-xs text-muted-foreground truncate">
                                         Create and customize your data visualizations.
-                                    </PageHeaderDescription>
+                                    </p>
                                 </div>
                                 
                                 {/* Mobile Actions Dropdown */}
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
                                             <MoreVertical className="h-4 w-4" />
                                             <span className="sr-only">More options</span>
                                         </Button>
@@ -115,14 +126,14 @@ export function ChartHeaderActions() {
                                 </DropdownMenu>
                             </div>
 
-                            {/* Mobile Quick Actions - Most Important */}
-                            <div className="flex gap-2">
+                            {/* Mobile Quick Actions */}
+                            <div className="flex gap-2 w-full">
                                 <Button 
                                     size="sm" 
                                     variant="outline"
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={isImporting}
-                                    className="flex-1"
+                                    className="flex-1 min-w-0"
                                 >
                                     <Import className="h-4 w-4 mr-1" />
                                     Import
@@ -131,7 +142,7 @@ export function ChartHeaderActions() {
                                     size="sm"
                                     onClick={handleSave}
                                     disabled={updating}
-                                    className="flex-1"
+                                    className="flex-1 min-w-0"
                                 >
                                     {updating ? (
                                         <Loader2 className="h-4 w-4 mr-1 animate-spin" />
@@ -142,73 +153,73 @@ export function ChartHeaderActions() {
                                 </Button>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Desktop Layout */}
-                        <div className="hidden md:flex md:items-center md:justify-between">
-                            <div>
-                                <PageHeaderTitle>{config.title || 'Q1 Sales Analysis'}</PageHeaderTitle>
-                                <PageHeaderDescription>
+                    {/* Desktop Layout */}
+                    <div className="hidden md:block">
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="min-w-0">
+                                <h2 className="text-2xl font-bold">{config.title || 'Q1 Sales Analysis'}</h2>
+                                <p className="text-sm text-muted-foreground mt-1">
                                     Create and customize your data visualizations.
-                                </PageHeaderDescription>
+                                </p>
                             </div>
-                            <PageHeaderAction>
-                                <div className="flex items-center gap-2">
-                                    <Button 
-                                        onClick={() => fileInputRef.current?.click()}
-                                        disabled={isImporting}
-                                        variant="outline"
-                                    >
-                                        {isImporting ? (
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        ) : (
-                                            <Import className="h-4 w-4 mr-2" />
-                                        )}
-                                        <span>Import</span>
-                                    </Button>
-                                    <ExportChart title={config.title} chart={chart} />
-                                    <Button 
-                                        onClick={handleSave} 
-                                        disabled={updating}
-                                    >
-                                        {updating ? (
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        ) : (
-                                            <Save className="h-4 w-4 mr-2" />
-                                        )}
-                                        <span>Save</span>
-                                    </Button>
-                                    <EmbedDialog />
-                                </div>
-                            </PageHeaderAction>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                                <Button 
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isImporting}
+                                    variant="outline"
+                                >
+                                    {isImporting ? (
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    ) : (
+                                        <Import className="h-4 w-4 mr-2" />
+                                    )}
+                                    <span>Import</span>
+                                </Button>
+                                <ExportChart title={config.title} chart={chart} />
+                                <Button 
+                                    onClick={handleSave} 
+                                    disabled={updating}
+                                >
+                                    {updating ? (
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    ) : (
+                                        <Save className="h-4 w-4 mr-2" />
+                                    )}
+                                    <span>Save</span>
+                                </Button>
+                                <EmbedDialog />
+                            </div>
                         </div>
-                    </PageHeaderHead>
-                </PageHeader>
+                    </div>
 
-                {/* Hidden file input */}
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".csv"
-                    onChange={handleFileImport}
-                    className="hidden"
-                    aria-label="Import CSV file"
-                />
+                    {/* Hidden file input */}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".csv"
+                        onChange={handleFileImport}
+                        className="hidden"
+                        aria-label="Import CSV file"
+                    />
 
-                {/* Mobile Dialogs */}
-                <div className="md:hidden">
-                    <ExportChart 
-                        title={config.title} 
-                        chart={chart}
-                        open={exportDialogOpen}
-                        onOpenChange={setExportDialogOpen}
-                        variant="dialog"
-                    />
-                    <EmbedDialog 
-                        open={embedDialogOpen}
-                        onOpenChange={setEmbedDialogOpen}
-                    />
-                </div>
-            </CardContent>
-        </Card>
+                    {/* Mobile Dialogs */}
+                    <div className="md:hidden">
+                        <ExportChart 
+                            title={config.title} 
+                            chart={chart}
+                            open={exportDialogOpen}
+                            onOpenChange={setExportDialogOpen}
+                            variant="dialog"
+                        />
+                        <EmbedDialog 
+                            open={embedDialogOpen}
+                            onOpenChange={setEmbedDialogOpen}
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+        </>
     );
 }
