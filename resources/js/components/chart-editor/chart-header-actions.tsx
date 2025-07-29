@@ -203,14 +203,10 @@ export function ChartHeaderActions() {
                         onOpenChange={setExportDialogOpen}
                         variant="dialog"
                     />
-                    {/* EmbedDialog would need similar modifications */}
-                    {embedDialogOpen && (
-                        <EmbedDialog 
-                            // Add these props to EmbedDialog component
-                            // open={embedDialogOpen}
-                            // onOpenChange={setEmbedDialogOpen}
-                        />
-                    )}
+                    <EmbedDialog 
+                        open={embedDialogOpen}
+                        onOpenChange={setEmbedDialogOpen}
+                    />
                 </div>
             </CardContent>
         </Card>
