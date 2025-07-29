@@ -194,24 +194,21 @@ export function ChartHeaderActions() {
                     aria-label="Import CSV file"
                 />
 
-                {/* Mobile Dialogs - These would need to be modified to accept open/onOpenChange props */}
-                {/* You'll need to modify ExportChart and EmbedDialog components to work as controlled components */}
-                {/* For now, showing them as desktop-only */}
+                {/* Mobile Dialogs */}
                 <div className="md:hidden">
+                    <ExportChart 
+                        title={config.title} 
+                        chart={chart}
+                        open={exportDialogOpen}
+                        onOpenChange={setExportDialogOpen}
+                        variant="dialog"
+                    />
+                    {/* EmbedDialog would need similar modifications */}
                     {embedDialogOpen && (
                         <EmbedDialog 
                             // Add these props to EmbedDialog component
                             // open={embedDialogOpen}
                             // onOpenChange={setEmbedDialogOpen}
-                        />
-                    )}
-                    {exportDialogOpen && (
-                        <ExportChart 
-                            title={config.title} 
-                            chart={chart}
-                            // Add these props to ExportChart component
-                            // open={exportDialogOpen}
-                            // onOpenChange={setExportDialogOpen}
                         />
                     )}
                 </div>
