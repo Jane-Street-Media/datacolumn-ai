@@ -40,7 +40,7 @@ export default function EmbedDialog({
     const isOpen = isControlled ? open : dialogOpen;
     const setIsOpen = isControlled ? onOpenChange! : setDialogOpen;
     
-    const iframeHeight = config.height || 400; // Default height for the iframe
+    const iframeHeight = config?.height || 400; // Default height for the iframe
 
     // Reset copied state when dialog closes
     useEffect(() => {
@@ -49,6 +49,10 @@ export default function EmbedDialog({
             setActiveTab('preview');
         }
     }, [isOpen]);
+
+    // Generate URLs safely
+    const embedUrl = chart?.uuid ? route('chart.embed', chart.uuid) : '';
+    const shareLink = embedUrl;
 
     const embedScript = `<!-- DataColumn.ai Chart -->
 <div id="dc-chart-${chart?.uuid || '123'}" style="width: 100%; height: ${iframeHeight}px; border-radius: 8px; overflow: hidden;"></div>
@@ -60,18 +64,16 @@ export default function EmbedDialog({
   iframe.style.height = "${iframeHeight}px";
   iframe.style.border = 'none';
   iframe.style.borderRadius = '8px';
-  iframe.src = "${chart ? route('chart.embed', chart.uuid) : ''}";
+  iframe.src = "${embedUrl}";
   container.appendChild(iframe);
 })();
 </script>`;
 
     const embedIframe = `<iframe 
-  src="${chart ? route('chart.embed', chart.uuid) : ''}" 
+  src="${embedUrl}" 
   style="width: 100%; height: ${iframeHeight}px; border: none; border-radius: 8px;"
-  title="${config.title || 'Chart'}"
+  title="${config?.title || 'Chart'}"
 ></iframe>`;
-
-    const shareLink = chart ? route('chart.embed', chart.uuid) : '';
 
     const handleCopy = async (text: string, itemId: string) => {
         try {
@@ -169,7 +171,7 @@ export default function EmbedDialog({
                                         onClick={() => {
                                             if (navigator.share) {
                                                 navigator.share({
-                                                    title: config.title || 'Chart',
+                                                    title: config?.title || 'Chart',
                                                     url: shareLink
                                                 });
                                             } else {
