@@ -8,6 +8,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::patch('/subscription/cancel-subscription', [SubscriptionController::class, 'cancelSubscription'])
         ->name('subscription.cancel');
 
+    Route::patch('/subscription/cancel-now-subscription', [SubscriptionController::class, 'cancelNowSubscription'])
+        ->name('subscription.cancelNow');
+
     Route::patch('/subscription/switch-to-free-plan', [SubscriptionController::class, 'switchToFreePlan'])
         ->name('subscription.switchToFreePlan');
 

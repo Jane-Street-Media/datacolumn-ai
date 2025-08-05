@@ -37,6 +37,23 @@ class SubscriptionController extends Controller
         }
     }
 
+    public function cancelNowSubscription(Request $request): RedirectResponse
+    {
+        try {
+            $subscription = $request->user()->currentTeam->subscriptionWithProductDetails();
+
+            if ($subscription && $subscription->chargebee_status !== SubscriptionStatus::CANCELLED->value && $subscription->cancelNow()) {
+                $subscription->trial_ends_at = null;
+                $subscription->save();
+                return back()->with('success', 'Subscription cancelled successfully.');
+            }
+
+            return back()->withErrors(['error' => 'Something went wrong while cancelling the subscription.']);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
+        }
+    }
+
     public function switchToFreePlan(Request $request): RedirectResponse
     {
         try {

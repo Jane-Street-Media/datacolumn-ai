@@ -22,6 +22,7 @@ class CheckoutController extends Controller
                 ['error' => 'You already have a subscription in progress. Please wait a few minutes or refresh the page.']
             );
         }
+
         if ($request->user()->currentTeam->subscribed()) {
             return redirect()->back()->withErrors(['error' => 'You are already subscribed to a plan.']);
         }

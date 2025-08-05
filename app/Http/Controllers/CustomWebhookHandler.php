@@ -134,12 +134,23 @@ class CustomWebhookHandler extends HandleWebhookReceived
     protected function handleSubscriptionCancellationScheduled(array $payload): void
     {
         if ($team = Cashier::findBillable($payload['content']['subscription']['customer_id'])) {
-            $currentTermEnd = $payload['content']['subscription']['current_term_end'];
+            $payloadSubscription = $payload['content']['subscription'];
+            $currentTermEnd = null;
+            $trialEnd = null;
+
+            if (array_key_exists('trial_end', $payloadSubscription) && !is_null($payloadSubscription['trial_end'])) {
+                $trialEnd = $payload['content']['subscription']['trial_end'];
+            }
+
+            if (array_key_exists('current_term_end', $payloadSubscription) && !is_null($payloadSubscription['current_term_end'])) {
+                $currentTermEnd = $payload['content']['subscription']['current_term_end'];
+            }
+
             $status = $payload['content']['subscription']['status'];
             $subscription = $team->subscriptions()->where('chargebee_id', $payload['content']['subscription']['id'])->first();
             $subscription->update([
                 'chargebee_status' => $status,
-                'ends_at' => Carbon::createFromTimestamp($currentTermEnd),
+                'ends_at' => Carbon::createFromTimestamp($currentTermEnd ?? $trialEnd),
             ]);
 
             Log::info('Subscription cancel scheduled successfully.', [
@@ -182,6 +193,7 @@ class CustomWebhookHandler extends HandleWebhookReceived
             $subscription->update([
                 'chargebee_status' => $status,
                 'ends_at' => Carbon::now(),
+                'trial_ends_at' => null,
             ]);
 
             SyncSubscriptionPlanChanges::handle($team);
