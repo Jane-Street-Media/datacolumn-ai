@@ -1,6 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import ChargebeeBanner from '@/pages/banners/chargebeeBanner';
 import Pricing from '@/pages/pricing/pricing';
 import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
@@ -18,21 +17,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) => {
     const { auth } = usePage<SharedData>().props;
-    const isSubscribed = subscription.plan.chargebee_id !== 'free-monthly';
-    const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
+    const isSubscribed = subscription.plan.chargebee_id !== 'free-monthly' && subscription.chargebee_status !== 'cancelled';
     const [cancelSubscriptionModalOpen, setCancelSubscriptionModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const canResumeSubscription = useMemo(() => subscription?.chargebee_status === 'non_renewing', [subscription]);
-    console.log(subscription.invoice);
+    const canCancelSubscription = useMemo(() => subscription?.chargebee_status === 'active' || subscription?.chargebee_status === 'in_trial', [subscription]);
     const CancelSubscriptionButton = () => {
         const handleClick = (e: React.MouseEvent) => {
             if (isLoading) {
                 e.preventDefault();
                 return;
             }
+            const routeName = subscription?.chargebee_status === 'in_trial' ? 'subscription.cancelNow' : 'subscription.cancel';
             router.patch(
-                route('subscription.cancel'),
+                route(routeName),
                 {},
                 {
                     showProgress: false,
@@ -274,17 +273,19 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                     <p className="font-medium text-gray-900 dark:text-white">{subscription.plan.display_name}</p>
                                                     <p className="text-sm text-gray-600 dark:text-gray-400">Quantity: {subscription.plan.quantity}</p>
                                                 </div>
-                                                <div className="text-right">
-                                                    <a
-                                                        href={route('download-invoice', subscription.invoice.id)}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-                                                    >
-                                                        <Download className="w-4 h-4 mr-2" />
-                                                        Download Invoice
-                                                    </a>
-                                                </div>
+                                                {subscription.invoice ? (
+                                                    <div className="text-right">
+                                                        <a
+                                                            href={route('download-invoice', subscription.invoice.id)}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                                                        >
+                                                            <Download className="w-4 h-4 mr-2" />
+                                                            Download Invoice
+                                                        </a>
+                                                    </div>
+                                                ) : null}
                                             </div>
                                         </div>
 
@@ -343,7 +344,7 @@ const SubscriptionSettings: React.FC = ({ subscription: subscription, plans }) =
                                                         </>
                                                     )}
                                                 </Button>
-                                            ) : subscription?.chargebee_status.toLowerCase() === 'active' ? (
+                                            ) : canCancelSubscription ? (
                                                 <Button
                                                     onClick={() => setCancelSubscriptionModalOpen(true)}
                                                     variant="outline"
