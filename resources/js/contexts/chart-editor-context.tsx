@@ -58,24 +58,24 @@ const getDefaultConfig = (chartConfig: Partial<CustomChartConfig>): CustomChartC
         titleWeight: chartConfig.titleWeight ?? 'bold',
         subtitle: chartConfig.subtitle ?? '',
         subtitleColor: chartConfig.subtitleColor ?? '#6b7280',
-        
+
         // Axis configuration
         xAxis: chartConfig.xAxis ?? '',
         yAxis: chartConfig.yAxis ?? '', // Keep for backward compatibility
         xAxisLabel: chartConfig.xAxisLabel ?? '',
         yAxisLabel: chartConfig.yAxisLabel ?? '',
-        
+
         // Series configuration (new multi-series support)
         series: chartConfig.series ?? [],
-        
+
         // Tooltip configuration
         tooltipFormat: chartConfig.tooltipFormat ?? 'default',
         tooltipCustomFormat: chartConfig.tooltipCustomFormat ?? '',
         showTooltip: chartConfig.showTooltip ?? true,
-        
+
         // Colors and styling
         colors: chartConfig.colors ?? ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-        
+
         // Grid and display options
         showGrid: chartConfig.showGrid ?? true,
         grid: chartConfig.grid ?? {
@@ -91,24 +91,24 @@ const getDefaultConfig = (chartConfig: Partial<CustomChartConfig>): CustomChartC
         showXAxis: chartConfig.showXAxis ?? true,
         showYAxis: chartConfig.showYAxis ?? true,
         showCartesianGrid: chartConfig.showCartesianGrid ?? true,
-        
+
         // Dimensions
         width: chartConfig.width ?? 800,
         height: chartConfig.height ?? 600,
-        
+
         // Padding
         paddingOption: chartConfig.paddingOption ?? 'default',
         customPaddingValue: chartConfig.customPaddingValue ?? 20,
-        
+
         // Theme
         theme: chartConfig.theme ?? 'light',
         backgroundColor: chartConfig.backgroundColor ?? 'default',
-        
+
         // Animation settings (new)
         enableAnimation: chartConfig.enableAnimation ?? true,
         animationDuration: chartConfig.animationDuration ?? 1000,
         animationType: chartConfig.animationType ?? 'ease',
-        
+
         // Chart-specific options for special chart types
         // Pie/Radial chart options
         innerRadius: chartConfig.innerRadius ?? 0,
@@ -118,17 +118,17 @@ const getDefaultConfig = (chartConfig: Partial<CustomChartConfig>): CustomChartC
         dataKey: chartConfig.dataKey ?? 'value',
         nameKey: chartConfig.nameKey ?? 'name',
         valueKey: chartConfig.valueKey ?? 'value',
-        
+
         // Radar specific
         radarKeys: chartConfig.radarKeys ?? [],
-        
+
         // Treemap specific
         aspectRatio: chartConfig.aspectRatio ?? 4/3,
-        
+
         // Funnel specific
         funnelWidth: chartConfig.funnelWidth ?? 100,
         funnelHeight: chartConfig.funnelHeight ?? 100,
-        
+
         // Waterfall specific
         waterfallStartValue: chartConfig.waterfallStartValue ?? 0,
         waterfallEndValue: chartConfig.waterfallEndValue ?? 0,
@@ -164,15 +164,21 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
     // Initialize data and columns when component mounts or data changes
     useEffect(() => {
         if (data.length > 0) {
+            console.log('datadatadatadata');
+            console.log(data);
             const newColumns = Object.keys(data[0]);
+            console.log('newColumnsnewColumns');
+            console.log(newColumns);
             setColumns(newColumns);
-            
+
             // Auto-configure chart if not already configured
             if (!config.xAxis && newColumns.length > 0) {
                 const defaultXAxis = newColumns[0];
                 const defaultSeriesKey = newColumns.length > 1 ? newColumns[1] : newColumns[0];
-                
+
                 // For non-composed charts, set up default configuration
+                console.log('config.type !== \'composed\' && config.series.length === 0');
+                console.log(config.type !== 'composed' && config.series.length === 0);
                 if (config.type !== 'composed' && config.series.length === 0) {
                     setConfig(prevConfig => ({
                         ...prevConfig,
@@ -188,6 +194,11 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
                 }
             }
         } else {
+            setConfig(prevConfig => ({
+                ...prevConfig,
+                xAxis: '',
+                series: []
+            }));
             setColumns([]);
         }
     }, [data]);
@@ -196,7 +207,7 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
     useEffect(() => {
         if (config.xAxis && config.series.length > 0) {
             const filteredSeries = config.series.filter(series => series.dataKey !== config.xAxis);
-            
+
             // If all series were filtered out, add a default one
             if (filteredSeries.length === 0) {
                 const defaultSeriesKey = columns.find(col => col !== config.xAxis);
@@ -210,9 +221,9 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
                     });
                 }
             }
-            
+
             // Only update if series actually changed
-            if (filteredSeries.length !== config.series.length || 
+            if (filteredSeries.length !== config.series.length ||
                 filteredSeries.some((series, index) => series.dataKey !== config.series[index]?.dataKey)) {
                 setConfig(prevConfig => ({
                     ...prevConfig,
@@ -229,14 +240,14 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
                 const expectedType = getDefaultSeriesChartType(config.type);
                 return series.chartType !== expectedType && !['composed'].includes(config.type);
             });
-            
+
             if (needsUpdate && !['composed', 'stackedBar', 'stackedArea'].includes(config.type)) {
                 // For single-series charts, update the chart type of existing series
                 const updatedSeries = config.series.map(series => ({
                     ...series,
                     chartType: getDefaultSeriesChartType(config.type)
                 }));
-                
+
                 setConfig(prevConfig => ({
                     ...prevConfig,
                     series: updatedSeries
@@ -270,17 +281,17 @@ export function ChartEditorProvider({ chart, children }: ChartEditorProviderProp
     };
 
     return (
-        <ChartEditorContext.Provider value={{ 
-            config, 
-            setConfig, 
-            data, 
-            setData, 
-            columns, 
-            setColumns, 
-            updating, 
-            setUpdating, 
-            chart, 
-            updateChart 
+        <ChartEditorContext.Provider value={{
+            config,
+            setConfig,
+            data,
+            setData,
+            columns,
+            setColumns,
+            updating,
+            setUpdating,
+            chart,
+            updateChart
         }}>
             {children}
         </ChartEditorContext.Provider>
